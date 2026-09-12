@@ -113,6 +113,45 @@ export const apiService = {
       const generated = await generateAnatomicalCariesAnalysis(file, threshold);
       const newId = `CA-${Date.now().toString().slice(-6)}`;
       const hasLesions = generated.findings.length > 0;
+      let highestStage = 'Stage 0';
+      if (hasLesions) {
+        // Stage 3 if any lesion is Stage 3 or pixelArea >= 600px or total affected area >= 1.80%
+        if (
+          generated.findings.some(f => f.stage?.includes('3') || (f.pixelArea && f.pixelArea >= 600)) ||
+          generated.affectedAreaPercent >= 1.80
+        ) {
+          highestStage = 'Stage 3';
+        } else if (
+          generated.findings.some(f => f.stage?.includes('2') || (f.pixelArea && f.pixelArea >= 250)) ||
+          generated.affectedAreaPercent >= 0.80
+        ) {
+          highestStage = 'Stage 2';
+        } else {
+          highestStage = 'Stage 1';
+        }
+      }
+
+      const stageInfo = !hasLesions ? {
+        level: "Stage 0",
+        title: "No Significant Caries Region Detected",
+        description: "No radiographic evidence of demineralization or suspicious radiolucency.",
+        color: "emerald" as const,
+      } : highestStage === 'Stage 3' ? {
+        level: "Level 3",
+        title: "Extensive Dentinal Caries",
+        description: "Deep radiolucency extending into inner dentin / pulp margin",
+        color: "red" as const,
+      } : highestStage === 'Stage 2' ? {
+        level: "Level 2",
+        title: "Moderate Caries",
+        description: "Demineralization penetrating the enamel-dentin junction (EDJ)",
+        color: "orange" as const,
+      } : {
+        level: "Level 1",
+        title: "Suspected Early Caries",
+        description: "Demineralization limited to enamel or outer dentin border",
+        color: "yellow" as const,
+      };
 
       const result: AnalysisResult = {
         id: newId,
@@ -122,18 +161,14 @@ export const apiService = {
         originalImageUrl: generated.originalImageUrl,
         segmentationOverlayUrl: generated.segmentationOverlayUrl,
         binaryMaskUrl: generated.binaryMaskUrl,
-        overallFinding: hasLesions ? "SUSPECTED EARLY CARIES" : "NO CARIES DETECTED",
-        stage: hasLesions ? {
-          level: "Level 1",
-          title: "Suspected Early Caries",
-          description: "Demineralization limited to enamel or outer dentin border",
-          color: "amber",
-        } : {
-          level: "Stage 0",
-          title: "No Significant Caries Region Detected",
-          description: "No radiographic evidence of demineralization or suspicious radiolucency.",
-          color: "emerald",
-        },
+        overallFinding: !hasLesions 
+          ? "NO CARIES DETECTED" 
+          : highestStage === 'Stage 3' 
+          ? "SUSPECTED EXTENSIVE CARIES" 
+          : highestStage === 'Stage 2' 
+          ? "SUSPECTED MODERATE CARIES" 
+          : "SUSPECTED EARLY CARIES",
+        stage: stageInfo,
         summary: {
           totalAreaPx: generated.totalAreaPx,
           affectedAreaPercent: generated.affectedAreaPercent,
@@ -144,18 +179,21 @@ export const apiService = {
         },
         findings: generated.findings,
         evaluationMetrics: {
-          diceScore: 0.842,
-          iou: 0.728,
-          precision: 0.865,
-          recall: 0.824,
-          f1Score: 0.844,
-          specificity: 0.989,
-          accuracy: 0.976,
-          benchmarkReference: "Clinical Validation Benchmark (N=100 Radiographs)",
+          diceScore: 0.6562,
+          iou: 0.4985,
+          precision: 0.6901,
+          recall: 0.6365,
+          f1Score: 0.6562,
+          accuracy: 0.9975,
+          benchmarkReference: "ResNet-34 + FPN MLUA (EXP-MLUA-003 E56, τ=0.50)",
         },
-        clinicalRecommendation: hasLesions 
-          ? `Small localized suspicious demineralization region detected (${generated.affectedAreaPercent}% area, ${generated.findings.length} lesion site(s)). Clinical correlation is recommended.`
-          : "No suspicious caries lesions detected. Routine preventive dental care and periodic follow-up recommended.",
+        clinicalRecommendation: !hasLesions 
+          ? "No suspicious caries lesions detected. Routine preventive dental care and periodic follow-up recommended."
+          : highestStage === 'Stage 3'
+          ? `Extensive deep demineralization detected (${generated.affectedAreaPercent}% area across ${generated.findings.length} lesion site(s)). Prompt clinical restorative evaluation and vitality testing recommended.`
+          : highestStage === 'Stage 2'
+          ? `Moderate dentinal radiolucency detected (${generated.affectedAreaPercent}% area across ${generated.findings.length} lesion site(s)). Clinical restorative correlation recommended.`
+          : `Early localized demineralization detected (${generated.affectedAreaPercent}% area across ${generated.findings.length} lesion site(s)). Clinical correlation is recommended.`,
         inferenceTimeMs: 4970,
       };
 
@@ -384,7 +422,7 @@ export const apiService = {
       } else if (lower.includes('remineraliz') || lower.includes('fluoride') || lower.includes('heal') || lower.includes('arrest')) {
         responseText = "Early enamel demineralization (Stage 1) can often undergo remineralization! Applying 5% sodium fluoride varnish, silver diamine fluoride (SDF), using prescribed 5000 ppm fluoride toothpaste, and reducing fermentable carbohydrate intake can restore calcium and phosphate ions to the enamel crystal lattice, preventing cavitation.";
       } else if (lower.includes('accuracy') || lower.includes('dice') || lower.includes('precision') || lower.includes('recall') || lower.includes('iou') || lower.includes('metric')) {
-        responseText = "On standard clinical benchmarks (N=100 panoramic radiographs), the system demonstrates a Dice Similarity Coefficient of 84.2%, IoU (Jaccard) of 72.8%, Precision of 86.5%, Recall/Sensitivity of 82.4%, Specificity of 98.9%, and Overall Accuracy of 97.6%. These metrics validate robust spatial localization while emphasizing the need for dental professional sign-off.";
+        responseText = "On canonical validation benchmarks (EXP-MLUA-003 E56 at τ=0.50), the system demonstrates a Validation Dice Similarity of 65.62%, IoU (Jaccard) of 49.85%, Precision of 69.01%, and Recall of 63.65% with a peak validation loss of 0.7639.";
       } else if (lower.includes('doctor review') || lower.includes('verification') || lower.includes('sign-off') || lower.includes('how does the doctor')) {
         responseText = "The Physician Review & Sign-Off workflow enables dentists to formally record their independent clinical judgment. The form allows selecting agreement levels ('Agree', 'Partially Agree', 'Disagree'), entering targeted clinical notes, and certifying findings. Saved reviews are permanently attached to the case archive.";
       } else if (lower.includes('fdi') || lower.includes('tooth number') || lower.includes('tooth 46') || lower.includes('tooth 16')) {

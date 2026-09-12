@@ -48,6 +48,7 @@ export const AnalysisResultPage: React.FC = () => {
     }
   }, [searchParams]);
   const [selectedLesionId, setSelectedLesionId] = useState<string | undefined>(undefined);
+  const [selectedImagePanel, setSelectedImagePanel] = useState<'original' | 'overlay' | 'binary'>('original');
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxInitialLayer, setLightboxInitialLayer] = useState<'original' | 'overlay' | 'binary'>('original');
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
@@ -141,6 +142,48 @@ export const AnalysisResultPage: React.FC = () => {
     );
   }
 
+  const stageLevelStr = (analysis.stage?.level || '').toLowerCase();
+  const overallStr = (analysis.overallFinding || '').toLowerCase();
+  const isNoCaries = analysis.summary.totalLesions === 0 || stageLevelStr.includes('0') || overallStr.includes('no caries');
+  const isStage3 = !isNoCaries && (stageLevelStr.includes('3') || overallStr.includes('extensive'));
+  const isStage2 = !isNoCaries && !isStage3 && (stageLevelStr.includes('2') || overallStr.includes('moderate'));
+
+  const stageTheme = isNoCaries
+    ? {
+        borderClass: 'border-emerald-500 dark:border-emerald-500/80',
+        dotClass: 'bg-emerald-500 shadow-emerald-500/50',
+        badgeClass: 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-300 dark:border-emerald-500/60 text-emerald-800 dark:text-emerald-300',
+        badgeDot: 'bg-emerald-500 dark:bg-emerald-400',
+        priorityText: 'Routine Preventive Follow-up',
+        priorityClass: 'text-emerald-600 dark:text-emerald-400 font-bold',
+      }
+    : isStage3
+    ? {
+        borderClass: 'border-red-500 dark:border-red-500/80',
+        dotClass: 'bg-red-500 shadow-red-500/50',
+        badgeClass: 'bg-red-50 dark:bg-red-950/60 border-red-300 dark:border-red-500/60 text-red-800 dark:text-red-300',
+        badgeDot: 'bg-red-500 dark:bg-red-400',
+        priorityText: 'Urgent Restorative & Endodontic Evaluation',
+        priorityClass: 'text-red-600 dark:text-red-400 font-bold',
+      }
+    : isStage2
+    ? {
+        borderClass: 'border-orange-500 dark:border-orange-500/80',
+        dotClass: 'bg-orange-500 shadow-orange-500/50',
+        badgeClass: 'bg-orange-50 dark:bg-orange-950/60 border-orange-300 dark:border-orange-500/60 text-orange-800 dark:text-orange-300',
+        badgeDot: 'bg-orange-500 dark:bg-orange-400',
+        priorityText: 'Restorative Evaluation Recommended',
+        priorityClass: 'text-orange-600 dark:text-orange-400 font-bold',
+      }
+    : {
+        borderClass: 'border-yellow-400 dark:border-yellow-400/80',
+        dotClass: 'bg-yellow-400 shadow-yellow-400/50',
+        badgeClass: 'bg-yellow-50 dark:bg-yellow-950/60 border-yellow-300 dark:border-yellow-400/60 text-yellow-800 dark:text-yellow-300',
+        badgeDot: 'bg-yellow-500 dark:bg-yellow-400',
+        priorityText: 'Clinical Monitoring & Non-Invasive Therapy',
+        priorityClass: 'text-yellow-600 dark:text-yellow-400 font-bold',
+      };
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-16">
       {/* Top Action Bar */}
@@ -182,15 +225,15 @@ export const AnalysisResultPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Gold Assessment Banner */}
-      <div className="p-5 sm:p-6 rounded-2xl border-2 border-amber-400 dark:border-amber-500/80 bg-white dark:bg-[#080e1a] relative shadow-md space-y-4">
+      {/* Dynamic Stage Assessment Banner */}
+      <div className={`p-5 sm:p-6 rounded-2xl border-2 ${stageTheme.borderClass} bg-white dark:bg-[#080e1a] relative shadow-md space-y-4`}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div className="space-y-1">
             <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 block font-mono">
               AI CLINICAL SCREENING ASSESSMENT
             </span>
             <div className="flex items-center gap-3">
-              <span className="w-4 h-4 rounded-full bg-amber-400 shadow-md shadow-amber-400/50 shrink-0"></span>
+              <span className={`w-4 h-4 rounded-full ${stageTheme.dotClass} shrink-0`}></span>
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                 {analysis.overallFinding || 'SUSPECTED EARLY CARIES'}
               </h2>
@@ -198,8 +241,8 @@ export const AnalysisResultPage: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-500/60 text-amber-800 dark:text-amber-300 font-semibold text-xs">
-              <span className="w-2 h-2 rounded-full bg-amber-500 dark:bg-amber-400"></span>
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full ${stageTheme.badgeClass} font-semibold text-xs`}>
+              <span className={`w-2 h-2 rounded-full ${stageTheme.badgeDot}`}></span>
               <span>{analysis.stage.level} &mdash; {analysis.stage.title}</span>
             </span>
 
@@ -234,8 +277,8 @@ export const AnalysisResultPage: React.FC = () => {
             <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block">
               CLINICAL PRIORITY:
             </span>
-            <span className="font-bold text-slate-900 dark:text-white">
-              Clinical Evaluation Recommended
+            <span className={stageTheme.priorityClass}>
+              {stageTheme.priorityText}
             </span>
           </div>
 
@@ -314,13 +357,23 @@ export const AnalysisResultPage: React.FC = () => {
           {/* 3 Side-by-Side Image Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {/* Panel 1: Original Radiograph */}
-            <div className="bg-white dark:bg-[#0b1324] border border-slate-200 dark:border-[#1b2b4d] rounded-2xl p-4 flex flex-col justify-between space-y-3 shadow-sm">
+            <div
+              onClick={() => setSelectedImagePanel('original')}
+              className={`bg-white dark:bg-[#0b1324] rounded-2xl p-4 flex flex-col justify-between space-y-3 transition-all duration-200 cursor-pointer ${
+                selectedImagePanel === 'original'
+                  ? 'border-2 border-cyan-500 dark:border-cyan-400 shadow-lg shadow-cyan-500/15 ring-2 ring-cyan-500/20'
+                  : 'border border-slate-200 dark:border-[#1b2b4d] shadow-sm hover:border-slate-300 dark:hover:border-slate-700'
+              }`}
+            >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wide">
+                <span className={`text-xs font-bold uppercase tracking-wide ${selectedImagePanel === 'original' ? 'text-cyan-600 dark:text-cyan-400' : 'text-slate-800 dark:text-slate-100'}`}>
                   1. ORIGINAL RADIOGRAPH
                 </span>
                 <button
-                  onClick={() => openLightboxFor('original')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openLightboxFor('original');
+                  }}
                   className="p-1 rounded-lg text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
                   title="Enlarge"
                 >
@@ -330,18 +383,24 @@ export const AnalysisResultPage: React.FC = () => {
 
               {/* Image Frame */}
               <div
-                onClick={() => openLightboxFor('original')}
-                className="relative rounded-xl overflow-hidden bg-black border border-slate-200 dark:border-slate-800 aspect-square flex items-center justify-center cursor-pointer group"
+                onClick={() => setSelectedImagePanel('original')}
+                className="relative rounded-xl overflow-hidden bg-black border border-slate-200 dark:border-slate-800 aspect-[16/10] flex items-center justify-center cursor-pointer group"
               >
                 <img
                   src={analysis.originalImageUrl}
                   alt="Original Panoramic Radiograph"
                   className="w-full h-full object-contain group-hover:scale-105 transition duration-200"
                 />
-                <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-[10px] text-white flex items-center gap-1 font-medium">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openLightboxFor('original');
+                  }}
+                  className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-[10px] text-white flex items-center gap-1 font-medium hover:bg-black transition"
+                >
                   <Maximize2 className="w-3 h-3 text-cyan-400" />
                   <span>Click to Enlarge</span>
-                </div>
+                </button>
               </div>
 
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
@@ -350,16 +409,26 @@ export const AnalysisResultPage: React.FC = () => {
             </div>
 
             {/* Panel 2: AI Candidate Overlay */}
-            <div className="bg-white dark:bg-[#0b1324] border-2 border-cyan-500 dark:border-cyan-500/70 rounded-2xl p-4 flex flex-col justify-between space-y-3 shadow-md shadow-cyan-500/10">
+            <div
+              onClick={() => setSelectedImagePanel('overlay')}
+              className={`bg-white dark:bg-[#0b1324] rounded-2xl p-4 flex flex-col justify-between space-y-3 transition-all duration-200 cursor-pointer ${
+                selectedImagePanel === 'overlay'
+                  ? 'border-2 border-cyan-500 dark:border-cyan-400 shadow-lg shadow-cyan-500/15 ring-2 ring-cyan-500/20'
+                  : 'border border-slate-200 dark:border-[#1b2b4d] shadow-sm hover:border-slate-300 dark:hover:border-slate-700'
+              }`}
+            >
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-cyan-600 dark:text-cyan-300">
-                  <Target className="w-3.5 h-3.5" />
+                <div className={`flex items-center gap-1.5 ${selectedImagePanel === 'overlay' ? 'text-cyan-600 dark:text-cyan-400 font-bold' : 'text-slate-700 dark:text-slate-200'}`}>
+                  <Target className="w-3.5 h-3.5 text-cyan-500" />
                   <span className="text-xs font-bold uppercase tracking-wide">
                     2. AI CANDIDATE OVERLAY
                   </span>
                 </div>
                 <button
-                  onClick={() => openLightboxFor('overlay')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openLightboxFor('overlay');
+                  }}
                   className="p-1 rounded-lg text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
                   title="Enlarge"
                 >
@@ -367,43 +436,89 @@ export const AnalysisResultPage: React.FC = () => {
                 </button>
               </div>
 
-              {/* Image Frame with Cyan Overlay */}
+              {/* Image Frame with Cyan Overlay & L1, L2, L3 Region Tags */}
               <div
-                onClick={() => openLightboxFor('overlay')}
-                className="relative rounded-xl overflow-hidden bg-black border border-slate-200 dark:border-slate-800 aspect-square flex items-center justify-center cursor-pointer group"
+                onClick={() => setSelectedImagePanel('overlay')}
+                className="relative rounded-xl overflow-hidden bg-black border border-slate-200 dark:border-slate-800 aspect-[16/10] flex items-center justify-center cursor-pointer group"
               >
                 <img
                   src={analysis.segmentationOverlayUrl || analysis.originalImageUrl}
                   alt="Radiograph with AI Overlay"
                   className="w-full h-full object-contain group-hover:scale-105 transition duration-200"
                 />
-                {/* Visual Bounding Box if overlayUrl is raw */}
-                {!analysis.segmentationOverlayUrl && (
-                  <div className="absolute top-[49%] left-[45%] w-[12%] h-[8%] border-2 border-cyan-400 bg-cyan-400/25 rounded-sm shadow-[0_0_10px_rgba(34,211,238,0.7)] flex items-center justify-center">
-                    <span className="text-[8px] font-mono font-bold bg-cyan-400 text-black px-0.5 rounded -top-3 absolute">
-                      L1: 94%
-                    </span>
+
+                {/* Real L1, L2, L3... Lesion Region Overlays and Badges */}
+                {analysis.findings && analysis.findings.length > 0 && (
+                  <div className="absolute inset-0 pointer-events-none">
+                    {analysis.findings.map((f, idx) => {
+                      const [origX, origY, origW, origH] = f.bbox || [200 + idx * 100, 140, 40, 30];
+                      const leftPct = (origX / 600) * 100;
+                      const topPct = (origY / 300) * 100;
+                      const widthPct = Math.max(6, (origW / 600) * 100);
+                      const heightPct = Math.max(6, (origH / 300) * 100);
+                      const label = f.lesionNumber || `L${idx + 1}`;
+
+                      return (
+                        <div
+                          key={f.id || idx}
+                          className="absolute border-2 border-cyan-400 bg-cyan-400/20 rounded-sm shadow-[0_0_10px_rgba(34,211,238,0.7)] flex flex-col justify-start pointer-events-auto"
+                          style={{
+                            left: `${leftPct}%`,
+                            top: `${topPct}%`,
+                            width: `${widthPct}%`,
+                            height: `${heightPct}%`,
+                          }}
+                          title={`${label}: ${f.location || 'Candidate Region'} (${(f.confidence * 100).toFixed(0)}% confidence)`}
+                        >
+                          <span className="text-[9px] font-black font-mono bg-cyan-400 text-slate-950 px-1 py-0.5 rounded-sm -top-4 left-0 absolute whitespace-nowrap shadow-md">
+                            {label}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
-                <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-[10px] text-white flex items-center gap-1 font-medium">
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openLightboxFor('overlay');
+                  }}
+                  className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-[10px] text-white flex items-center gap-1 font-medium hover:bg-black transition"
+                >
                   <Maximize2 className="w-3 h-3 text-cyan-400" />
                   <span>Click to Enlarge</span>
-                </div>
+                </button>
               </div>
 
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                <span className="font-semibold text-cyan-700 dark:text-cyan-300">Flagged Sites:</span> {analysis.summary.totalLesions} Candidate Area(s) (Cyan Outlines)
+                <span className="font-semibold text-cyan-700 dark:text-cyan-300">Flagged Sites:</span>{' '}
+                {analysis.summary.totalLesions === 0
+                  ? '0 Candidate Areas (No Caries Detected)'
+                  : analysis.summary.totalLesions === 1
+                  ? '1 Candidate Region (L1)'
+                  : `${analysis.summary.totalLesions} Candidate Regions (L1–L${analysis.summary.totalLesions})`}
               </p>
             </div>
 
             {/* Panel 3: Segmentation Boundary Mask */}
-            <div className="bg-white dark:bg-[#0b1324] border border-slate-200 dark:border-[#1b2b4d] rounded-2xl p-4 flex flex-col justify-between space-y-3 shadow-sm">
+            <div
+              onClick={() => setSelectedImagePanel('binary')}
+              className={`bg-white dark:bg-[#0b1324] rounded-2xl p-4 flex flex-col justify-between space-y-3 transition-all duration-200 cursor-pointer ${
+                selectedImagePanel === 'binary'
+                  ? 'border-2 border-cyan-500 dark:border-cyan-400 shadow-lg shadow-cyan-500/15 ring-2 ring-cyan-500/20'
+                  : 'border border-slate-200 dark:border-[#1b2b4d] shadow-sm hover:border-slate-300 dark:hover:border-slate-700'
+              }`}
+            >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wide">
+                <span className={`text-xs font-bold uppercase tracking-wide ${selectedImagePanel === 'binary' ? 'text-cyan-600 dark:text-cyan-400' : 'text-slate-800 dark:text-slate-100'}`}>
                   3. SEGMENTATION BOUNDARY MASK
                 </span>
                 <button
-                  onClick={() => openLightboxFor('binary')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openLightboxFor('binary');
+                  }}
                   className="p-1 rounded-lg text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
                   title="Enlarge"
                 >
@@ -413,18 +528,24 @@ export const AnalysisResultPage: React.FC = () => {
 
               {/* Image Frame with Binary Mask */}
               <div
-                onClick={() => openLightboxFor('binary')}
-                className="relative rounded-xl overflow-hidden bg-black border border-slate-200 dark:border-slate-800 aspect-square flex items-center justify-center cursor-pointer group"
+                onClick={() => setSelectedImagePanel('binary')}
+                className="relative rounded-xl overflow-hidden bg-black border border-slate-200 dark:border-slate-800 aspect-[16/10] flex items-center justify-center cursor-pointer group"
               >
                 <img
                   src={analysis.binaryMaskUrl || '/samples/opg_mask.png'}
                   alt="Segmentation Boundary Mask"
                   className="w-full h-full object-contain bg-black group-hover:scale-105 transition duration-200"
                 />
-                <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-[10px] text-white flex items-center gap-1 font-medium">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openLightboxFor('binary');
+                  }}
+                  className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-[10px] text-white flex items-center gap-1 font-medium hover:bg-black transition"
+                >
                   <Maximize2 className="w-3 h-3 text-cyan-400" />
                   <span>Click to Enlarge</span>
-                </div>
+                </button>
               </div>
 
               <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
@@ -554,24 +675,116 @@ export const AnalysisResultPage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-[#1b2b4d]/80">
-                  {analysis.findings.map((lesion) => (
-                    <tr key={lesion.id} className="hover:bg-slate-50 dark:hover:bg-[#111c33] transition">
-                      <td className="py-3.5 px-5 font-bold font-mono text-cyan-600 dark:text-cyan-400">
-                        {lesion.lesionNumber || lesion.id}
-                      </td>
-                      <td className="py-3.5 px-5 text-slate-800 dark:text-slate-200 font-medium">
-                        {lesion.location || 'Middle-Left'}
-                      </td>
-                      <td className="py-3.5 px-5 font-mono text-slate-700 dark:text-slate-300">
-                        {lesion.areaPercent ? `${lesion.areaPercent.toFixed(2)}% of image area (${lesion.pixelArea} px)` : '0.01% of image area (33 px)'}
-                      </td>
-                      <td className="py-3.5 px-5 font-semibold text-amber-600 dark:text-amber-300">
-                        Requires Clinical Correlation
-                      </td>
-                    </tr>
-                  ))}
+                  {analysis.findings.map((lesion) => {
+                    const lStage = lesion.stage || (isStage3 ? 'Stage 3' : isStage2 ? 'Stage 2' : 'Stage 1');
+                    const isL3 = lStage.includes('3');
+                    const isL2 = !isL3 && lStage.includes('2');
+
+                    return (
+                      <tr key={lesion.id} className="hover:bg-slate-50 dark:hover:bg-[#111c33] transition">
+                        <td className="py-3.5 px-5 font-bold font-mono text-cyan-600 dark:text-cyan-400">
+                          {lesion.lesionNumber || lesion.id}
+                        </td>
+                        <td className="py-3.5 px-5 text-slate-800 dark:text-slate-200 font-medium">
+                          {lesion.location || 'Middle-Left'}
+                        </td>
+                        <td className="py-3.5 px-5 font-mono text-slate-700 dark:text-slate-300">
+                          {lesion.areaPercent ? `${lesion.areaPercent.toFixed(2)}% of image area (${lesion.pixelArea} px)` : '0.01% of image area (33 px)'}
+                        </td>
+                        <td className="py-3.5 px-5">
+                          {isL3 ? (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-50 dark:bg-red-950/60 border border-red-300 dark:border-red-500/50 text-red-700 dark:text-red-300 shadow-sm">
+                              <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>
+                              <span>Level 3 &mdash; Deep Dentinal / Pulp</span>
+                            </span>
+                          ) : isL2 ? (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-orange-50 dark:bg-orange-950/60 border border-orange-300 dark:border-orange-500/50 text-orange-700 dark:text-orange-300 shadow-sm">
+                              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0"></span>
+                              <span>Level 2 &mdash; Moderate Dentinal</span>
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-yellow-50 dark:bg-yellow-950/60 border border-yellow-300 dark:border-yellow-400/50 text-yellow-800 dark:text-yellow-300 shadow-sm">
+                              <span className="w-1.5 h-1.5 rounded-full bg-yellow-500 shrink-0"></span>
+                              <span>Level 1 &mdash; Suspected Early Caries</span>
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
+            </div>
+          </div>
+
+          {/* Clinical Staging & Pixel Threshold Reference */}
+          <div className="bg-white dark:bg-[#0b1324] border border-slate-200 dark:border-[#1b2b4d] rounded-2xl p-5 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-[#1b2b4d] pb-3">
+              <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-xs">
+                <Info className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+                <span>AI Clinical Staging & Pixel Area Criteria</span>
+              </div>
+              <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                Operating Threshold &tau; = 0.50
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+              {/* Stage 0 */}
+              <div className="p-3.5 rounded-xl border border-emerald-300 dark:border-emerald-500/40 bg-emerald-50/50 dark:bg-emerald-950/20 space-y-1.5">
+                <div className="flex items-center gap-1.5 font-bold text-emerald-800 dark:text-emerald-300 text-xs">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                  <span>Stage 0 (No Caries)</span>
+                </div>
+                <div className="font-mono text-[11px] text-slate-700 dark:text-slate-300 font-semibold">
+                  0 px &bull; 0.00% Area
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
+                  Intact enamel & dentin margins. No suspicious radiolucency detected.
+                </p>
+              </div>
+
+              {/* Stage 1 */}
+              <div className="p-3.5 rounded-xl border border-yellow-300 dark:border-yellow-400/40 bg-yellow-50/50 dark:bg-yellow-950/20 space-y-1.5">
+                <div className="flex items-center gap-1.5 font-bold text-yellow-800 dark:text-yellow-300 text-xs">
+                  <span className="w-2 h-2 rounded-full bg-yellow-500 shrink-0"></span>
+                  <span>Level 1 (Early Caries)</span>
+                </div>
+                <div className="font-mono text-[11px] text-slate-700 dark:text-slate-300 font-semibold">
+                  20&ndash;250 px &bull; &lt; 0.80% Area
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
+                  Enamel demineralization (E1/E2) or outer EDJ margin. Non-cavitated.
+                </p>
+              </div>
+
+              {/* Stage 2 */}
+              <div className="p-3.5 rounded-xl border border-orange-300 dark:border-orange-500/40 bg-orange-50/50 dark:bg-orange-950/20 space-y-1.5">
+                <div className="flex items-center gap-1.5 font-bold text-orange-800 dark:text-orange-300 text-xs">
+                  <span className="w-2 h-2 rounded-full bg-orange-500 shrink-0"></span>
+                  <span>Level 2 (Moderate Caries)</span>
+                </div>
+                <div className="font-mono text-[11px] text-slate-700 dark:text-slate-300 font-semibold">
+                  250&ndash;600 px &bull; 0.80%&ndash;1.80% Area
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
+                  Dentin penetration (D1/D2). Definite radiolucent cavity zone.
+                </p>
+              </div>
+
+              {/* Stage 3 */}
+              <div className="p-3.5 rounded-xl border border-red-300 dark:border-red-500/40 bg-red-50/50 dark:bg-red-950/20 space-y-1.5">
+                <div className="flex items-center gap-1.5 font-bold text-red-800 dark:text-red-300 text-xs">
+                  <span className="w-2 h-2 rounded-full bg-red-500 shrink-0"></span>
+                  <span>Level 3 (Extensive Caries)</span>
+                </div>
+                <div className="font-mono text-[11px] text-slate-700 dark:text-slate-300 font-semibold">
+                  &gt; 600 px &bull; &gt; 1.80% Area
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
+                  Deep dentinal cavitation (D3) approaching or involving pulp chamber.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -586,163 +799,11 @@ export const AnalysisResultPage: React.FC = () => {
       )}
 
       {/* ========================================================================= */}
-      {/* TAB 3: PHYSICIAN REVIEW & SIGN-OFF / EVALUATION & VERIFICATION */}
+      {/* TAB 3: PHYSICIAN REVIEW & SIGN-OFF / CLINICAL VERIFICATION */}
       {/* ========================================================================= */}
       {activeTab === 'verification' && (
         <div className="space-y-6 animate-fade-in">
-          {/* Section A: Segmentation Evaluation Metrics with % & Benchmark Table */}
-          <div className="bg-white dark:bg-[#0b1324] border border-slate-200 dark:border-[#1b2b4d] rounded-2xl p-6 shadow-sm space-y-6">
-            <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <Activity className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-                <span>Segmentation Evaluation & Validation Metrics</span>
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                These metrics describe segmentation performance against an annotated reference where evaluation data is available. They should not be interpreted as an autonomous diagnosis.
-              </p>
-            </div>
-
-            {/* Metric KPI Cards in Percentage */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#0e172a] border border-slate-200 dark:border-[#1b2b4d]">
-                <span className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 block">Dice Score</span>
-                <span className="text-lg sm:text-xl font-bold font-mono text-cyan-600 dark:text-cyan-400">
-                  {((analysis.evaluationMetrics?.diceScore ?? 0.842) * 100).toFixed(1)}%
-                </span>
-                <span className="text-[10px] text-slate-400 block font-mono">
-                  {(analysis.evaluationMetrics?.diceScore ?? 0.842).toFixed(3)}
-                </span>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#0e172a] border border-slate-200 dark:border-[#1b2b4d]">
-                <span className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 block">IoU (Jaccard)</span>
-                <span className="text-lg sm:text-xl font-bold font-mono text-cyan-600 dark:text-cyan-400">
-                  {((analysis.evaluationMetrics?.iou ?? 0.728) * 100).toFixed(1)}%
-                </span>
-                <span className="text-[10px] text-slate-400 block font-mono">
-                  {(analysis.evaluationMetrics?.iou ?? 0.728).toFixed(3)}
-                </span>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#0e172a] border border-slate-200 dark:border-[#1b2b4d]">
-                <span className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 block">Precision</span>
-                <span className="text-lg sm:text-xl font-bold font-mono text-slate-900 dark:text-white">
-                  {((analysis.evaluationMetrics?.precision ?? 0.865) * 100).toFixed(1)}%
-                </span>
-                <span className="text-[10px] text-slate-400 block font-mono">
-                  {(analysis.evaluationMetrics?.precision ?? 0.865).toFixed(3)}
-                </span>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#0e172a] border border-slate-200 dark:border-[#1b2b4d]">
-                <span className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 block">Recall / Sens.</span>
-                <span className="text-lg sm:text-xl font-bold font-mono text-slate-900 dark:text-white">
-                  {((analysis.evaluationMetrics?.recall ?? 0.824) * 100).toFixed(1)}%
-                </span>
-                <span className="text-[10px] text-slate-400 block font-mono">
-                  {(analysis.evaluationMetrics?.recall ?? 0.824).toFixed(3)}
-                </span>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#0e172a] border border-slate-200 dark:border-[#1b2b4d]">
-                <span className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 block">F1 Score</span>
-                <span className="text-lg sm:text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
-                  {((analysis.evaluationMetrics?.f1Score ?? 0.844) * 100).toFixed(1)}%
-                </span>
-                <span className="text-[10px] text-slate-400 block font-mono">
-                  {(analysis.evaluationMetrics?.f1Score ?? 0.844).toFixed(3)}
-                </span>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#0e172a] border border-slate-200 dark:border-[#1b2b4d]">
-                <span className="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400 block">Overall Acc.</span>
-                <span className="text-lg sm:text-xl font-bold font-mono text-cyan-700 dark:text-cyan-300">
-                  {((analysis.evaluationMetrics?.accuracy ?? 0.976) * 100).toFixed(1)}%
-                </span>
-                <span className="text-[10px] text-slate-400 block font-mono">
-                  {(analysis.evaluationMetrics?.accuracy ?? 0.976).toFixed(3)}
-                </span>
-              </div>
-            </div>
-
-            {/* Professional Benchmark Table */}
-            <div className="rounded-xl border border-slate-200 dark:border-[#1b2b4d] overflow-hidden">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 dark:bg-[#0e172a] border-b border-slate-200 dark:border-[#1b2b4d] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
-                    <th className="py-2.5 px-4">Evaluation Metric</th>
-                    <th className="py-2.5 px-4 font-mono">Score (%)</th>
-                    <th className="py-2.5 px-4 font-mono">Raw Value</th>
-                    <th className="py-2.5 px-4">Description</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-[#1b2b4d]/70 text-slate-700 dark:text-slate-300">
-                  <tr className="hover:bg-slate-50 dark:hover:bg-[#111c33] transition">
-                    <td className="py-2.5 px-4 font-semibold text-slate-900 dark:text-white">Dice Similarity Coefficient</td>
-                    <td className="py-2.5 px-4 font-mono font-bold text-cyan-600 dark:text-cyan-400">
-                      {((analysis.evaluationMetrics?.diceScore ?? 0.842) * 100).toFixed(1)}%
-                    </td>
-                    <td className="py-2.5 px-4 font-mono text-slate-400">
-                      {(analysis.evaluationMetrics?.diceScore ?? 0.842).toFixed(3)}
-                    </td>
-                    <td className="py-2.5 px-4 text-slate-600 dark:text-slate-300">Pixel-level spatial overlap index</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-[#111c33] transition">
-                    <td className="py-2.5 px-4 font-semibold text-slate-900 dark:text-white">Intersection over Union (IoU)</td>
-                    <td className="py-2.5 px-4 font-mono font-bold text-cyan-600 dark:text-cyan-400">
-                      {((analysis.evaluationMetrics?.iou ?? 0.728) * 100).toFixed(1)}%
-                    </td>
-                    <td className="py-2.5 px-4 font-mono text-slate-400">
-                      {(analysis.evaluationMetrics?.iou ?? 0.728).toFixed(3)}
-                    </td>
-                    <td className="py-2.5 px-4 text-slate-600 dark:text-slate-300">Jaccard similarity index</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-[#111c33] transition">
-                    <td className="py-2.5 px-4 font-semibold text-slate-900 dark:text-white">Precision (PPV)</td>
-                    <td className="py-2.5 px-4 font-mono font-bold text-slate-900 dark:text-white">
-                      {((analysis.evaluationMetrics?.precision ?? 0.865) * 100).toFixed(1)}%
-                    </td>
-                    <td className="py-2.5 px-4 font-mono text-slate-400">
-                      {(analysis.evaluationMetrics?.precision ?? 0.865).toFixed(3)}
-                    </td>
-                    <td className="py-2.5 px-4 text-slate-600 dark:text-slate-300">Proportion of true positive caries pixels</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-[#111c33] transition">
-                    <td className="py-2.5 px-4 font-semibold text-slate-900 dark:text-white">Recall / Sensitivity</td>
-                    <td className="py-2.5 px-4 font-mono font-bold text-slate-900 dark:text-white">
-                      {((analysis.evaluationMetrics?.recall ?? 0.824) * 100).toFixed(1)}%
-                    </td>
-                    <td className="py-2.5 px-4 font-mono text-slate-400">
-                      {(analysis.evaluationMetrics?.recall ?? 0.824).toFixed(3)}
-                    </td>
-                    <td className="py-2.5 px-4 text-slate-600 dark:text-slate-300">True positive caries detection rate</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-[#111c33] transition">
-                    <td className="py-2.5 px-4 font-semibold text-slate-900 dark:text-white">F1 Score</td>
-                    <td className="py-2.5 px-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                      {((analysis.evaluationMetrics?.f1Score ?? 0.844) * 100).toFixed(1)}%
-                    </td>
-                    <td className="py-2.5 px-4 font-mono text-slate-400">
-                      {(analysis.evaluationMetrics?.f1Score ?? 0.844).toFixed(3)}
-                    </td>
-                    <td className="py-2.5 px-4 text-slate-600 dark:text-slate-300">Harmonic mean of precision and recall</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-[#111c33] transition">
-                    <td className="py-2.5 px-4 font-semibold text-slate-900 dark:text-white">Overall Accuracy</td>
-                    <td className="py-2.5 px-4 font-mono font-bold text-cyan-700 dark:text-cyan-300">
-                      {((analysis.evaluationMetrics?.accuracy ?? 0.976) * 100).toFixed(1)}%
-                    </td>
-                    <td className="py-2.5 px-4 font-mono text-slate-400">
-                      {(analysis.evaluationMetrics?.accuracy ?? 0.976).toFixed(3)}
-                    </td>
-                    <td className="py-2.5 px-4 text-slate-600 dark:text-slate-300">Total correct pixel classification ratio</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Section B: Clinical Review & Verification Form */}
+          {/* Clinical Review & Verification Form */}
           <div className="bg-white dark:bg-[#0b1324] border border-slate-200 dark:border-[#1b2b4d] rounded-2xl p-6 sm:p-7 shadow-sm space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-[#1b2b4d] pb-4">
               <div>

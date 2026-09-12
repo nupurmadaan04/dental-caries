@@ -145,9 +145,23 @@ export const ReportsPage: React.FC = () => {
                     {rep.overallFinding}
                   </td>
                   <td className="py-3.5 px-4">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-cyan-50 dark:bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-500/30">
-                      {rep.stageLevel}
-                    </span>
+                    {(() => {
+                      const isNoCaries = rep.stageLevel === '0' || rep.stageLevel?.includes('0') || rep.overallFinding?.toLowerCase().includes('no caries');
+                      const stageDigit = isNoCaries ? '0' : rep.stageLevel?.includes('3') ? '3' : rep.stageLevel?.includes('2') ? '2' : '1';
+                      const badgeStyle = isNoCaries
+                        ? 'bg-emerald-50 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30'
+                        : stageDigit === '3'
+                        ? 'bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-300 border-red-200 dark:border-red-500/30'
+                        : stageDigit === '2'
+                        ? 'bg-orange-50 dark:bg-orange-500/15 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-500/30'
+                        : 'bg-yellow-50 dark:bg-yellow-500/15 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-500/30';
+
+                      return (
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${badgeStyle}`}>
+                          {rep.stageLevel}
+                        </span>
+                      );
+                    })()}
                   </td>
                   <td className="py-3.5 px-4 font-mono text-slate-700 dark:text-slate-300">
                     {rep.lesionCount} site(s)
