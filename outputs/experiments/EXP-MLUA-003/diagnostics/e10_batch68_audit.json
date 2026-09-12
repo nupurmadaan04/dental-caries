@@ -1,0 +1,14 @@
+{
+  "epoch": 10,
+  "batch": 68,
+  "global_step": 1257,
+  "c5_abs_max": 13.034769058227539,
+  "p5_abs_max": 39.56908416748047,
+  "gn_in_abs_max": 313.4263916015625,
+  "gn_out_abs_max": 5.00450325012207,
+  "gn_finite": true,
+  "all_fused_finite": true,
+  "consistency_loss": 0.00020389765268191695,
+  "teacher_layer4_bn1_var": 766.8214721679688,
+  "student_layer4_bn1_var": 794.5689086914062
+}

@@ -1,0 +1,520 @@
+{
+  "parameter_audit": {
+    "EXP-MLUA-002_BEST.pth": {
+      "epoch": 1,
+      "global_step": 132,
+      "top_10_largest_parameters": [
+        {
+          "name": "tea.decoder.seg_blocks.3.block.0.block.1.weight",
+          "shape": [
+            128
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9762175679206848,
+          "max": 1.0714139938354492,
+          "mean": 1.0078518390655518,
+          "std": 0.02100548706948757,
+          "abs_max": 1.0714139938354492
+        },
+        {
+          "name": "tea.decoder.seg_blocks.1.block.1.block.1.weight",
+          "shape": [
+            128
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9882038831710815,
+          "max": 1.0552394390106201,
+          "mean": 1.0073351860046387,
+          "std": 0.01871086284518242,
+          "abs_max": 1.0552394390106201
+        },
+        {
+          "name": "tea.decoder.seg_blocks.2.block.0.block.1.weight",
+          "shape": [
+            128
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9741079211235046,
+          "max": 1.0496028661727905,
+          "mean": 1.0064973831176758,
+          "std": 0.017814822494983673,
+          "abs_max": 1.0496028661727905
+        },
+        {
+          "name": "tea.decoder.seg_blocks.0.block.2.block.1.weight",
+          "shape": [
+            128
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9821174740791321,
+          "max": 1.047203779220581,
+          "mean": 1.0048223733901978,
+          "std": 0.01658899523317814,
+          "abs_max": 1.047203779220581
+        },
+        {
+          "name": "tea.encoder.layer4.2.bn1.weight",
+          "shape": [
+            512
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9687197804450989,
+          "max": 1.043190598487854,
+          "mean": 0.998532772064209,
+          "std": 0.009713090024888515,
+          "abs_max": 1.043190598487854
+        },
+        {
+          "name": "tea.encoder.layer4.0.bn2.weight",
+          "shape": [
+            512
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9680922031402588,
+          "max": 1.0421414375305176,
+          "mean": 0.9992565512657166,
+          "std": 0.0091619361191988,
+          "abs_max": 1.0421414375305176
+        },
+        {
+          "name": "tea.encoder.layer4.1.bn1.weight",
+          "shape": [
+            512
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.975030779838562,
+          "max": 1.0403563976287842,
+          "mean": 0.9986903071403503,
+          "std": 0.00870925560593605,
+          "abs_max": 1.0403563976287842
+        },
+        {
+          "name": "tea.decoder.seg_blocks.0.block.0.block.1.weight",
+          "shape": [
+            128
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9822919368743896,
+          "max": 1.0382217168807983,
+          "mean": 0.9984840154647827,
+          "std": 0.007800187449902296,
+          "abs_max": 1.0382217168807983
+        },
+        {
+          "name": "tea.encoder.layer3.0.downsample.1.weight",
+          "shape": [
+            256
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9709534049034119,
+          "max": 1.0357900857925415,
+          "mean": 1.0003108978271484,
+          "std": 0.008684700354933739,
+          "abs_max": 1.0357900857925415
+        },
+        {
+          "name": "tea.encoder.layer4.2.bn2.weight",
+          "shape": [
+            512
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9729357361793518,
+          "max": 1.0325108766555786,
+          "mean": 0.9985523223876953,
+          "std": 0.008547837845981121,
+          "abs_max": 1.0325108766555786
+        }
+      ],
+      "all_parameters_finite": true
+    },
+    "EXP-MLUA-002_LATEST.pth": {
+      "epoch": 9,
+      "global_step": 1188,
+      "top_10_largest_parameters": [
+        {
+          "name": "tea.encoder.layer2.1.bn1.weight",
+          "shape": [
+            128
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9201526045799255,
+          "max": 1.1519664525985718,
+          "mean": 0.9845020174980164,
+          "std": 0.03527723252773285,
+          "abs_max": 1.1519664525985718
+        },
+        {
+          "name": "tea.encoder.layer4.0.bn2.weight",
+          "shape": [
+            512
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9063801765441895,
+          "max": 1.137466311454773,
+          "mean": 0.9887956976890564,
+          "std": 0.03363214060664177,
+          "abs_max": 1.137466311454773
+        },
+        {
+          "name": "tea.encoder.layer3.0.downsample.1.weight",
+          "shape": [
+            256
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9423365592956543,
+          "max": 1.1362011432647705,
+          "mean": 1.0020737648010254,
+          "std": 0.023936474695801735,
+          "abs_max": 1.1362011432647705
+        },
+        {
+          "name": "tea.encoder.layer2.0.bn2.weight",
+          "shape": [
+            128
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9177690744400024,
+          "max": 1.1315103769302368,
+          "mean": 0.9902070760726929,
+          "std": 0.02880285121500492,
+          "abs_max": 1.1315103769302368
+        },
+        {
+          "name": "tea.encoder.layer4.1.bn1.weight",
+          "shape": [
+            512
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9140987992286682,
+          "max": 1.1270852088928223,
+          "mean": 0.9873867034912109,
+          "std": 0.03724460303783417,
+          "abs_max": 1.1270852088928223
+        },
+        {
+          "name": "tea.encoder.layer4.2.bn1.weight",
+          "shape": [
+            512
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9006667137145996,
+          "max": 1.1156708002090454,
+          "mean": 0.98264080286026,
+          "std": 0.038689035922288895,
+          "abs_max": 1.1156708002090454
+        },
+        {
+          "name": "tea.encoder.layer2.0.downsample.1.weight",
+          "shape": [
+            128
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9288868308067322,
+          "max": 1.1130329370498657,
+          "mean": 0.99948650598526,
+          "std": 0.028728004544973373,
+          "abs_max": 1.1130329370498657
+        },
+        {
+          "name": "tea.encoder.layer2.1.bn2.weight",
+          "shape": [
+            128
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9318501353263855,
+          "max": 1.1059612035751343,
+          "mean": 0.9900083541870117,
+          "std": 0.026772521436214447,
+          "abs_max": 1.1059612035751343
+        },
+        {
+          "name": "tea.encoder.layer2.3.bn1.weight",
+          "shape": [
+            128
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9506863951683044,
+          "max": 1.1041741371154785,
+          "mean": 0.9878983497619629,
+          "std": 0.02242286503314972,
+          "abs_max": 1.1041741371154785
+        },
+        {
+          "name": "tea.encoder.layer4.1.bn2.weight",
+          "shape": [
+            512
+          ],
+          "dtype": "torch.float32",
+          "finite": true,
+          "nan_count": 0,
+          "inf_count": 0,
+          "min": 0.9046152830123901,
+          "max": 1.1037001609802246,
+          "mean": 0.9846702814102173,
+          "std": 0.02543441206216812,
+          "abs_max": 1.1037001609802246
+        }
+      ],
+      "all_parameters_finite": true
+    }
+  },
+  "activation_comparison": [
+    {
+      "layer": "00_Input",
+      "normal_abs_max": 0.5944287776947021,
+      "failing_abs_max": 1.0037657022476196,
+      "normal_std": 0.11360489577054977,
+      "failing_std": 0.21745023131370544,
+      "status": "FINITE"
+    },
+    {
+      "layer": "01_encoder.conv1",
+      "normal_abs_max": 1.2546137571334839,
+      "failing_abs_max": 2.113551139831543,
+      "normal_std": 0.3554176092147827,
+      "failing_std": 0.7347084879875183,
+      "status": "FINITE"
+    },
+    {
+      "layer": "02_encoder.bn1",
+      "normal_abs_max": 1.2427631616592407,
+      "failing_abs_max": 2.0989530086517334,
+      "normal_std": 0.36662688851356506,
+      "failing_std": 0.7436593770980835,
+      "status": "FINITE"
+    },
+    {
+      "layer": "03_encoder.relu (c1)",
+      "normal_abs_max": 1.2427631616592407,
+      "failing_abs_max": 2.0989530086517334,
+      "normal_std": 0.2336301952600479,
+      "failing_std": 0.4722294509410858,
+      "status": "FINITE"
+    },
+    {
+      "layer": "04_encoder.maxpool",
+      "normal_abs_max": 1.2427631616592407,
+      "failing_abs_max": 2.0989530086517334,
+      "normal_std": 0.2413492351770401,
+      "failing_std": 0.4864189922809601,
+      "status": "FINITE"
+    },
+    {
+      "layer": "05_encoder.layer1 (c2)",
+      "normal_abs_max": 238.0843048095703,
+      "failing_abs_max": 345.71929931640625,
+      "normal_std": 34.305850982666016,
+      "failing_std": 69.27391815185547,
+      "status": "FINITE"
+    },
+    {
+      "layer": "06_encoder.layer2 (c3)",
+      "normal_abs_max": 5927222.5,
+      "failing_abs_max": 11083589.0,
+      "normal_std": 1135678.625,
+      "failing_std": 2276091.0,
+      "status": "FINITE"
+    },
+    {
+      "layer": "07_encoder.layer3 (c4)",
+      "normal_abs_max": 1028510852317184.0,
+      "failing_abs_max": 1899650881683456.0,
+      "normal_std": 173441583939584.0,
+      "failing_std": 349671708950528.0,
+      "status": "FINITE"
+    },
+    {
+      "layer": "08_encoder.layer4 (c5)",
+      "normal_abs_max": 4.990653591661314e+18,
+      "failing_abs_max": 9.419030131017515e+18,
+      "normal_std": 5.20161530713473e+17,
+      "failing_std": 9.793299216188047e+17,
+      "status": "FINITE"
+    },
+    {
+      "layer": "09_decoder.p5",
+      "normal_abs_max": 7.777035958771253e+18,
+      "failing_abs_max": 1.4907035712875397e+19,
+      "normal_std": 1.0573150515615498e+18,
+      "failing_std": 1.9935414373119427e+18,
+      "status": "FINITE"
+    },
+    {
+      "layer": "10_p5_upsampled_to_p4",
+      "normal_abs_max": 7.777035958771253e+18,
+      "failing_abs_max": 1.4907035712875397e+19,
+      "normal_std": 1.0573138146109686e+18,
+      "failing_std": 1.993539238288687e+18,
+      "status": "FINITE"
+    },
+    {
+      "layer": "11_p4.skip_conv(c4)",
+      "normal_abs_max": 831722698571776.0,
+      "failing_abs_max": 1530680710266880.0,
+      "normal_std": 182548978204672.0,
+      "failing_std": 370521090818048.0,
+      "status": "FINITE"
+    },
+    {
+      "layer": "12_decoder.p4 (sum)",
+      "normal_abs_max": 7.777208032341e+18,
+      "failing_abs_max": 1.4907360068805591e+19,
+      "normal_std": 1.0573666598885786e+18,
+      "failing_std": 1.9936476776229765e+18,
+      "status": "FINITE"
+    },
+    {
+      "layer": "13_decoder.p3 (sum)",
+      "normal_abs_max": 7.777208032341e+18,
+      "failing_abs_max": 1.4907360068805591e+19,
+      "normal_std": 1.0573663850106716e+18,
+      "failing_std": 1.9936471278671626e+18,
+      "status": "FINITE"
+    },
+    {
+      "layer": "14_decoder.p2 (sum)",
+      "normal_abs_max": 7.777208032341e+18,
+      "failing_abs_max": 1.4907360068805591e+19,
+      "normal_std": 1.0573663162911949e+18,
+      "failing_std": 1.9936469904282092e+18,
+      "status": "FINITE"
+    },
+    {
+      "layer": "15_seg_blocks[0].conv3x3(p5)",
+      "normal_abs_max": 5.522140580049165e+19,
+      "failing_abs_max": 1.0464286137618583e+20,
+      "normal_std": 8.320730165055324e+18,
+      "failing_std": 1.5721614399871386e+19,
+      "status": "FINITE"
+    },
+    {
+      "layer": "16_seg_blocks[0].gn(conv)",
+      "normal_abs_max": 0.06597311794757843,
+      "failing_abs_max": 0.06597311794757843,
+      "normal_std": 0.01718389242887497,
+      "failing_std": 0.01750599965453148,
+      "status": "NON-FINITE"
+    },
+    {
+      "layer": "17_seg_blocks[0].relu",
+      "normal_abs_max": 0.06597311794757843,
+      "failing_abs_max": 0.06597311794757843,
+      "normal_std": 0.01392461359500885,
+      "failing_std": 0.01418950967490673,
+      "status": "NON-FINITE"
+    },
+    {
+      "layer": "18_feature_pyramid[0] (p5_branch)",
+      "normal_abs_max": 1.8771331310272217,
+      "failing_abs_max": NaN,
+      "normal_std": 0.6835795640945435,
+      "failing_std": NaN,
+      "status": "NON-FINITE"
+    },
+    {
+      "layer": "19_feature_pyramid[1] (p4_branch)",
+      "normal_abs_max": 1.9159785509109497,
+      "failing_abs_max": 1.9159785509109497,
+      "normal_std": 0.7102193832397461,
+      "failing_std": 0.7102193832397461,
+      "status": "FINITE"
+    },
+    {
+      "layer": "20_feature_pyramid[2] (p3_branch)",
+      "normal_abs_max": 0.09804731607437134,
+      "failing_abs_max": 0.09804731607437134,
+      "normal_std": 0.023379800841212273,
+      "failing_std": 0.023379800841212273,
+      "status": "FINITE"
+    },
+    {
+      "layer": "21_feature_pyramid[3] (p2_branch)",
+      "normal_abs_max": 0.108438640832901,
+      "failing_abs_max": 0.108438640832901,
+      "normal_std": 0.0259791761636734,
+      "failing_std": 0.0259791761636734,
+      "status": "FINITE"
+    },
+    {
+      "layer": "22_decoder.merge (sum)",
+      "normal_abs_max": 3.6860170364379883,
+      "failing_abs_max": NaN,
+      "normal_std": 0.982491672039032,
+      "failing_std": NaN,
+      "status": "NON-FINITE"
+    },
+    {
+      "layer": "23_segmentation_head (fused)",
+      "normal_abs_max": 3.3421311378479004,
+      "failing_abs_max": NaN,
+      "normal_std": 0.11710835248231888,
+      "failing_std": NaN,
+      "status": "NON-FINITE"
+    }
+  ],
+  "first_abnormal_layer": "16_seg_blocks[0].gn(conv)",
+  "groupnorm_overflow_metrics": {
+    "max_centered_abs": 1.0714857786985333e+20,
+    "max_sum_sq_dev_fp64": 5.273106796555237e+41,
+    "flt_max_fp32": 3.4028234663852886e+38,
+    "overflow_ratio": Infinity,
+    "overflow_confirmed": true
+  }
+}

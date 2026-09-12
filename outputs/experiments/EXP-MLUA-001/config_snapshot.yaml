@@ -1,0 +1,57 @@
+data:
+  active_rate: '0.1'
+  batch_size: 8
+  labeled_batch_size: 4
+  labeled_rates:
+    '0.1': 265
+    '0.2': 530
+    '0.5': 1325
+  patch_size: 384
+  train_image_dir: data/raw/DC1000_dataset/train/images
+  train_label_dir: data/raw/DC1000_dataset/train/labels
+  unlabeled_batch_size: 4
+  val_image_cut_dir: dataset/test/images_cut
+  val_label_cut_dir: dataset/test/labels_cut
+evaluation:
+  decision_threshold: 0.5
+  image_height: 768
+  image_width: 1536
+  num_patches: 21
+  patch_size: 384
+  stride: 192
+  val_interval: 10
+  val_late_epoch_start: 150
+experiment:
+  max_epochs: 200
+  name: MLUA_DC1000_Official
+  precision: 16
+  seed: 42
+  ssl_enabled: true
+model:
+  aux_heads_count: 4
+  dropout: 0.2
+  encoder: resnet34
+  encoder_depth: 5
+  encoder_weights: imagenet
+  in_channels: 1
+  merge_policy: add
+  name: Net
+  out_channels: 1
+  pyramid_channels: 256
+  segmentation_channels: 128
+optimization:
+  learning_rate: 0.001
+  optimizer: AdamW
+  poly_power: 0.9
+  scheduler: LambdaLR
+  weight_decay: 0.01
+ssl:
+  consistency_rampup_epochs: 200
+  consistency_weight_max: 0.1
+  ema_theta: 0.99
+  mc_iterations: 8
+  noise_clamp: 0.1
+  noise_sigma: 0.01
+  threshold_end_factor: 1.0
+  threshold_rampup_steps: 4480
+  threshold_start_factor: 0.75

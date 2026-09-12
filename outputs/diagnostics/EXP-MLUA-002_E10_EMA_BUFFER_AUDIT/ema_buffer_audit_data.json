@@ -1,0 +1,1097 @@
+{
+  "checkpoint_integrity": {
+    "latest_sha256": "97cbec8d57361a248fd2b7468774bcf56f1b33f96b267a04270664d4c5d9ee2b",
+    "best_sha256": "f631733b13ecc7b79e042011f6b650b864387726a282447925cafe1a14d92e42",
+    "epoch_saved": 9,
+    "global_step_saved": 1188,
+    "test_set_cases": 100
+  },
+  "buffer_inventory": {
+    "total_buffers": 108,
+    "bn_layers": 36,
+    "default_running_mean_count": 36,
+    "default_running_var_count": 36,
+    "default_num_batches_count": 36
+  },
+  "bn_comparison": [
+    {
+      "layer": "encoder.bn1",
+      "stu_mean_range": [
+        -0.6719993352890015,
+        1.0270695686340332
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        0.004869050811976194,
+        0.3301583528518677
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer1.0.bn1",
+      "stu_mean_range": [
+        -5.296220302581787,
+        3.2016499042510986
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        2.220937967300415,
+        32.228904724121094
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer1.0.bn2",
+      "stu_mean_range": [
+        -2.5428011417388916,
+        2.5418944358825684
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        1.1972297430038452,
+        13.297052383422852
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer1.1.bn1",
+      "stu_mean_range": [
+        -5.946531772613525,
+        4.91518497467041
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        3.134869337081909,
+        59.05097961425781
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer1.1.bn2",
+      "stu_mean_range": [
+        -1.8198113441467285,
+        1.84672212600708
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        0.905279815196991,
+        15.227912902832031
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer1.2.bn1",
+      "stu_mean_range": [
+        -6.355400085449219,
+        7.754667282104492
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        3.719095230102539,
+        54.00341796875
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer1.2.bn2",
+      "stu_mean_range": [
+        -2.3220252990722656,
+        2.193723678588867
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        0.9882104992866516,
+        12.432793617248535
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer2.0.bn1",
+      "stu_mean_range": [
+        -6.080100059509277,
+        5.153128623962402
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        4.874540328979492,
+        41.809635162353516
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer2.0.bn2",
+      "stu_mean_range": [
+        -2.754723310470581,
+        3.4792728424072266
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        2.4458260536193848,
+        23.47744369506836
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer2.0.downsample.1",
+      "stu_mean_range": [
+        -3.187857151031494,
+        2.71736478805542
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        0.2934478521347046,
+        23.070837020874023
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer2.1.bn1",
+      "stu_mean_range": [
+        -6.430130958557129,
+        4.532020092010498
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        6.667900562286377,
+        52.41405487060547
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer2.1.bn2",
+      "stu_mean_range": [
+        -3.6156859397888184,
+        4.162917613983154
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        2.9082248210906982,
+        58.285545349121094
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer2.2.bn1",
+      "stu_mean_range": [
+        -9.000396728515625,
+        7.1406378746032715
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        8.954882621765137,
+        171.73355102539062
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer2.2.bn2",
+      "stu_mean_range": [
+        -4.783496379852295,
+        3.7536795139312744
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        1.9708847999572754,
+        42.57665252685547
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer2.3.bn1",
+      "stu_mean_range": [
+        -10.552149772644043,
+        14.975375175476074
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        13.466050148010254,
+        371.2587890625
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer2.3.bn2",
+      "stu_mean_range": [
+        -4.566336631774902,
+        3.429793357849121
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        3.4767324924468994,
+        43.97101974487305
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer3.0.bn1",
+      "stu_mean_range": [
+        -14.218168258666992,
+        8.912007331848145
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        13.569368362426758,
+        225.76095581054688
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer3.0.bn2",
+      "stu_mean_range": [
+        -5.288332462310791,
+        5.016350746154785
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        2.895000696182251,
+        146.5902862548828
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer3.0.downsample.1",
+      "stu_mean_range": [
+        -4.9528326988220215,
+        4.303454875946045
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        1.5526090860366821,
+        48.967281341552734
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer3.1.bn1",
+      "stu_mean_range": [
+        -8.392773628234863,
+        5.208024978637695
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        9.946290016174316,
+        223.3784637451172
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer3.1.bn2",
+      "stu_mean_range": [
+        -7.549164772033691,
+        5.1554107666015625
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        3.544891119003296,
+        61.6927604675293
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer3.2.bn1",
+      "stu_mean_range": [
+        -13.226807594299316,
+        9.882650375366211
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        14.158869743347168,
+        344.5735168457031
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer3.2.bn2",
+      "stu_mean_range": [
+        -7.470430374145508,
+        5.641016960144043
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        2.4323837757110596,
+        87.76687622070312
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer3.3.bn1",
+      "stu_mean_range": [
+        -21.997337341308594,
+        18.76027488708496
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        24.334867477416992,
+        358.19232177734375
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer3.3.bn2",
+      "stu_mean_range": [
+        -7.424603462219238,
+        5.2493062019348145
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        4.260108470916748,
+        139.6436767578125
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer3.4.bn1",
+      "stu_mean_range": [
+        -24.918561935424805,
+        18.19992446899414
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        14.827520370483398,
+        423.29681396484375
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer3.4.bn2",
+      "stu_mean_range": [
+        -7.676504135131836,
+        4.425873756408691
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        7.435028553009033,
+        102.71593475341797
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer3.5.bn1",
+      "stu_mean_range": [
+        -38.13076400756836,
+        24.55527687072754
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        30.640079498291016,
+        416.5304870605469
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer3.5.bn2",
+      "stu_mean_range": [
+        -5.606884479522705,
+        5.310463905334473
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        5.746322154998779,
+        105.9233627319336
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer4.0.bn1",
+      "stu_mean_range": [
+        -27.400453567504883,
+        23.521406173706055
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        28.80352783203125,
+        524.7298583984375
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer4.0.bn2",
+      "stu_mean_range": [
+        -13.881231307983398,
+        7.342807292938232
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        7.69899320602417,
+        82.78018951416016
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer4.0.downsample.1",
+      "stu_mean_range": [
+        -10.350870132446289,
+        8.372844696044922
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        3.631967782974243,
+        59.849910736083984
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer4.1.bn1",
+      "stu_mean_range": [
+        -22.17726707458496,
+        17.29205894470215
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        29.35283851623535,
+        256.8004150390625
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer4.1.bn2",
+      "stu_mean_range": [
+        -14.1832275390625,
+        10.34133529663086
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        20.723560333251953,
+        206.99208068847656
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer4.2.bn1",
+      "stu_mean_range": [
+        -35.105247497558594,
+        19.336660385131836
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        55.27215576171875,
+        665.1881713867188
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    },
+    {
+      "layer": "encoder.layer4.2.bn2",
+      "stu_mean_range": [
+        -19.232934951782227,
+        16.788175582885742
+      ],
+      "tea_mean_range": [
+        0.0,
+        0.0
+      ],
+      "stu_var_range": [
+        33.874446868896484,
+        443.5432434082031
+      ],
+      "tea_var_range": [
+        1.0,
+        1.0
+      ],
+      "stu_nbt": 1188,
+      "tea_nbt": 0,
+      "tea_mean_default": true,
+      "tea_var_default": true,
+      "tea_nbt_default": true
+    }
+  ],
+  "param_checks": [
+    {
+      "param": "encoder.conv1.weight",
+      "shape": [
+        64,
+        1,
+        7,
+        7
+      ],
+      "tea_abs_max": 0.27878591418266296,
+      "stu_abs_max": 0.2810654938220978,
+      "max_abs_diff": 0.007463127374649048,
+      "tea_finite": true
+    },
+    {
+      "param": "encoder.bn1.weight",
+      "shape": [
+        64
+      ],
+      "tea_abs_max": 1.0913381576538086,
+      "stu_abs_max": 1.088984727859497,
+      "max_abs_diff": 0.006170988082885742,
+      "tea_finite": true
+    },
+    {
+      "param": "encoder.bn1.bias",
+      "shape": [
+        64
+      ],
+      "tea_abs_max": 0.05974074453115463,
+      "stu_abs_max": 0.06412486732006073,
+      "max_abs_diff": 0.005661569535732269,
+      "tea_finite": true
+    },
+    {
+      "param": "encoder.layer1.0.conv1.weight",
+      "shape": [
+        64,
+        64,
+        3,
+        3
+      ],
+      "tea_abs_max": 0.26446619629859924,
+      "stu_abs_max": 0.264871746301651,
+      "max_abs_diff": 0.011997951194643974,
+      "tea_finite": true
+    },
+    {
+      "param": "encoder.layer1.0.bn1.weight",
+      "shape": [
+        64
+      ],
+      "tea_abs_max": 1.0813865661621094,
+      "stu_abs_max": 1.0800089836120605,
+      "max_abs_diff": 0.007254302501678467,
+      "tea_finite": true
+    },
+    {
+      "param": "encoder.layer1.0.bn1.bias",
+      "shape": [
+        64
+      ],
+      "tea_abs_max": 0.05341004952788353,
+      "stu_abs_max": 0.05687739700078964,
+      "max_abs_diff": 0.006723139435052872,
+      "tea_finite": true
+    },
+    {
+      "param": "encoder.layer1.0.conv2.weight",
+      "shape": [
+        64,
+        64,
+        3,
+        3
+      ],
+      "tea_abs_max": 0.270503968000412,
+      "stu_abs_max": 0.2705822288990021,
+      "max_abs_diff": 0.012380965985357761,
+      "tea_finite": true
+    },
+    {
+      "param": "encoder.layer1.0.bn2.weight",
+      "shape": [
+        64
+      ],
+      "tea_abs_max": 1.0629405975341797,
+      "stu_abs_max": 1.063677430152893,
+      "max_abs_diff": 0.008733272552490234,
+      "tea_finite": true
+    },
+    {
+      "param": "encoder.layer1.0.bn2.bias",
+      "shape": [
+        64
+      ],
+      "tea_abs_max": 0.04873376339673996,
+      "stu_abs_max": 0.05002990737557411,
+      "max_abs_diff": 0.00450642267242074,
+      "tea_finite": true
+    },
+    {
+      "param": "encoder.layer1.1.conv1.weight",
+      "shape": [
+        64,
+        64,
+        3,
+        3
+      ],
+      "tea_abs_max": 0.25134095549583435,
+      "stu_abs_max": 0.24905185401439667,
+      "max_abs_diff": 0.010823002085089684,
+      "tea_finite": true
+    },
+    {
+      "param": "encoder.layer1.1.bn1.weight",
+      "shape": [
+        64
+      ],
+      "tea_abs_max": 1.061165690422058,
+      "stu_abs_max": 1.0601398944854736,
+      "max_abs_diff": 0.00732874870300293,
+      "tea_finite": true
+    },
+    {
+      "param": "encoder.layer1.1.bn1.bias",
+      "shape": [
+        64
+      ],
+      "tea_abs_max": 0.04639066383242607,
+      "stu_abs_max": 0.047604985535144806,
+      "max_abs_diff": 0.0036217481829226017,
+      "tea_finite": true
+    },
+    {
+      "param": "encoder.layer1.1.conv2.weight",
+      "shape": [
+        64,
+        64,
+        3,
+        3
+      ],
+      "tea_abs_max": 0.26821157336235046,
+      "stu_abs_max": 0.2718350291252136,
+      "max_abs_diff": 0.006546191871166229,
+      "tea_finite": true
+    },
+    {
+      "param": "encoder.layer1.1.bn2.weight",
+      "shape": [
+        64
+      ],
+      "tea_abs_max": 1.0502159595489502,
+      "stu_abs_max": 1.050588607788086,
+      "max_abs_diff": 0.002976536750793457,
+      "tea_finite": true
+    },
+    {
+      "param": "encoder.layer1.1.bn2.bias",
+      "shape": [
+        64
+      ],
+      "tea_abs_max": 0.06314627826213837,
+      "stu_abs_max": 0.06475049257278442,
+      "max_abs_diff": 0.0030953185632824898,
+      "tea_finite": true
+    }
+  ],
+  "condition_a_actual_teacher": {
+    "conv1": 2.063764810562134,
+    "bn1": 2.0317885875701904,
+    "c1": 2.0317885875701904,
+    "c2": 359.4114074707031,
+    "c3": 5456169.0,
+    "c4": 455412159610880.0,
+    "c5": 1.3185813481510666e+18,
+    "p5": 2.2862994649078825e+18,
+    "seg0_conv": 1.7268672340128956e+19,
+    "gn_in_finite": true,
+    "gn_out_finite": true,
+    "gn_out_abs_max": 0.057016924023628235,
+    "fused_finite": true,
+    "max_fg_prob": 0.0993407592177391
+  },
+  "condition_b_synced_teacher": {
+    "conv1": 2.063764810562134,
+    "bn1": 12.248476028442383,
+    "c1": 10.649029731750488,
+    "c2": 13.391547203063965,
+    "c3": 25.560718536376953,
+    "c4": 14.788641929626465,
+    "c5": 11.088630676269531,
+    "p5": 32.899009704589844,
+    "seg0_conv": 235.33644104003906,
+    "gn_in_finite": true,
+    "gn_out_finite": true,
+    "gn_out_abs_max": 3.3505501747131348,
+    "fused_finite": true,
+    "max_fg_prob": 0.286765992641449
+  },
+  "condition_student": {
+    "conv1": 2.0632197856903076,
+    "bn1": 12.029974937438965,
+    "c1": 11.012704849243164,
+    "c2": 15.71658706665039,
+    "c3": 35.584632873535156,
+    "c4": 19.82595443725586,
+    "c5": 10.849416732788086,
+    "p5": 32.420326232910156,
+    "seg0_conv": 223.06997680664062,
+    "gn_in_finite": true,
+    "gn_out_finite": true,
+    "gn_out_abs_max": 3.1953635215759277,
+    "fused_finite": true,
+    "max_fg_prob": 0.21058516204357147
+  }
+}

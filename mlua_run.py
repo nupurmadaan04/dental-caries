@@ -151,11 +151,12 @@ class CariesSSLNet(LightningModule):
 
     def on_validation_epoch_end(self):
         if self.current_epoch % 10 == 0 or self.current_epoch > 150:
-            mean_iou = sum(self.eval_dict["iou"]) / 100
-            mean_dice = sum(self.eval_dict["dice"]) / 100
-            mean_spe = sum(self.eval_dict["spe"]) / 100
-            mean_pre = sum(self.eval_dict["pre"]) / 100
-            mean_sen = sum(self.eval_dict["sen"]) / 100
+            num_cases = len(self.eval_dict["dice"]) if len(self.eval_dict["dice"]) > 0 else 1
+            mean_iou = sum(self.eval_dict["iou"]) / num_cases
+            mean_dice = sum(self.eval_dict["dice"]) / num_cases
+            mean_spe = sum(self.eval_dict["spe"]) / num_cases
+            mean_pre = sum(self.eval_dict["pre"]) / num_cases
+            mean_sen = sum(self.eval_dict["sen"]) / num_cases
             self.log('val_mean_iou', mean_iou)
             self.log('val_mean_dice', mean_dice)
             self.log('val_mean_spe', mean_spe)
@@ -221,25 +222,29 @@ def main():
     else:
         batch_size, l_batch_size = 4, 4
 
-    pwd = os.getcwd()
+    from pathlib import Path
+    base_dir = Path.cwd()
 
-    file_path = pwd + "\\data"
-    image_path = os.path.join(file_path, "train\\images")
-    mask_path = os.path.join(file_path, "train\\labels")
-    unlable_path = os.path.join(file_path, "train\\unlabel_images\\images")
-    train_image_list = [os.path.join(image_path, file_name) for file_name in os.listdir(image_path)]
-    train_label_list = [os.path.join(mask_path, file_name) for file_name in os.listdir(mask_path)]
-    train_image_list = sorted(train_image_list,key=lambda x: int(x.split('\\')[-1][:-4]), reverse=False)
-    train_label_list = sorted(train_label_list,key=lambda x: int(x.split('\\')[-1][:-4]), reverse=False)
+    # Support data/train or data/raw/DC1000_dataset/train
+    train_dir = base_dir / "data" / "train"
+    if not train_dir.exists():
+        train_dir = base_dir / "data" / "raw" / "DC1000_dataset" / "train"
 
-    ul_image_list = [os.path.join(unlable_path, file_name) for file_name in os.listdir(unlable_path)]
+    image_path = train_dir / "images"
+    mask_path = train_dir / "labels"
+    unlabel_path = train_dir / "unlabel_images" / "images"
+
+    train_image_list = sorted(list(image_path.glob("*.png")), key=lambda x: int(x.stem))
+    train_label_list = sorted(list(mask_path.glob("*.png")), key=lambda x: int(x.stem))
+    ul_image_list = sorted(list(unlabel_path.glob("*.png")), key=lambda x: int(x.stem)) if unlabel_path.exists() else []
+
     train_data = TrainDataset(train_image_list, train_label_list, ul_image_list)
 
-    f_pwd = os.path.abspath(os.path.dirname(pwd) + os.path.sep + '.')
-    panorama_img_path = os.path.join(f_pwd, "caries_data\\Max100Dice\\images_cut")
-    panorama_gt_path = os.path.join(f_pwd, "caries_data\Max100Dice\labels_cut")
-    panorama_img_path_list = [os.path.join(panorama_img_path, file_name) for file_name in os.listdir(panorama_img_path)]
-    panorama_gt_path_list = [os.path.join(panorama_gt_path, file_name) for file_name in os.listdir(panorama_gt_path)]
+    # Validation dental arch panorama paths
+    val_img_path = base_dir / "dataset" / "test" / "images_cut"
+    val_gt_path = base_dir / "dataset" / "test" / "labels_cut"
+    panorama_img_path_list = sorted(list(val_img_path.glob("*.png")), key=lambda x: int(x.stem)) if val_img_path.exists() else []
+    panorama_gt_path_list = sorted(list(val_gt_path.glob("*.png")), key=lambda x: int(x.stem)) if val_gt_path.exists() else []
     val_data = ValDataset(panorama_img_path_list, panorama_gt_path_list)
 
     model = CariesSSLNet(learning_rate, l_batch_size, theta, SSL_flag)

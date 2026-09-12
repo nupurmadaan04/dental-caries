@@ -1,0 +1,94 @@
+experiment:
+  experiment_id: MC-05
+  name: MC-05_T5
+  description: 'Monte Carlo Sampling Sensitivity Study: T=5 stochastic noisy passes'
+  seed: 42
+  ssl_enabled: true
+  max_epochs: 200
+  precision: 16
+mc_sampling:
+  mc_samples: 5
+  base_evaluations: 1
+  total_unlabeled_evaluations: 6
+  multiscale_heads_evaluated: 5
+  total_ensemble_maps: 25
+model:
+  name: Net
+  encoder: resnet34
+  encoder_weights: imagenet
+  encoder_depth: 5
+  in_channels: 1
+  out_channels: 1
+  pyramid_channels: 256
+  segmentation_channels: 128
+  merge_policy: add
+  dropout: 0.2
+  aux_heads_count: 4
+teacher:
+  ema_theta: 0.99
+  freeze_during_mc: true
+  inference_mode: true
+noise:
+  type: Gaussian
+  sigma: 0.01
+  clamp_min: -0.1
+  clamp_max: 0.1
+uncertainty:
+  metric: voxel_entropy
+  formula: -2.0 * sum(p * log(p + 1e-6))
+  dynamic_threshold: true
+  threshold_start_factor: 0.75
+  threshold_end_factor: 1.0
+  threshold_rampup_steps: 4480
+loss:
+  deep_supervision: true
+  aux_weights:
+  - 0.1
+  - 0.2
+  - 0.3
+  - 0.4
+  bce_weight: 0.5
+  dice_weight: 0.5
+  consistency_weight_max: 0.1
+  consistency_rampup_epochs: 200
+data:
+  train_image_dir: data/raw/DC1000_dataset/train/images
+  train_label_dir: data/raw/DC1000_dataset/train/labels
+  val_image_cut_dir: dataset/test/images_cut
+  val_label_cut_dir: dataset/test/labels_cut
+  patch_size: 384
+  batch_size: 8
+  labeled_batch_size: 4
+  unlabeled_batch_size: 4
+  labeled_rates:
+    '0.1': 265
+    '0.2': 530
+    '0.5': 1325
+  active_rate: '0.1'
+  labeled_count: 265
+  unlabeled_count: 2124
+  total_training_patches: 2389
+optimization:
+  optimizer: AdamW
+  learning_rate: 0.001
+  betas:
+  - 0.9
+  - 0.999
+  weight_decay: 0.01
+  scheduler: LambdaLR
+  poly_power: 0.9
+validation:
+  image_height: 768
+  image_width: 1536
+  patch_size: 384
+  stride: 192
+  num_patches: 21
+  decision_threshold: 0.5
+  val_interval: 1
+output_paths:
+  root_dir: outputs/experiments/MC-05
+  checkpoints_dir: outputs/experiments/MC-05/checkpoints
+  logs_dir: outputs/experiments/MC-05/logs
+  evaluation_dir: outputs/experiments/MC-05/evaluation
+  reports_dir: outputs/experiments/MC-05/reports
+  history_csv: outputs/experiments/MC-05/training_history.csv

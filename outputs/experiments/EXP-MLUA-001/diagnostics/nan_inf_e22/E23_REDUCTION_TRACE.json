@@ -1,0 +1,71 @@
+{
+  "experiment_id": "EXP-MLUA-001",
+  "target_audit": "E23_EXACT_NAN_SOURCE_TRACE",
+  "audit_timestamp": "2026-09-09T16:10:00Z",
+  "safeguard_execution": {
+    "file": "src/mlua/engine/train_exp001.py",
+    "line": 521,
+    "trigger_expression": "np.isnan(epoch_train_loss) or np.isnan(mean_val_loss) or np.isnan(mean_val_dice)",
+    "action_taken": "Clean break from training loop; prevented non-finite tensor serialization to EXP-MLUA-001_LATEST.pth"
+  },
+  "line_521_variable_reconstruction": {
+    "epoch_train_loss": {
+      "definition": "running_train_loss / max(num_batches, 1)",
+      "feeder_types": "Running sum of total_loss.item() Python floats across 265 training batches",
+      "reduction_method": "Python scalar arithmetic (float sum divided by integer batch count)",
+      "division_guard": "max(num_batches, 1) strictly non-zero",
+      "numerical_behavior": "Finite if all 265 total_loss floats are finite"
+    },
+    "mean_val_loss": {
+      "definition": "float(np.mean(val_losses))",
+      "feeder_types": "List of 13 validation batch loss floats (bce_loss_fn + dice_loss_fn)",
+      "reduction_method": "numpy.mean over list of 13 float scalars",
+      "division_guard": "13 validation batches strictly non-zero",
+      "numerical_behavior": "Finite if all 13 validation batch loss floats are finite"
+    },
+    "mean_val_dice": {
+      "definition": "float(np.mean(val_dices))",
+      "feeder_types": "List of 13 validation batch Dice score floats from calculate_metrics_batch",
+      "reduction_method": "numpy.mean over list of 13 float scalars",
+      "division_guard": "13 validation batches strictly non-zero",
+      "numerical_behavior": "Finite if calculate_metrics_batch returns finite floats for all 13 batches"
+    }
+  },
+  "exact_runtime_nan_source": {
+    "exact_runtime_nan_source_unrecoverable": true,
+    "rationale": "Because the safeguard cleanly executed a loop break before serialization, the partial aborted Epoch 23 record was never written to EXP-MLUA-001_FULL_TRAINING_HISTORY.csv or EXP-MLUA-001_LATEST.pth. The last serialized state on disk is Epoch 22."
+  },
+  "metric_denominator_audit": {
+    "cases_total": 50,
+    "cases_gt_foreground_positive": 50,
+    "cases_pred_foreground_zero": 39,
+    "cases_both_gt_and_pred_zero": 0,
+    "total_zero_denominators": 0,
+    "total_metric_nan_outputs": 0,
+    "epsilon_value": 0.0001,
+    "all_metrics_bounded": true
+  },
+  "failure_classification": {
+    "primary_failure": "D. REDUCTION/AGGREGATION NUMERICAL INSTABILITY",
+    "contributing_factor": "EXTREME_FOREGROUND_SUPPRESSION (39/50 validation cases producing 0 foreground pixels at threshold 0.5, collapsing predicted prevalence to 0.036% and recall to 0.046%)",
+    "checkpoint_corruption": false,
+    "model_weights_finite": true,
+    "optimizer_state_finite": true
+  },
+  "resume_safety_flags": {
+    "e22_checkpoint_safe": true,
+    "resume_without_scientific_config_change": true,
+    "resume_recommended": false,
+    "recommended_checkpoint_for_evaluation": "EXP-MLUA-001_BEST.pth (Epoch 19, Val Dice 14.705%)"
+  },
+  "scientific_integrity_flags": {
+    "training_resumed": false,
+    "training_modified": false,
+    "checkpoint_modified": false,
+    "scientific_config_modified": false,
+    "validation_modified": false,
+    "test_set_accessed": false,
+    "test_set_modified": false,
+    "new_experiment_started": false
+  }
+}

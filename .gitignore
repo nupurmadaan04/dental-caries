@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Node modules & frontend builds
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+
+# Large binary checkpoints & data archives
+*.zip
+*.pth
+*.tar.gz
+data/raw/
+dataset/
+
+# Environment & IDE
+.venv/
+env/
+.vscode/
+.idea/
+.DS_Store

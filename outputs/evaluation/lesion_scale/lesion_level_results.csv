@@ -1,0 +1,1 @@
+case_id,lesion_id,size_group,gt_area_pixels,pred_area_pixels,intersection_pixels,union_pixels,lesion_iou,matched,predicted_probability,status

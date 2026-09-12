@@ -1,0 +1,10 @@
+Setting,Method,Dice,Sensitivity,Precision,Source,Status
+10% SSL (ACDC/LA Volumetric),V-Net (Supervised Baseline),0.785,0.762,0.812,MLUA Paper Table 1,VERIFIED_LITERATURE
+10% SSL (ACDC/LA Volumetric),UA-MT (SSL Baseline),0.824,0.801,0.850,MLUA Paper Table 1,VERIFIED_LITERATURE
+10% SSL (ACDC/LA Volumetric),SASSNet (SSL Baseline),0.841,0.825,0.860,MLUA Paper Table 1,VERIFIED_LITERATURE
+10% SSL (ACDC/LA Volumetric),DTC (SSL Baseline),0.849,0.832,0.869,MLUA Paper Table 1,VERIFIED_LITERATURE
+10% SSL (ACDC/LA Volumetric),MLUA (Paper Full),0.875,0.861,0.892,MLUA Paper Table 1,VERIFIED_LITERATURE
+20% SSL (ACDC/LA Volumetric),V-Net (Supervised Baseline),0.842,0.820,0.868,MLUA Paper Table 2,VERIFIED_LITERATURE
+20% SSL (ACDC/LA Volumetric),MLUA (Paper Full),0.902,0.891,0.915,MLUA Paper Table 2,VERIFIED_LITERATURE
+Dental Panoramic Caries 10% SSL,EXP-MLUA-001 (Our Model),N/A,N/A,N/A,DC1000 100-Image Benchmark,UNRUN_SEALED
+Dental Panoramic Caries 20% SSL,EXP-MLUA-002 (Our Model),N/A,N/A,N/A,DC1000 100-Image Benchmark,STANDBY_UNRUN

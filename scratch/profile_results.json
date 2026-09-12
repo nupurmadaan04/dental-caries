@@ -1,0 +1,15 @@
+{
+  "pytorch_version": "2.12.0+cpu",
+  "intra_op_threads": 8,
+  "inter_op_threads": 4,
+  "avg_dataloader_batch_sec": 0.33759085337320965,
+  "single_image_getitem_sec": 0.010993480682373047,
+  "student_forward_8imgs_sec": 3.606022834777832,
+  "student_backward_sec": 8.254734873771667,
+  "teacher_baseline_4imgs_sec": 2.3457343578338623,
+  "teacher_mc_sequential_T8_sec": 20.90269160270691,
+  "teacher_output_requires_grad": false,
+  "torch_is_grad_enabled_in_no_grad": false,
+  "checkpoint_save_sec": 6.11086893081665,
+  "checkpoint_size_mb": 176.91738033294678
+}

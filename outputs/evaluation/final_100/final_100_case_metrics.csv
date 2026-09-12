@@ -1,0 +1,1 @@
+case_id,dice,iou,precision,recall,specificity,f1,tp,fp,fn,tn,gt_foreground_pixels,pred_foreground_pixels,pred_prevalence,gt_prevalence,threshold,status

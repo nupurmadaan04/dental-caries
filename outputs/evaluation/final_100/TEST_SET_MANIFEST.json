@@ -1,0 +1,18 @@
+{
+  "benchmark_name": "DC1000 Dental Panoramic Caries 100-Image Sealed Test Benchmark",
+  "total_panoramic_cases": 100,
+  "panoramic_resolution": [768, 1536],
+  "patch_resolution": [384, 384],
+  "stride": 192,
+  "grid_shape": [3, 7],
+  "patches_per_case": 21,
+  "sealing_status": "SEALED_READ_ONLY",
+  "dataset_paths": {
+    "images_dir": "dataset/test/images_cut",
+    "labels_dir": "dataset/test/labels_cut",
+    "raw_images_dir": "dataset/test/images",
+    "raw_labels_dir": "dataset/test/labels"
+  },
+  "verified_cases_count": 100,
+  "verification_timestamp": "2026-09-09T14:45:00Z"
+}

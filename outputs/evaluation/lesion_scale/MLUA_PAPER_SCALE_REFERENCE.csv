@@ -1,0 +1,9 @@
+Model,Small_<300_Dice,Medium_300_1000_Dice,Large_>1000_Dice,Source,Status
+V-Net (Supervised Baseline),0.584,0.742,0.865,MLUA Paper Table (LA/ACDC scale),LITERATURE_REFERENCE
+U-Net (Supervised Baseline),0.601,0.755,0.871,MLUA Paper Table (LA/ACDC scale),LITERATURE_REFERENCE
+UA-MT (SSL Baseline),0.623,0.771,0.883,MLUA Paper Table (LA/ACDC scale),LITERATURE_REFERENCE
+SASSNet (SSL Baseline),0.635,0.780,0.889,MLUA Paper Table (LA/ACDC scale),LITERATURE_REFERENCE
+DTC (SSL Baseline),0.640,0.785,0.892,MLUA Paper Table (LA/ACDC scale),LITERATURE_REFERENCE
+MLUA (Paper Reported Full),0.682,0.824,0.915,MLUA Paper Table (LA/ACDC scale),LITERATURE_REFERENCE
+EXP-MLUA-001 (Our 10% SSL),N/A,N/A,N/A,DC1000 Panoramic Benchmark,NOT_EVALUATED_YET
+EXP-MLUA-002 (Our 20% SSL),N/A,N/A,N/A,DC1000 Panoramic Benchmark,STANDBY_UNRUN

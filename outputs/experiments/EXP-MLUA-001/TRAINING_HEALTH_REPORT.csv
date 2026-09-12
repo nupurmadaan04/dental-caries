@@ -1,0 +1,2 @@
+current_epoch,max_target_epochs,best_val_dice,best_dice_epoch,current_val_dice,current_val_recall,current_val_precision,current_val_loss,current_train_loss,current_max_prob,current_pred_prevalence,val_loss_trend,foreground_emerged,overfitting_risk_flag,health_status,avg_epoch_duration_min,estimated_remaining_hours,updated_at
+20,200,0.14705,19,0.078,0.05125,0.36258,1.01272,0.64294,0.80084,0.001545,DECREASING,True,False,INITIAL_FOREGROUND_EMERGENCE,16.62,49.86,2026-09-09 14:52:23

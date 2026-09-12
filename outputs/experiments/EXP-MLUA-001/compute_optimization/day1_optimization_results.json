@@ -1,0 +1,49 @@
+{
+  "numerical_equivalence": {
+    "max_diff_prob": 5.960464477539063e-08,
+    "mean_diff_prob": 2.960809375451845e-09,
+    "max_diff_unc": 1.1920928955078125e-07,
+    "mean_diff_unc": 2.0479800078021526e-09,
+    "mask_diff": 0.0,
+    "cons_loss_diff": 0.0,
+    "is_equiv": true
+  },
+  "benchmarks": {
+    "baseline": {
+      "data_load": 0.3592507441838582,
+      "student_forward": 3.1622489293416343,
+      "teacher_mc": 14.537546753883362,
+      "backward": 5.807050983111064,
+      "ema": 0.10164185365041097,
+      "total_batch": 23.608654578526814,
+      "epoch_sec": 1558.1712021827698
+    },
+    "batched_mc": {
+      "data_load": 0.2697930733362834,
+      "student_forward": 3.0179251432418823,
+      "teacher_mc": 11.537169178326925,
+      "backward": 6.138189236323039,
+      "ema": 0.1241852839787801,
+      "total_batch": 20.817468841870625,
+      "epoch_sec": 1373.9529435634613
+    },
+    "mc_ram": {
+      "data_load": 0.10639456907908122,
+      "student_forward": 3.131858746210734,
+      "teacher_mc": 11.707383473714193,
+      "backward": 6.686694701512654,
+      "ema": 0.10148624579111735,
+      "total_batch": 21.62747661272685,
+      "epoch_sec": 1427.413456439972
+    },
+    "fully_opt": {
+      "data_load": 0.12858780225118002,
+      "student_forward": 3.810555378595988,
+      "teacher_mc": 11.824524998664856,
+      "backward": 6.972619652748108,
+      "ema": 0.07693016529083252,
+      "total_batch": 22.684630195299786,
+      "epoch_sec": 1497.1855928897858
+    }
+  }
+}

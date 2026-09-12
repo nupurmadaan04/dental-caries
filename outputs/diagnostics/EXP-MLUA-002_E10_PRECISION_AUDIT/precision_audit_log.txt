@@ -1,0 +1,31 @@
+EXP-MLUA-002: PRECISION & DTYPE FORENSIC AUDIT
+================================================================================
+================================================================================
+1. GLOBAL SYSTEM & PYTORCH PRECISION CONFIGURATION AUDIT
+================================================================================
+PyTorch Version: 2.12.0+cpu
+Python Version: 3.11.9 (Windows 10)
+CUDA Available: False
+Compute Hardware: CPU (8 OpenMP/MKL Worker Threads)
+Default Tensor Dtype: torch.float32
+Autocast GPU Enabled: False
+Autocast CPU Enabled: False
+Autocast GPU Dtype: torch.float16
+Autocast CPU Dtype: torch.bfloat16
+torch.backends.cuda.matmul.allow_tf32: False
+torch.backends.cudnn.allow_tf32: True
+
+================================================================================
+2. CHECKPOINT DTYPE & FINITENESS AUDIT (EXP-MLUA-002_LATEST.pth)
+================================================================================
+Checkpoint Epoch: 9, Global Step: 1188
+Student Parameter Dtypes in Checkpoint: {torch.int64, torch.float32}
+Teacher Parameter Dtypes in Checkpoint: {torch.int64, torch.float32}
+Optimizer State Tensor Dtypes in Checkpoint: {torch.float32}
+All Student Parameters Finite: True
+All Teacher Parameters Finite: True
+
+================================================================================
+3. REPRODUCING EXACT BATCH 68 INFERENCE & DTYPE TRACING
+================================================================================
+[Execution] Stepping through batches 0 to 67 to reach exact Batch 68 state...

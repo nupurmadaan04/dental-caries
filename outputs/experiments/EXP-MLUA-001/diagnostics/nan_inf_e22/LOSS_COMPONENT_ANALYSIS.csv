@@ -1,0 +1,6 @@
+loss_name,input_logit,target,loss_value,is_finite,notes
+BCEWithLogits_Extreme_Neg_GT0,-50.0,0.0,0.0,True,PyTorch log-sum-exp stabilization prevents log(0) NaN
+BCEWithLogits_Extreme_Neg_GT1,-50.0,1.0,50.0,True,Linear slope penalty (50.0) with zero NaN
+DiceLoss_AllZeros_GTZero,-50.0,0.0,0.0,True,DiceLoss smoothing eps=1e-5 prevents 0/0 NaN
+DiceLoss_AllZeros_GTPositive,-50.0,1.0,0.9999989867210388,True,Returns 1.0 with finite gradient
+SigmoidMSE_Extreme_Neg,-50.0,-50.0,0.0,True,Sigmoid saturates cleanly to 0.0; (0-0)^2 = 0.0

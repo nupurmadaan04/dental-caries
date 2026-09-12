@@ -1,0 +1,5 @@
+size_group,lesion_count,case_count,dice,iou,precision,recall,f1,specificity,tp,fp,fn,tn,status
+SMALL,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,NOT_RUN
+MEDIUM,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,NOT_RUN
+LARGE,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,NOT_RUN
+ALL,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,NOT_RUN

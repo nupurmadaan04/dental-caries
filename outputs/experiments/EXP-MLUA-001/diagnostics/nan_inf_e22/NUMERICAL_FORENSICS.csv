@@ -1,0 +1,5 @@
+operation,min_val,max_val,nan_count,inf_count,is_finite
+Val_Batch_Inference_FusedLogit,-11.878447532653809,1.0657445192337036,0,0,True
+Val_BCE_With_Logits,0.04902075603604317,0.04902075603604317,0,0,True
+Val_DiceLoss,0.9816684722900391,0.9816684722900391,0,0,True
+Training_Backward_Gradient_Computation,0.00013313056842889637,0.175950288772583,0,0,True

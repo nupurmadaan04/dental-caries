@@ -1,0 +1,63 @@
+# MLUA Official Configuration Parameters
+experiment:
+  name: "MLUA_DC1000_Official"
+  seed: 42
+  ssl_enabled: true
+  max_epochs: 200
+  precision: 16
+
+model:
+  name: "Net"
+  encoder: "resnet34"
+  encoder_weights: "imagenet"
+  encoder_depth: 5
+  in_channels: 1
+  out_channels: 1
+  pyramid_channels: 256
+  segmentation_channels: 128
+  merge_policy: "add"
+  dropout: 0.2
+  aux_heads_count: 4
+
+data:
+  train_image_dir: "data/raw/DC1000_dataset/train/images"
+  train_label_dir: "data/raw/DC1000_dataset/train/labels"
+  val_image_cut_dir: "dataset/test/images_cut"
+  val_label_cut_dir: "dataset/test/labels_cut"
+  patch_size: 384
+  batch_size: 8
+  labeled_batch_size: 4
+  unlabeled_batch_size: 4
+  labeled_rates:
+    "0.1": 265
+    "0.2": 530
+    "0.5": 1325
+  active_rate: "0.1"
+
+optimization:
+  optimizer: "AdamW"
+  learning_rate: 0.001
+  weight_decay: 0.01
+  scheduler: "LambdaLR"
+  poly_power: 0.9
+
+ssl:
+  ema_theta: 0.99
+  mc_iterations: 8
+  noise_sigma: 0.01
+  noise_clamp: 0.1
+  threshold_rampup_steps: 4480
+  threshold_start_factor: 0.75
+  threshold_end_factor: 1.00
+  consistency_weight_max: 0.1
+  consistency_rampup_epochs: 200
+
+evaluation:
+  image_height: 768
+  image_width: 1536
+  patch_size: 384
+  stride: 192
+  num_patches: 21
+  decision_threshold: 0.5
+  val_interval: 10
+  val_late_epoch_start: 150

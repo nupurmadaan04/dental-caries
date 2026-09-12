@@ -1,0 +1,82 @@
+EXP-MLUA-002: EPOCH 10 FORENSIC BATCH-BY-BATCH TRACE
+================================================================================
+================================================================================
+EXP-MLUA-002: EPOCH 10 FORENSIC BATCH-BY-BATCH TRACE
+================================================================================
+[Loading Checkpoint] C:\Users\devin\MLUA\outputs\experiments\EXP-MLUA-002\checkpoints\EXP-MLUA-002_LATEST.pth
+[Checkpoint Loaded] Completed Epoch: 9, Step: 1188
+
+[Forensic Execution] Starting trace for Epoch 10 (132 batches)...
+  Batch 000/132: TotalLoss=0.6543 (Seg=0.6543, Cons=0.0010), MaxGradNorm=0.011
+  Batch 001/132: TotalLoss=0.6356 (Seg=0.6356, Cons=0.0009), MaxGradNorm=0.017
+  Batch 002/132: TotalLoss=0.6555 (Seg=0.6555, Cons=0.0012), MaxGradNorm=0.014
+  Batch 003/132: TotalLoss=0.6476 (Seg=0.6476, Cons=0.0014), MaxGradNorm=0.011
+  Batch 004/132: TotalLoss=0.6400 (Seg=0.6400, Cons=0.0013), MaxGradNorm=0.006
+  Batch 005/132: TotalLoss=0.6587 (Seg=0.6587, Cons=0.0015), MaxGradNorm=0.041
+  Batch 006/132: TotalLoss=0.6407 (Seg=0.6407, Cons=0.0010), MaxGradNorm=0.011
+  Batch 007/132: TotalLoss=0.6533 (Seg=0.6533, Cons=0.0009), MaxGradNorm=0.021
+  Batch 008/132: TotalLoss=0.6591 (Seg=0.6591, Cons=0.0013), MaxGradNorm=0.028
+  Batch 009/132: TotalLoss=0.6432 (Seg=0.6432, Cons=0.0014), MaxGradNorm=0.008
+  Batch 010/132: TotalLoss=0.6484 (Seg=0.6484, Cons=0.0015), MaxGradNorm=0.020
+  Batch 011/132: TotalLoss=0.6469 (Seg=0.6469, Cons=0.0014), MaxGradNorm=0.014
+  Batch 012/132: TotalLoss=0.6313 (Seg=0.6313, Cons=0.0012), MaxGradNorm=0.023
+  Batch 013/132: TotalLoss=0.6474 (Seg=0.6474, Cons=0.0012), MaxGradNorm=0.012
+  Batch 014/132: TotalLoss=0.6379 (Seg=0.6379, Cons=0.0013), MaxGradNorm=0.014
+  Batch 015/132: TotalLoss=0.6442 (Seg=0.6442, Cons=0.0015), MaxGradNorm=0.008
+  Batch 016/132: TotalLoss=0.6484 (Seg=0.6484, Cons=0.0013), MaxGradNorm=0.027
+  Batch 017/132: TotalLoss=0.6396 (Seg=0.6396, Cons=0.0013), MaxGradNorm=0.029
+  Batch 018/132: TotalLoss=0.6325 (Seg=0.6325, Cons=0.0014), MaxGradNorm=0.021
+  Batch 019/132: TotalLoss=0.6400 (Seg=0.6400, Cons=0.0012), MaxGradNorm=0.029
+  Batch 020/132: TotalLoss=0.6581 (Seg=0.6581, Cons=0.0016), MaxGradNorm=0.014
+  Batch 021/132: TotalLoss=0.6402 (Seg=0.6402, Cons=0.0014), MaxGradNorm=0.029
+  Batch 022/132: TotalLoss=0.6561 (Seg=0.6561, Cons=0.0015), MaxGradNorm=0.017
+  Batch 023/132: TotalLoss=0.6572 (Seg=0.6572, Cons=0.0043), MaxGradNorm=0.024
+  Batch 024/132: TotalLoss=0.6511 (Seg=0.6511, Cons=0.0016), MaxGradNorm=0.008
+  Batch 025/132: TotalLoss=0.6842 (Seg=0.6842, Cons=0.0013), MaxGradNorm=0.036
+  Batch 026/132: TotalLoss=0.6461 (Seg=0.6461, Cons=0.0013), MaxGradNorm=0.016
+  Batch 027/132: TotalLoss=0.6639 (Seg=0.6639, Cons=0.0014), MaxGradNorm=0.021
+  Batch 028/132: TotalLoss=0.6390 (Seg=0.6390, Cons=0.0034), MaxGradNorm=0.029
+  Batch 029/132: TotalLoss=0.6531 (Seg=0.6531, Cons=0.0013), MaxGradNorm=0.006
+  Batch 030/132: TotalLoss=0.6366 (Seg=0.6366, Cons=0.0015), MaxGradNorm=0.026
+  Batch 031/132: TotalLoss=0.6434 (Seg=0.6434, Cons=0.0023), MaxGradNorm=0.009
+  Batch 032/132: TotalLoss=0.6424 (Seg=0.6424, Cons=0.0013), MaxGradNorm=0.008
+  Batch 033/132: TotalLoss=0.6353 (Seg=0.6353, Cons=0.0016), MaxGradNorm=0.017
+  Batch 034/132: TotalLoss=0.6389 (Seg=0.6389, Cons=0.0014), MaxGradNorm=0.012
+  Batch 035/132: TotalLoss=0.6369 (Seg=0.6369, Cons=0.0044), MaxGradNorm=0.018
+  Batch 036/132: TotalLoss=0.6699 (Seg=0.6699, Cons=0.0012), MaxGradNorm=0.033
+  Batch 037/132: TotalLoss=0.6477 (Seg=0.6476, Cons=0.0014), MaxGradNorm=0.017
+  Batch 038/132: TotalLoss=0.6667 (Seg=0.6667, Cons=0.0014), MaxGradNorm=0.030
+  Batch 039/132: TotalLoss=0.6339 (Seg=0.6339, Cons=0.0013), MaxGradNorm=0.010
+  Batch 040/132: TotalLoss=0.6359 (Seg=0.6359, Cons=0.0014), MaxGradNorm=0.043
+  Batch 041/132: TotalLoss=0.6664 (Seg=0.6664, Cons=0.0014), MaxGradNorm=0.029
+  Batch 042/132: TotalLoss=0.6519 (Seg=0.6519, Cons=0.0021), MaxGradNorm=0.021
+  Batch 043/132: TotalLoss=0.6366 (Seg=0.6366, Cons=0.0014), MaxGradNorm=0.025
+  Batch 044/132: TotalLoss=0.6454 (Seg=0.6454, Cons=0.0014), MaxGradNorm=0.013
+  Batch 045/132: TotalLoss=0.6558 (Seg=0.6558, Cons=0.0012), MaxGradNorm=0.025
+  Batch 046/132: TotalLoss=0.6389 (Seg=0.6389, Cons=0.0013), MaxGradNorm=0.023
+  Batch 047/132: TotalLoss=0.6462 (Seg=0.6462, Cons=0.0013), MaxGradNorm=0.043
+  Batch 048/132: TotalLoss=0.6446 (Seg=0.6446, Cons=0.0014), MaxGradNorm=0.034
+  Batch 049/132: TotalLoss=0.6271 (Seg=0.6271, Cons=0.0013), MaxGradNorm=0.048
+  Batch 050/132: TotalLoss=0.6864 (Seg=0.6864, Cons=0.0015), MaxGradNorm=0.033
+  Batch 051/132: TotalLoss=0.6477 (Seg=0.6477, Cons=0.0013), MaxGradNorm=0.034
+  Batch 052/132: TotalLoss=0.6497 (Seg=0.6497, Cons=0.0012), MaxGradNorm=0.009
+  Batch 053/132: TotalLoss=0.6521 (Seg=0.6521, Cons=0.0014), MaxGradNorm=0.025
+  Batch 054/132: TotalLoss=0.6809 (Seg=0.6809, Cons=0.0014), MaxGradNorm=0.062
+  Batch 055/132: TotalLoss=0.6383 (Seg=0.6383, Cons=0.0012), MaxGradNorm=0.020
+  Batch 056/132: TotalLoss=0.6722 (Seg=0.6722, Cons=0.0007), MaxGradNorm=0.024
+  Batch 057/132: TotalLoss=0.6290 (Seg=0.6290, Cons=0.0010), MaxGradNorm=0.029
+  Batch 058/132: TotalLoss=0.6395 (Seg=0.6395, Cons=0.0008), MaxGradNorm=0.030
+  Batch 059/132: TotalLoss=0.6359 (Seg=0.6359, Cons=0.0011), MaxGradNorm=0.014
+  Batch 060/132: TotalLoss=0.6355 (Seg=0.6355, Cons=0.0009), MaxGradNorm=0.015
+  Batch 061/132: TotalLoss=0.6896 (Seg=0.6896, Cons=0.0017), MaxGradNorm=0.055
+  Batch 062/132: TotalLoss=0.6578 (Seg=0.6578, Cons=0.0012), MaxGradNorm=0.011
+  Batch 063/132: TotalLoss=0.6479 (Seg=0.6479, Cons=0.0017), MaxGradNorm=0.031
+  Batch 064/132: TotalLoss=0.6351 (Seg=0.6351, Cons=0.0014), MaxGradNorm=0.028
+  Batch 065/132: TotalLoss=0.6403 (Seg=0.6403, Cons=0.0018), MaxGradNorm=0.029
+  Batch 066/132: TotalLoss=0.6485 (Seg=0.6485, Cons=0.0010), MaxGradNorm=0.034
+  Batch 067/132: TotalLoss=0.6391 (Seg=0.6391, Cons=0.0009), MaxGradNorm=0.020
+  [NON-FINITE DETECTED] Tensor 'Batch 68: all_fused_tea' shape=[36, 1, 384, 384] dtype=torch.float32 | NaNs=1327104, Infs=0
+
+================================================================================
+RESULT: First Non-Finite Stage = Teacher Forward, Target = all_fused_tea, Batch Index = 68, Global Step = 1257
+================================================================================

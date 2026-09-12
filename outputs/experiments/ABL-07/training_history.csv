@@ -1,0 +1,1 @@
+epoch,train_loss,supervised_loss,consistency_loss,val_loss,val_dice,val_iou,val_precision,val_recall,val_specificity,val_f1,learning_rate,global_step,epoch_duration,cumulative_runtime,max_foreground_prob,pred_prevalence

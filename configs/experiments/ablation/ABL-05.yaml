@@ -1,0 +1,89 @@
+experiment:
+  experiment_id: ABL-05
+  name: ABL-05_Iterative_+_Multi-scale
+  description: Iterative & Multi-scale Disturbance (EMA Teacher ON + Deep Supervision
+    ON, Noisy OFF)
+  seed: 42
+  ssl_enabled: true
+  max_epochs: 200
+  precision: 16
+disturbances:
+  iterative_disturbance: true
+  noisy_disturbance: false
+  multiscale_disturbance: true
+model:
+  name: Net
+  encoder: resnet34
+  encoder_weights: imagenet
+  encoder_depth: 5
+  in_channels: 1
+  out_channels: 1
+  pyramid_channels: 256
+  segmentation_channels: 128
+  merge_policy: add
+  dropout: 0.2
+  aux_heads_count: 4
+data:
+  train_image_dir: data/raw/DC1000_dataset/train/images
+  train_label_dir: data/raw/DC1000_dataset/train/labels
+  val_image_cut_dir: dataset/test/images_cut
+  val_label_cut_dir: dataset/test/labels_cut
+  patch_size: 384
+  batch_size: 8
+  labeled_batch_size: 4
+  unlabeled_batch_size: 4
+  labeled_rates:
+    '0.1': 265
+    '0.2': 530
+    '0.5': 1325
+  active_rate: '0.1'
+  labeled_count: 265
+  unlabeled_count: 2124
+  total_training_patches: 2389
+optimization:
+  optimizer: AdamW
+  learning_rate: 0.001
+  betas:
+  - 0.9
+  - 0.999
+  weight_decay: 0.01
+  scheduler: LambdaLR
+  poly_power: 0.9
+ssl:
+  ema_enabled: true
+  ema_theta: 0.99
+  mc_enabled: false
+  mc_iterations: 1
+  noise_enabled: false
+  noise_sigma: 0.0
+  noise_clamp: 0.0
+  dynamic_threshold: false
+  threshold_rampup_steps: 4480
+  threshold_start_factor: 0.75
+  threshold_end_factor: 1.0
+  consistency_weight_max: 0.1
+  consistency_rampup_epochs: 200
+loss:
+  deep_supervision: true
+  aux_weights:
+  - 0.1
+  - 0.2
+  - 0.3
+  - 0.4
+  bce_weight: 0.5
+  dice_weight: 0.5
+validation:
+  image_height: 768
+  image_width: 1536
+  patch_size: 384
+  stride: 192
+  num_patches: 21
+  decision_threshold: 0.5
+  val_interval: 1
+output_paths:
+  root_dir: outputs/experiments/ABL-05
+  checkpoints_dir: outputs/experiments/ABL-05/checkpoints
+  logs_dir: outputs/experiments/ABL-05/logs
+  evaluation_dir: outputs/experiments/ABL-05/evaluation
+  reports_dir: outputs/experiments/ABL-05/reports
+  history_csv: outputs/experiments/ABL-05/training_history.csv

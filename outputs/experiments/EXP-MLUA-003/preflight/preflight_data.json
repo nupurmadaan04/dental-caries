@@ -1,0 +1,8 @@
+{
+  "preflight_status": "PASSED",
+  "unintended_diffs": 0,
+  "exp002_latest_sha256": "97cbec8d57361a248fd2b7468774bcf56f1b33f96b267a04270664d4c5d9ee2b",
+  "exp002_best_sha256": "f631733b13ecc7b79e042011f6b650b864387726a282447925cafe1a14d92e42",
+  "test_set_cases": 100,
+  "buffer_sync_unit_test": "PASSED"
+}

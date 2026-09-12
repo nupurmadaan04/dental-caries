@@ -1,0 +1,3 @@
+aggregation_type,dice,iou,precision,recall,specificity,f1,total_cases,threshold,status
+MACRO (Case Mean),N/A,N/A,N/A,N/A,N/A,N/A,100,0.50,NOT_RUN
+MICRO (Global Pixel Sum),N/A,N/A,N/A,N/A,N/A,N/A,100,0.50,NOT_RUN

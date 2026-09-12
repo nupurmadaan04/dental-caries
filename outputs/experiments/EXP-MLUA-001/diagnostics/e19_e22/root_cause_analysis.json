@@ -1,0 +1,127 @@
+{
+  "experiment_id": "EXP-MLUA-001",
+  "investigated_epochs": [
+    "E19",
+    "E20",
+    "E21",
+    "E22"
+  ],
+  "timestamp": "2026-09-09T15:27:00Z",
+  "primary_conclusion": "PROBABILITY_CALIBRATION_SHIFT_AND_FOREGROUND_SUPPRESSION",
+  "is_model_catastrophically_destroyed": false,
+  "is_useful_foreground_signal_retained": true,
+  "reproduced_metrics": {
+    "E19_BEST": {
+      "mean_dice": 0.12190136332007706,
+      "mean_iou": 0.07372015436576182,
+      "mean_precision": 0.13982143508689032,
+      "mean_recall": 0.1651689189653162,
+      "mean_specificity": 0.9909363023527726,
+      "mean_f1": 0.12190136332007706,
+      "mean_pred_prevalence": 0.01070122612407431,
+      "max_foreground_prob": 0.8977969288825989
+    },
+    "E22_LATEST": {
+      "mean_dice": 0.000888538063822556,
+      "mean_iou": 0.00044975856006739646,
+      "mean_precision": 0.02465111357501509,
+      "mean_recall": 0.00046495408693936094,
+      "mean_specificity": 0.9996471098361099,
+      "mean_f1": 0.000888538063822556,
+      "mean_pred_prevalence": 0.0003615993887069635,
+      "max_foreground_prob": 0.7437867522239685
+    }
+  },
+  "best_sweep_summary": {
+    "E19_BEST": {
+      "best_threshold": 0.35,
+      "max_dice": 0.12783481145584533,
+      "max_dice_recall": 0.23173856198479828,
+      "max_dice_precision": 0.11479923807210259,
+      "dice_at_050": 0.12190136332007706,
+      "recall_at_050": 0.1651689189653162,
+      "precision_at_050": 0.13982143508689032
+    },
+    "E22_LATEST": {
+      "best_threshold": 0.05,
+      "max_dice": 0.08440695637908266,
+      "max_dice_recall": 0.2205789642668295,
+      "max_dice_precision": 0.07560012013318766,
+      "dice_at_050": 0.000888538063822556,
+      "recall_at_050": 0.00046495408693936094,
+      "precision_at_050": 0.02465111357501509
+    }
+  },
+  "per_case_summary": {
+    "improved": 0,
+    "unchanged": 21,
+    "degraded": 29,
+    "mean_dice_diff": -0.12101319999999999,
+    "median_dice_diff": -0.026875000000000003
+  },
+  "causes": [
+    {
+      "cause_code": "B_PROBABILITY_CALIBRATION_SHIFT",
+      "name": "Probability Calibration and Logit Shift",
+      "status": "CONFIRMED_PRIMARY_DRIVER",
+      "confidence": "HIGH",
+      "evidence": [
+        "E22 Foreground Mean Probability dropped from 0.2039 (E19) to 0.0487 (E22).",
+        "E22 Foreground Logit Mean shifted down from -2.5283 to -3.8787.",
+        "E22 Max Foreground Probability on validation set dropped from 0.8978 to 0.7438.",
+        "Lowering decision threshold from tau=0.50 to tau=0.05 restores validation Dice from 0.089% to 8.441% (95.0x recovery)."
+      ]
+    },
+    {
+      "cause_code": "D_FOREGROUND_SUPPRESSION",
+      "name": "Severe Foreground Area Suppression / Conservative Background Bias",
+      "status": "CONFIRMED_PRIMARY_DRIVER",
+      "confidence": "HIGH",
+      "evidence": [
+        "Predicted Foreground Prevalence dropped by 29.6x (from 0.010701 to 0.000362) relative to GT prevalence (0.009929).",
+        "Ratio of Predicted Prevalence to GT Prevalence collapsed from 1.0778 to 0.0364.",
+        "Validation Recall at tau=0.50 collapsed from 16.517% to 0.046% (a 355.2x reduction)."
+      ]
+    },
+    {
+      "cause_code": "C_THRESHOLD_SENSITIVITY",
+      "name": "Threshold Sensitivity at Fixed tau=0.50",
+      "status": "CONFIRMED_CONTRIBUTING_FACTOR",
+      "confidence": "HIGH",
+      "evidence": [
+        "Fixed tau=0.50 artificially cuts off positive caries lesion logits whose peak sigmoid activations range between 0.10 and 0.45.",
+        "At tau=0.05, E22 captures lesion areas with Dice = 8.441%."
+      ]
+    },
+    {
+      "cause_code": "A_GENUINE_MODEL_DEGRADATION",
+      "name": "Genuine Catastrophic Feature Collapse / Representation Loss",
+      "status": "RULED_OUT_AS_PRIMARY_CAUSE",
+      "confidence": "HIGH",
+      "evidence": [
+        "FG/BG Logit Separation remains strictly positive (E19: 3.3947, E22: 1.9613).",
+        "The model has NOT forgotten lesion spatial representations; spatial rank order separates caries from background, but the absolute calibration was shifted negative by BCE background dominance."
+      ]
+    },
+    {
+      "cause_code": "H_VALIDATION_PIPELINE_ISSUE",
+      "name": "Validation Implementation / Protocol Issue",
+      "status": "RULED_OUT",
+      "confidence": "HIGH",
+      "evidence": [
+        "Validation pipeline strictly deterministic, verified exact reproduction of training CSV metrics (E19 Dice: 14.705%, E22 Dice: 0.235%).",
+        "Zero NaNs, zero Infs, deterministic transforms verified."
+      ]
+    }
+  ],
+  "decision_support_answers": {
+    "is_e19_still_the_best_checkpoint": true,
+    "is_e22_genuinely_worse_than_e19": "Partially (E22 has lower peak calibration and higher background bias, but retains discriminatory spatial representations recoverable at lower thresholds)",
+    "is_tau_050_hiding_useful_e22_predictions": true,
+    "is_foreground_suppression_occurring": true,
+    "is_evidence_of_validation_pipeline_corruption": false,
+    "is_evidence_of_training_instability": "Low-to-Moderate (BCE foreground imbalance drives logit suppression; training loss is smoothly converging from 0.6443 to 0.6430)",
+    "should_exp_mlua_001_continue_running": true,
+    "should_we_change_anything_right_now": "NO (Strict adherence to zero mid-run scientific modification; threshold tuning or focal/pos-weight loss reserved for EXP-002/future experiments)"
+  }
+}

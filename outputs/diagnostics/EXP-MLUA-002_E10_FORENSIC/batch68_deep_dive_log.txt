@@ -1,0 +1,47 @@
+EXP-MLUA-002: BATCH 68 INTERNAL ACTIVATION DEEP-DIVE
+================================================================================
+================================================================================
+EXP-MLUA-002: BATCH 68 INTERNAL ACTIVATION DEEP-DIVE
+================================================================================
+[Simulation] Fast-forwarding training to Batch 68...
+
+================================================================================
+[BATCH 68 DEEP DIVE] Global Step = 1257
+================================================================================
+imgs: shape=[8, 1, 384, 384], min=0.0000, max=0.9725, is_finite=True
+gts: shape=[8, 1, 384, 384], min=0.0000, max=1.0000, is_finite=True
+Teacher all parameters finite before forward: True
+Teacher all buffers finite: True
+Unlabeled image 0: min=0.1569, max=0.5647, mean=0.3623, is_finite=True
+Unlabeled image 1: min=0.0863, max=0.6039, mean=0.2362, is_finite=True
+Unlabeled image 2: min=0.0000, max=0.9725, mean=0.4722, is_finite=True
+Unlabeled image 3: min=0.1216, max=0.9569, mean=0.7544, is_finite=True
+pert_ul_all: shape=[36, 1, 384, 384], min=-0.0414, max=1.0161, is_finite=True
+
+[Testing Individual Unlabeled Images Through Teacher Model]
+  Unlabeled image 0 (9 perts) -> fused output NaNs=0, Infs=0, min=-3.3421311378479004, max=-2.213793992996216
+  Unlabeled image 1 (9 perts) -> fused output NaNs=0, Infs=0, min=-3.3421311378479004, max=-2.213793992996216
+  Unlabeled image 2 (9 perts) -> fused output NaNs=0, Infs=0, min=-3.3421311378479004, max=-2.213793992996216
+  Unlabeled image 3 (9 perts) -> fused output NaNs=1327104, Infs=0, min=NaN, max=NaN
+
+[Tracing Layer-by-Layer Activations of model_tea with Hooks]
+  >>> FIRST NON-FINITE MODULE: decoder.seg_blocks.0.block.0.block.1 | shape=[36, 128, 12, 12] | NaNs=15552, Infs=0
+      Subsequent non-finite: decoder.seg_blocks.0.block.0.block.2 | shape=[36, 128, 12, 12] | NaNs=15552, Infs=0
+      Subsequent non-finite: decoder.seg_blocks.0.block.1.block.0 | shape=[36, 128, 24, 24] | NaNs=663552, Infs=0
+      Subsequent non-finite: decoder.seg_blocks.0.block.1.block.1 | shape=[36, 128, 24, 24] | NaNs=663552, Infs=0
+      Subsequent non-finite: decoder.seg_blocks.0.block.1.block.2 | shape=[36, 128, 24, 24] | NaNs=663552, Infs=0
+      Subsequent non-finite: decoder.seg_blocks.0.block.2.block.0 | shape=[36, 128, 48, 48] | NaNs=2654208, Infs=0
+      Subsequent non-finite: decoder.seg_blocks.0.block.2.block.1 | shape=[36, 128, 48, 48] | NaNs=2654208, Infs=0
+      Subsequent non-finite: decoder.seg_blocks.0.block.2.block.2 | shape=[36, 128, 48, 48] | NaNs=2654208, Infs=0
+      Subsequent non-finite: decoder.merge | shape=[36, 128, 96, 96] | NaNs=10616832, Infs=0
+      Subsequent non-finite: decoder.dropout | shape=[36, 128, 96, 96] | NaNs=10616832, Infs=0
+      Subsequent non-finite: segmentation_head.0 | shape=[36, 1, 96, 96] | NaNs=82944, Infs=0
+      Subsequent non-finite: segmentation_head.1 | shape=[36, 1, 384, 384] | NaNs=1327104, Infs=0
+      Subsequent non-finite: segmentation_head.2 | shape=[36, 1, 384, 384] | NaNs=1327104, Infs=0
+      Subsequent non-finite: aux_segmentation_head_list.0.0 | shape=[36, 1, 96, 96] | NaNs=82944, Infs=0
+      Subsequent non-finite: aux_segmentation_head_list.0.1 | shape=[36, 1, 384, 384] | NaNs=1327104, Infs=0
+      Subsequent non-finite: aux_segmentation_head_list.0.2 | shape=[36, 1, 384, 384] | NaNs=1327104, Infs=0
+
+================================================================================
+DEEP DIVE CONCLUSION: First non-finite module inside Teacher Model = ('decoder.seg_blocks.0.block.0.block.1', [36, 128, 12, 12], 15552, 0)
+================================================================================

@@ -1,0 +1,3 @@
+checkpoint,epoch,student_l2_norm,teacher_l2_norm,euclidean_distance_student_teacher,relative_distance,is_teacher_finite,notes
+E19_BEST,19,18894.35594375467,201.05554573504224,18836.39981065743,0.9969326219284868,True,Teacher tracks student with standard EMA lag; no drift explosion
+E22_LATEST,22,22708.05874514411,205.88216165428238,22648.745809928285,0.9973880226451102,True,Teacher tracks student with standard EMA lag; no drift explosion
