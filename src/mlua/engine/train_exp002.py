@@ -314,9 +314,9 @@ def generate_final_training_report(
 
 ## 4. Checkpoint Integrity & Artifacts
 
-- **BEST Checkpoint**: `outputs/experiments/EXP-MLUA-002/checkpoints/EXP-MLUA-002_BEST.pth` (Epoch {best_epoch})
-- **LATEST Checkpoint**: `outputs/experiments/EXP-MLUA-002/checkpoints/EXP-MLUA-002_LATEST.pth` (Epoch {total_completed_epochs})
-- **Full History**: `outputs/experiments/EXP-MLUA-002/EXP-MLUA-002_FULL_TRAINING_HISTORY.csv`
+- **BEST Checkpoint**: `outputs/experiments/EXP-MLUA-002_HISTORICAL/checkpoints/EXP-MLUA-002_BEST.pth` (Epoch {best_epoch})
+- **LATEST Checkpoint**: `outputs/experiments/EXP-MLUA-002_HISTORICAL/checkpoints/EXP-MLUA-002_LATEST.pth` (Epoch {total_completed_epochs})
+- **Full History**: `outputs/experiments/EXP-MLUA-002_HISTORICAL/EXP-MLUA-002_FULL_TRAINING_HISTORY.csv`
 
 ---
 
@@ -736,7 +736,7 @@ def main():
     )
 
     generate_final_training_report(exp_dir, history_csv, cfg)
-    print(f"\n[Finished] EXP-MLUA-002 training session concluded. Status: outputs/experiments/EXP-MLUA-002/TRAINING_STATUS.md", flush=True)
+    print(f"\n[Finished] EXP-MLUA-002 training session concluded. Status: outputs/experiments/EXP-MLUA-002_HISTORICAL/TRAINING_STATUS.md", flush=True)
 
 
 if __name__ == "__main__":

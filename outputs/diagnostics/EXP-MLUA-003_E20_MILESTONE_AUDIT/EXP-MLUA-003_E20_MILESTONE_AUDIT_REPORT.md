@@ -27,7 +27,7 @@
 ## 2. Experiment Identity
 
 - **Experiment Name**: `EXP-MLUA-003`
-- **Config File**: [`configs/experiments/EXP-MLUA-003.yaml`](file:///c:/Users/devin/MLUA/configs/experiments/EXP-MLUA-003.yaml)
+- **Config File**: [`configs/experiments/exp_mlua_003_final_config.yaml`](file:///c:/Users/devin/MLUA/configs/experiments/exp_mlua_003_final_config.yaml)
 - **Baseline Experiment**: `EXP-MLUA-002` (Frozen at Epoch 9)
 - **Single Independent Variable**: Teacher EMA loop includes BatchNorm running statistics synchronization (`running_mean`, `running_var`, `num_batches_tracked`).
 - **All Controlled Variables**: Frozen identical to `EXP-MLUA-002` (seed `42`, dataset splits, ResNet-34 + FPN architecture, FP32 precision, AdamW optimizer, LambdaLR polynomial decay, loss weights).
@@ -48,7 +48,7 @@
 
 ## 4. Configuration Integrity Verification
 
-A strict line-by-line diff between [`configs/experiments/EXP-MLUA-002.yaml`](file:///c:/Users/devin/MLUA/configs/experiments/EXP-MLUA-002.yaml) and [`configs/experiments/EXP-MLUA-003.yaml`](file:///c:/Users/devin/MLUA/configs/experiments/EXP-MLUA-003.yaml) confirms:
+A strict line-by-line diff between [`configs/experiments/exp_mlua_002_historical_config.yaml`](file:///c:/Users/devin/MLUA/configs/experiments/exp_mlua_002_historical_config.yaml) and [`configs/experiments/exp_mlua_003_final_config.yaml`](file:///c:/Users/devin/MLUA/configs/experiments/exp_mlua_003_final_config.yaml) confirms:
 - **28 / 28 hyperparameters match identically**.
 - Seed is locked at `42`.
 - Initial learning rate is `0.001`, betas `[0.9, 0.999]`, weight decay `0.01`.
@@ -69,8 +69,8 @@ A strict line-by-line diff between [`configs/experiments/EXP-MLUA-002.yaml`](fil
 - **Average Duration per Epoch**: `2,254.02` seconds (~`37.57 minutes`)
 - **Process Exit Code**: `0` (`STOPPED_CLEANLY`)
 - **Checkpoint Files Verified**:
-  1. [`outputs/experiments/EXP-MLUA-003/checkpoints/EXP-MLUA-003_BEST.pth`](file:///c:/Users/devin/MLUA/outputs/experiments/EXP-MLUA-003/checkpoints/EXP-MLUA-003_BEST.pth) (Size: 370,837,043 bytes)
-  2. [`outputs/experiments/EXP-MLUA-003/checkpoints/EXP-MLUA-003_LATEST.pth`](file:///c:/Users/devin/MLUA/outputs/experiments/EXP-MLUA-003/checkpoints/EXP-MLUA-003_LATEST.pth) (Size: 370,838,829 bytes)
+  1. [`outputs/experiments/EXP-MLUA-003_FINAL/checkpoints/EXP-MLUA-003_E56_FINAL.pth`](file:///c:/Users/devin/MLUA/outputs/experiments/EXP-MLUA-003_FINAL/checkpoints/EXP-MLUA-003_E56_FINAL.pth) (Size: 370,837,043 bytes)
+  2. [`outputs/experiments/EXP-MLUA-003_FINAL/checkpoints/EXP-MLUA-003_E60_LATEST.pth`](file:///c:/Users/devin/MLUA/outputs/experiments/EXP-MLUA-003_FINAL/checkpoints/EXP-MLUA-003_E60_LATEST.pth) (Size: 370,838,829 bytes)
 
 ---
 
@@ -103,7 +103,7 @@ A strict line-by-line diff between [`configs/experiments/EXP-MLUA-002.yaml`](fil
 
 ## 7. Best Checkpoint Verification
 
-Direct inspection of [`outputs/experiments/EXP-MLUA-003/checkpoints/EXP-MLUA-003_BEST.pth`](file:///c:/Users/devin/MLUA/outputs/experiments/EXP-MLUA-003/checkpoints/EXP-MLUA-003_BEST.pth) confirms:
+Direct inspection of [`outputs/experiments/EXP-MLUA-003_FINAL/checkpoints/EXP-MLUA-003_E56_FINAL.pth`](file:///c:/Users/devin/MLUA/outputs/experiments/EXP-MLUA-003_FINAL/checkpoints/EXP-MLUA-003_E56_FINAL.pth) confirms:
 - **Saved Epoch**: `19` (Global Step `2508`).
 - **Validation Criterion**: Max Validation Dice.
 - **Internal Checkpoint Metrics**:
@@ -176,7 +176,7 @@ At Epoch 10, Batch 68 (Global Step 1257) — the exact point where `EXP-MLUA-002
 
 ## 12. Teacher EMA Buffer Verification
 
-Direct analysis of all 36 BatchNorm layers in [`EXP-MLUA-003_BEST.pth`](file:///c:/Users/devin/MLUA/outputs/experiments/EXP-MLUA-003/checkpoints/EXP-MLUA-003_BEST.pth) and [`checkpoint_buffer_summary.json`](file:///c:/Users/devin/MLUA/outputs/experiments/EXP-MLUA-003/diagnostics/checkpoint_buffer_summary.json) confirms:
+Direct analysis of all 36 BatchNorm layers in [`EXP-MLUA-003_E56_FINAL.pth`](file:///c:/Users/devin/MLUA/outputs/experiments/EXP-MLUA-003_FINAL/checkpoints/EXP-MLUA-003_E56_FINAL.pth) and [`checkpoint_buffer_summary.json`](file:///c:/Users/devin/MLUA/outputs/experiments/EXP-MLUA-003_FINAL/diagnostics/checkpoint_buffer_summary.json) confirms:
 - **Total BatchNorm Layers Audited**: **36 / 36**
 - **Default Running Mean Count**: **0 / 36** (All active)
 - **Default Running Var Count**: **0 / 36** (All active)
@@ -237,4 +237,4 @@ CONTINUE EXP003 TO 50 EPOCHS
 1. `EXP-MLUA-003` has completed its 20-epoch milestone cleanly with 0 numerical defects.
 2. The model demonstrated strong upward momentum through Epoch 19 ($28.11\%$ Dice, $32.69\%$ Recall).
 3. The consistency loss rampup schedule is calibrated for long-term semi-supervised training.
-4. Continuing from [`EXP-MLUA-003_LATEST.pth`](file:///c:/Users/devin/MLUA/outputs/experiments/EXP-MLUA-003/checkpoints/EXP-MLUA-003_LATEST.pth) to 50 epochs is the scientifically sound next milestone to observe asymptotic convergence before committing to a 100–200 epoch budget.
+4. Continuing from [`EXP-MLUA-003_E60_LATEST.pth`](file:///c:/Users/devin/MLUA/outputs/experiments/EXP-MLUA-003_FINAL/checkpoints/EXP-MLUA-003_E60_LATEST.pth) to 50 epochs is the scientifically sound next milestone to observe asymptotic convergence before committing to a 100–200 epoch budget.

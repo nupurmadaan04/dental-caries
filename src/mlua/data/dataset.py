@@ -8,7 +8,7 @@ from torch.utils.data import Dataset
 from torchvision import transforms as T
 from PIL import Image
 
-from evaluate.utils import get_data_test_overlap, rgb2gray
+from evaluate.evaluation_utils import get_data_test_overlap, rgb2gray
 
 
 class TrainDataset(Dataset):

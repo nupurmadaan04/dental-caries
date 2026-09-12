@@ -8,7 +8,7 @@ Implements:
 3. Day 2 Verified Compute Optimization: Unified 36-image Teacher Forward Pass under torch.inference_mode (T=8 MC iterations).
 4. RAM Pre-cached Dataset (~704 MB) for zero disk I/O bottlenecks.
 5. In-Place Vectorized Parameter + Buffer EMA updates (theta=0.99).
-6. Dedicated Checkpointing (EXP-MLUA-003_LATEST.pth vs EXP-MLUA-003_BEST.pth).
+6. Dedicated Checkpointing (EXP-MLUA-003_E60_LATEST.pth vs EXP-MLUA-003_E56_FINAL.pth).
 7. High-Precision Numerical Finiteness & Activation Scale Monitoring at critical step regions (e.g. Batch 68 / Step 1257).
 8. Full CSV history tracking and live TRAINING_STATUS.md generation.
 """
@@ -239,8 +239,8 @@ def main():
 
     status_file = exp_dir / "TRAINING_STATUS.md"
     history_csv = exp_dir / "EXP-MLUA-003_FULL_TRAINING_HISTORY.csv"
-    latest_ckpt_path = checkpoints_dir / "EXP-MLUA-003_LATEST.pth"
-    best_ckpt_path = checkpoints_dir / "EXP-MLUA-003_BEST.pth"
+    latest_ckpt_path = checkpoints_dir / "EXP-MLUA-003_E60_LATEST.pth"
+    best_ckpt_path = checkpoints_dir / "EXP-MLUA-003_E56_FINAL.pth"
 
     seed = cfg["experiment"]["seed"]
     seed_everything(seed)
