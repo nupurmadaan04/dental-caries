@@ -29,5 +29,5 @@ Thank you for your interest in contributing to the **MLUA Dental Caries Segmenta
 ## Development Guidelines
 
 - **Code Style:** Keep TypeScript/React components modular and formatted. Preserve dark/light theme compatibility.
-- **Scientific Integrity:** Do not alter the canonical checkpoint metrics (`EXP-MLUA-003_E56_FINAL.pth`, $\tau = 0.50$, $65.62\%$ Val Dice) unless introducing a formal ablation study.
+- **Scientific Integrity:** Do not alter the canonical checkpoint metrics (`EXP-MLUA-003_E64_BEST.pth`, $\tau = 0.50$, $69.39\%$ Val Dice) unless introducing a formal ablation study.
 - **Code of Conduct:** Please adhere to our [Code of Conduct](CODE_OF_CONDUCT.md) in all community interactions.

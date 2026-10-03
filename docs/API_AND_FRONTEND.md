@@ -34,7 +34,7 @@ The Dental Caries Clinical AI platform is engineered as a modern, high-performan
 The frontend interfaces with the MLUA inference service through [`frontend/src/services/api.ts`](file:///c:/Users/devin/MLUA/frontend/src/services/api.ts):
 
 - `POST /api/analyze`: Submits a panoramic radiograph for full 21-patch sliding-window inference and returns segmented coordinates, lesion clusters, uncertainty maps, and stage classifications.
-- `GET /api/health`: Polls inference backend status and active model checkpoint (`EXP-MLUA-003_E56_FINAL.pth`).
+- `GET /api/health`: Polls inference backend status and active model checkpoint (`EXP-MLUA-003_E64_BEST.pth`).
 - **Autonomous Standalone Fallback:** When running without a live GPU backend, the client seamlessly falls back to high-fidelity anatomical mock datasets covering healthy, mild, moderate, and severe clinical cases.
 
 ---

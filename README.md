@@ -77,19 +77,23 @@
 
 ## 📊 EXP-MLUA-003 Validated Benchmark Results
 
-The canonical model checkpoint **`EXP-MLUA-003_E56_FINAL.pth`** completed all 60 planned epochs (7,920 global steps) with zero numerical anomalies:
+The current canonical selected model checkpoint is **`EXP-MLUA-003_E64_BEST.pth`** (Epoch 64, Global Step 8,448), trained under the controlled 70-epoch run with zero numerical anomalies.
 
-### Internal Validation Performance (Epoch 56, $\tau = 0.50$)
+> **Research Note:** Epoch 64 achieved a new validation-best Dice of **69.386%**, improving upon the previous Epoch 56 best of **65.623%** by **+3.763 percentage points**. Epoch 64 is therefore the current selected validation checkpoint for EXP-MLUA-003. The sealed test set has not been re-evaluated using Epoch 64 (historical E56 evaluation shown below).
 
-| Metric | Score (%) | Raw Value | Interpretation |
-| :--- | :--- | :--- | :--- |
-| **Dice Similarity Coefficient (DSC)** | **`65.62%`** | `0.65623` | High spatial contour overlap on validation cohort |
-| **Intersection over Union (IoU / Jaccard)** | **`49.85%`** | `0.49851` | Accurate foreground lesion area localization |
-| **Precision (PPV)** | **`69.01%`** | `0.69014` | Low false positive rate across sound enamel/dentin |
-| **Recall / Sensitivity** | **`63.65%`** | `0.63652` | Comprehensive detection of subtle demineralized lesions |
-| **Validation Loss** | **`0.7639`** | `0.76388` | Lowest combined BCE + Soft Dice loss |
+### Internal Validation Performance (Epoch 64, $\tau = 0.50$)
 
-### Independent Sealed Test Set Evaluation (100 Cases)
+| Metric | Score (%) | Raw Value | Reference Baseline (E56) | Interpretation |
+| :--- | :--- | :--- | :--- | :--- |
+| **Dice Similarity Coefficient (DSC)** | **`69.39%`** | `0.69386` | `65.62%` (+3.76%) | High spatial contour overlap on validation cohort |
+| **Intersection over Union (IoU / Jaccard)** | **`54.33%`** | `0.54326` | `49.85%` (+4.48%) | Accurate foreground lesion area localization |
+| **Precision (PPV)** | **`74.69%`** | `0.74689` | `69.01%` (+5.68%) | Very low false positive rate across sound enamel/dentin |
+| **Recall / Sensitivity** | **`66.42%`** | `0.66415` | `63.65%` (+2.77%) | Comprehensive detection of subtle demineralized lesions |
+| **Validation Loss** | **`0.7471`** | `0.74711` | `0.7639` (-0.0168) | Lowest combined BCE + Soft Dice loss |
+
+### Independent Sealed Test Set Historical Evaluation (100 Cases, Evaluated on E56)
+
+*Note: Sealed test cohort has not yet been re-evaluated using Epoch 64.*
 
 | Test Metric | Case Macro Mean | Global Pixel Micro | Clinical Requirement |
 | :--- | :--- | :--- | :--- |
@@ -144,8 +148,9 @@ MLUA/
 │   └── experiments/
 │       └── EXP-MLUA-003_FINAL/
 │           ├── checkpoints/
-│           │   ├── EXP-MLUA-003_E56_FINAL.pth   # Canonical Best Checkpoint (Val Dice: 65.62%)
-│           │   └── EXP-MLUA-003_E60_LATEST.pth  # Training Final Checkpoint (Epoch 60)
+│           │   ├── EXP-MLUA-003_E64_BEST.pth    # Canonical Selected Best Checkpoint (Val Dice: 69.39%)
+│           │   ├── EXP-MLUA-003_E56_FINAL.pth   # Preserved Historical Checkpoint (Val Dice: 65.62%)
+│           │   └── EXP-MLUA-003_E70_LATEST.pth  # Training Final Checkpoint (Epoch 70)
 │           └── EXP-MLUA-003_FULL_TRAINING_HISTORY.csv
 ├── src/                                # Core MLUA Python engine
 │   └── mlua/

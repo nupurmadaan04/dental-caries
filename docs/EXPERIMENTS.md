@@ -8,27 +8,29 @@ The development of the MLUA framework followed a disciplined, scientific progres
 | :--- | :--- | :--- | :--- |
 | **`EXP-MLUA-001`** | 22 / 50 | Initial exploration of ResNet-34 + FPN semi-supervised setup. | Experienced metric divergence and early numerical degradation around Epoch 22 due to unconstrained unsupervised loss scaling. |
 | **`EXP-MLUA-002`** | 10 / 50 | Isolation of teacher-student consistency loss dynamics. | Identified critical desynchronization between Teacher model parameters and BatchNorm running buffers causing activation explosions. |
-| **`EXP-MLUA-003`** | **60 / 60** | **Controlled Remediation with Synchronized Teacher EMA buffers.** | **100% complete, zero anomalies, rock-solid numerical stability across all 7,920 optimization steps.** Peak validation Dice of **`65.62%`** (Epoch 56). |
+| **`EXP-MLUA-003`** | **70 / 70** | **Controlled Remediation with Synchronized Teacher EMA buffers.** | **100% complete, zero anomalies, rock-solid numerical stability across all 9,240 optimization steps.** New peak validation Dice of **`69.39%`** (Epoch 64, `EXP-MLUA-003_E64_BEST.pth`), surpassing the previous Epoch 56 milestone (`65.62%`). |
 
 ---
 
 ## 2. EXP-MLUA-003 Benchmark Performance
 
-### Validation Cohort Metrics (Epoch 56, $\tau = 0.50$)
+### Current Validation Cohort Metrics (Epoch 64, $\tau = 0.50$)
 
-| Evaluation Metric | Measured Score | Raw Value | Metric Significance |
-| :--- | :--- | :--- | :--- |
-| **Dice Similarity Coefficient (DSC)** | **`65.62%`** | `0.65623` | High spatial contour overlap on internal validation cases. |
-| **Intersection over Union (IoU / Jaccard)** | **`49.85%`** | `0.49851` | Accurate foreground lesion area localization. |
-| **Precision (Positive Predictive Value)** | **`69.01%`** | `0.69014` | Minimal false positive rate on healthy enamel/dentin. |
-| **Recall (Sensitivity)** | **`63.65%`** | `0.63652` | Comprehensive detection of subtle demineralized zones. |
-| **Validation Loss** | **`0.7639`** | `0.76388` | Lowest combined BCE + Soft Dice loss across training. |
+> **Selection Note:** Epoch 64 achieved a new validation-best Dice of **69.386%**, improving upon the previous Epoch 56 best of **65.623%** by **+3.763 percentage points**. Epoch 64 is therefore the current selected validation checkpoint for EXP-MLUA-003.
+
+| Evaluation Metric | Measured Score | Raw Value | Reference Baseline (E56) | Metric Significance |
+| :--- | :--- | :--- | :--- | :--- |
+| **Dice Similarity Coefficient (DSC)** | **`69.39%`** | `0.69386` | `65.62%` (+3.76%) | High spatial contour overlap on internal validation cases. |
+| **Intersection over Union (IoU / Jaccard)** | **`54.33%`** | `0.54326` | `49.85%` (+4.48%) | Accurate foreground lesion area localization. |
+| **Precision (Positive Predictive Value)** | **`74.69%`** | `0.74689` | `69.01%` (+5.68%) | Minimal false positive rate on healthy enamel/dentin. |
+| **Recall (Sensitivity)** | **`66.42%`** | `0.66415` | `63.65%` (+2.77%) | Comprehensive detection of subtle demineralized zones. |
+| **Validation Loss** | **`0.7471`** | `0.74711` | `0.7639` (-0.0168) | Lowest combined BCE + Soft Dice loss across training. |
 
 ---
 
 ## 3. Independent Sealed Test Set Evaluation (100 Cases)
 
-The final checkpoint `EXP-MLUA-003_E56_FINAL.pth` was evaluated on the strictly sealed 100-case test cohort (`dataset/test/`):
+*Note: The sealed test set has not been re-evaluated using Epoch 64. The historical evaluation below corresponds to the initial evaluation conducted on Epoch 56 (`EXP-MLUA-003_E56_FINAL.pth`).*
 
 | Test Metric | Case Macro Mean | Global Pixel Micro | Clinical Benchmark Requirement |
 | :--- | :--- | :--- | :--- |

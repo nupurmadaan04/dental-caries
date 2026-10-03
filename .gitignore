@@ -24,3 +24,5 @@ env/
 .vscode/
 .idea/
 .DS_Store
+TRAINING_STATUS.md
+
