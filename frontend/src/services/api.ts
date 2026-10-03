@@ -179,13 +179,13 @@ export const apiService = {
         },
         findings: generated.findings,
         evaluationMetrics: {
-          diceScore: 0.6562,
-          iou: 0.4985,
-          precision: 0.6901,
-          recall: 0.6365,
-          f1Score: 0.6562,
-          accuracy: 0.9975,
-          benchmarkReference: "ResNet-34 + FPN MLUA (EXP-MLUA-003 E56, τ=0.50)",
+          diceScore: 0.69386,
+          iou: 0.54326,
+          precision: 0.74689,
+          recall: 0.66415,
+          f1Score: 0.69386,
+          accuracy: 0.99784,
+          benchmarkReference: "ResNet-34 + FPN MLUA (EXP-MLUA-003 E64, τ=0.50)",
         },
         clinicalRecommendation: !hasLesions 
           ? "No suspicious caries lesions detected. Routine preventive dental care and periodic follow-up recommended."
@@ -385,16 +385,97 @@ export const apiService = {
   },
 
   /**
-   * Backend-mediated AI Assistant Chat with empathetic tone adaptation and topic-aware medical knowledge.
+   * Builds structured, non-fabricated case context matching backend expectations.
+   * Excludes all patient-identifying information (PHI) for strict privacy compliance.
    */
-  async sendAssistantMessage(message: string, context?: any): Promise<AssistantMessage> {
+  buildCaseContext(analysis?: AnalysisResult | null) {
+    if (!analysis) {
+      return {
+        model: {
+          name: "MLUA",
+          checkpoint: "EXP-MLUA-003_E64_BEST.pth",
+          task: "binary pixel-level caries segmentation",
+          threshold: 0.50,
+          validation_metrics: {
+            dice: 69.386,
+            iou: 54.326,
+            precision: 74.689,
+            recall: 66.415,
+            loss: 0.7471
+          }
+        },
+        case: {
+          image_available: false
+        }
+      };
+    }
+
+    return {
+      model: {
+        name: "MLUA",
+        checkpoint: "EXP-MLUA-003_E64_BEST.pth",
+        task: "binary pixel-level caries segmentation",
+        threshold: 0.50,
+        validation_metrics: {
+          dice: 69.386,
+          iou: 54.326,
+          precision: 74.689,
+          recall: 66.415,
+          loss: 0.7471
+        }
+      },
+      case: {
+        image_available: true,
+        // Zero patient identifiers sent to external AI service
+        overall_finding: analysis.overallFinding,
+        application_staging: {
+          level: analysis.stage?.level,
+          title: analysis.stage?.title,
+          description: analysis.stage?.description
+        },
+        segmentation_summary: {
+          totalLesions: analysis.summary?.totalLesions ?? 0,
+          affectedAreaPercent: analysis.summary?.affectedAreaPercent ?? 0,
+          totalAreaPx: analysis.summary?.totalAreaPx ?? 0,
+          meanPredictedProbability: analysis.summary?.meanConfidence ?? null
+        },
+        findings: (analysis.findings || []).map(f => ({
+          lesionNumber: f.lesionNumber || f.id,
+          toothNumberFDI: f.toothNumberFDI || null,
+          anatomicalLocation: f.location,
+          cariesDepthIndicator: f.depth,
+          stage: f.stage,
+          pixelArea: f.pixelArea,
+          areaPercent: f.areaPercent,
+          bbox: f.bbox || null,
+          modelPredictedProbability: f.confidence // Continuous model output activation in [0, 1]
+        }))
+      }
+    };
+  },
+
+  /**
+   * Backend-mediated Context-Aware Gemini AI Assistant Chat with multi-turn support and empathetic tone detection.
+   */
+  async sendAssistantMessage(
+    message: string, 
+    contextOrAnalysis?: any,
+    sessionId: string = "default_session",
+    mode: 'standard' | 'simple' | 'technical' = 'standard'
+  ): Promise<AssistantMessage> {
     const emotion = detectEmotionalTone(message);
+    const structuredContext = (contextOrAnalysis && 'findings' in contextOrAnalysis) 
+      ? this.buildCaseContext(contextOrAnalysis) 
+      : contextOrAnalysis;
+
     try {
-      const response = await client.post('/api/assistant/chat', {
+      const response = await client.post('/api/chat', {
         message,
-        context,
-        emotion,
+        session_id: sessionId,
+        mode,
+        case_context: structuredContext,
       });
+
       return {
         id: `msg-${Date.now()}`,
         sender: 'assistant',
@@ -403,42 +484,94 @@ export const apiService = {
         detectedEmotion: emotion,
       };
     } catch {
+      // Offline fallback: grounded in actual current case findings or general technical knowledge
       const lower = message.toLowerCase();
       let responseText = "";
+      const hasCase = Boolean(structuredContext?.case?.image_available);
+      const findings = structuredContext?.case?.findings || [];
 
-      // Topic-based contextual intelligent responses
-      if (lower.includes('stage 0') || lower.includes('no caries') || lower.includes('healthy')) {
-        responseText = "Stage 0 indicates 'No Significant Caries Region Detected'. The dental structures appear radiographically sound without evident demineralization or radiolucent shadows. Routine 6-month preventive cleanings and clinical checkups remain recommended.";
-      } else if (lower.includes('stage 1') || lower.includes('early caries') || lower.includes('initial')) {
-        responseText = "Stage 1 represents 'Suspected Early Caries', where localized demineralization is confined to enamel (E1/E2) or the outer dentino-enamel junction. In many cases, these lesions are non-cavitated and can be arrested or remineralized with high-fluoride varnishes, dietary adjustments, and careful monitoring without drilling.";
-      } else if (lower.includes('stage 2') || lower.includes('moderate caries')) {
-        responseText = "Stage 2 represents 'Moderate Caries', indicating radiographic radiolucency extending deeper into the middle or deep dentin (D1/D2). Clinicians typically recommend a visual-tactile check, vitality testing, and restorative dental therapy (e.g. composite restoration) to halt bacterial progression.";
-      } else if (lower.includes('stage 3') || lower.includes('deep') || lower.includes('extensive')) {
-        responseText = "Stage 3 indicates 'Extensive / Deep Caries' involving deep dentin in close proximity to the dental pulp. Immediate clinical examination, pulp vitality assessment, and comprehensive restorative or endodontic consultation are advised.";
+      // Safety: definitive diagnosis requests
+      if (lower.includes('definitely') || lower.includes('exact diagnosis') || lower.includes('do i have') || lower.includes('is this a cavity') || lower.includes('have caries')) {
+        responseText = "This application cannot provide a definitive clinical diagnosis. The MLUA model provides algorithmic decision-support by identifying candidate regions of radiolucency. Only a qualified, licensed dental professional can determine if dental caries is clinically present through in-person visual-tactile examination, vitality assessment, and clinical correlation.";
+      }
+      // Safety: medications
+      else if (lower.includes('medicine') || lower.includes('drug') || lower.includes('prescribe') || lower.includes('treat') || lower.includes('take')) {
+        responseText = "The AI assistant is strictly a decision-support explanation tool and cannot prescribe medications or clinical treatments. If you are experiencing tooth pain, sensitivity, or suspect dental disease, please schedule an appointment with a qualified dental professional for proper diagnosis and care.";
+      }
+      // Location, staging, candidate region, or tooth questions without an active case
+      else if (!hasCase && (lower.includes('where') || lower.includes('tooth') || lower.includes('teeth') || lower.includes('l1') || lower.includes('l2') || lower.includes('region') || lower.includes('affected') || lower.includes('candidate') || lower.includes('highlighted') || lower.includes('this x-ray') || lower.includes('this result') || lower.includes('finding') || lower.includes('what did the model detect') || lower.includes('why did the model highlight') || lower.includes('stage') || lower.includes('level') || lower.includes('severity') || lower.includes('recent report') || lower.includes('this report'))) {
+        responseText = "No active analyzed case is currently available. Please upload or select a radiograph and run it through the MLUA analysis pipeline first.";
+      }
+      // Case Staging questions WITH an active case
+      else if (lower.includes('stage') || lower.includes('level') || lower.includes('severity')) {
+        const staging = structuredContext?.case?.application_staging || {};
+        const lvl = staging.level || 'Application-Defined Heuristic Staging';
+        const title = staging.title || '';
+        const desc = staging.description || '';
+        const titlePart = title ? ` (${title})` : '';
+        const descPart = desc ? ` Description: ${desc}.` : '';
+
+        if (lower.includes('what does level 1') || lower.includes('explain level 1') || lower.includes('what does stage 1')) {
+          responseText = `In this application, Level 1 represents 'Suspected Early Caries', indicating localized demineralization confined to enamel or the outer dentino-enamel junction. The current active case is staged as ${lvl}${titlePart}. This is a rule-based decision-support classification from segmentation findings, not a definitive clinical diagnosis. A dentist should correlate the finding with the radiograph and clinical examination.`;
+        } else if (lower.includes('what does level 2') || lower.includes('explain level 2') || lower.includes('what does stage 2')) {
+          responseText = `In this application, Level 2 represents 'Moderate Caries', indicating radiographic radiolucency extending deeper across the enamel-dentin junction into middle/deep dentin. The current active case is staged as ${lvl}${titlePart}. This is an algorithmic decision-support classification to assist dental review, not a definitive clinical diagnosis. A dentist should correlate the finding with the radiograph and clinical examination.`;
+        } else if (lower.includes('what does level 3') || lower.includes('explain level 3') || lower.includes('what does stage 3')) {
+          responseText = `In this application, Level 3 represents 'Extensive / Deep Caries', indicating deep radiolucency extending into inner dentin approaching or involving the dental pulp. The current active case is staged as ${lvl}${titlePart}. This is a decision-support classification, not a definitive clinical diagnosis. Prompt in-person clinical and vitality examination is advised.`;
+        } else if (findings.length > 0) {
+          responseText = `The current report assigns this candidate region an application-defined ${lvl} heuristic stage${titlePart}.${descPart} This staging is generated from the application's segmentation findings and associated lesion indicators. It is a decision-support classification, not a definitive clinical diagnosis. A dentist should correlate the finding with the radiograph and clinical examination.`;
+        } else {
+          responseText = `The current report assigns an application-defined ${lvl} heuristic stage${titlePart}.${descPart} The segmentation model detected no candidate caries regions exceeding threshold τ = 0.50. This is a decision-support indicator, not a definitive clinical diagnosis. Routine dental examination remains recommended.`;
+        }
+      }
+      // Location / candidate region / tooth questions WITH an active case
+      else if (lower.includes('where is') || lower.includes('which tooth') || lower.includes('tooth is affected') || lower.includes('tooth is involved') || lower.includes('what does l1 mean') || lower.includes('what is l1') || lower.includes('candidate region') || lower.includes('what did the model detect') || lower.includes('why did the model highlight') || lower.includes('where are') || lower.includes('what did the model find') || lower.includes('what did it find')) {
+        if (findings.length > 0) {
+          if (findings.length === 1) {
+            const f = findings[0];
+            const fId = f.lesionNumber || f.id || 'L1';
+            const fTooth = f.toothNumberFDI ? `associated with tooth ${f.toothNumberFDI}` : '';
+            const fLoc = f.anatomicalLocation || f.location ? `in the ${f.anatomicalLocation || f.location} region` : '';
+            const descParts = [fId, fTooth, fLoc].filter(Boolean).join(' ');
+            const probVal = f.modelPredictedProbability !== undefined ? f.modelPredictedProbability : f.confidence;
+            const probStr = probVal !== undefined && probVal !== null ? `${(Number(probVal) * 100).toFixed(1)}%` : 'N/A';
+            const extra: string[] = [];
+            if (f.cariesDepthIndicator || f.depth) extra.push(`Depth indicator: ${f.cariesDepthIndicator || f.depth}`);
+            if (f.pixelArea) extra.push(`segmented area: ${f.pixelArea} px`);
+            const extraStr = extra.length > 0 ? ` (${extra.join(', ')})` : '';
+
+            responseText = `The current analysis identifies one candidate region, ${descParts}.${extraStr} The segmentation overlay marks this candidate area. The model-predicted probability for the segmented pixels is ${probStr}. This is an algorithmic prediction and not a clinical diagnosis.`;
+          } else {
+            const items = findings.map((f: any) => {
+              const prob = f.modelPredictedProbability ?? f.confidence;
+              const probStr = prob ? `${(Number(prob) * 100).toFixed(1)}%` : 'N/A';
+              return `${f.lesionNumber || f.id || 'Region'} (Tooth ${f.toothNumberFDI || 'Unspecified'}, ${f.anatomicalLocation || f.location || 'Unspecified'}, Model Predicted Probability: ${probStr})`;
+            });
+            responseText = `The current analysis identifies ${findings.length} candidate regions: ${items.join('; ')}. The segmentation overlay marks these candidate areas on the radiograph. These are algorithmic predictions and not clinical diagnoses.`;
+          }
+        } else {
+          responseText = "The current analysis did not detect any candidate lesion regions exceeding the decision threshold (τ = 0.50). The segmentation overlay shows no highlighted caries regions.";
+        }
+      }
+      // Highlighted region explanation
+      else if (lower.includes('highlighted') || lower.includes('what does this mean') || lower.includes('area mean') || lower.includes('explain this')) {
+        if (findings.length > 0) {
+          const descs = findings.slice(0, 3).map((f: any) => `${f.lesionNumber || f.id || 'L1'}: Tooth ${f.toothNumberFDI || 'N/A'} (${f.anatomicalLocation || f.location || ''})`).join(', ');
+          responseText = `The highlighted area(s) (${descs}) represent candidate regions identified by the application's MLUA segmentation model as suspected caries. The mask represents the model's pixel-level binary segmentation at threshold τ = 0.50. This is an AI decision-support indicator and does not replace a definitive clinical evaluation by a licensed dental practitioner.`;
+        } else {
+          responseText = "The MLUA model did not detect any caries candidate regions exceeding the decision threshold (τ = 0.50) on this radiograph. All tooth structures appear radiographically within normal density limits.";
+        }
+      } else if (lower.includes('accuracy') || lower.includes('dice') || lower.includes('precision') || lower.includes('recall') || lower.includes('iou') || lower.includes('metric')) {
+        responseText = "On canonical validation benchmarks (EXP-MLUA-003 E64 BEST at τ = 0.50), the system demonstrates a Validation Dice Similarity of 69.39%, IoU (Jaccard) of 54.33%, Precision of 74.69%, Recall of 66.42%, and Validation Loss of 0.7471. Please note that these are dataset validation metrics and do not represent a guarantee of accuracy for any individual patient's radiograph.";
       } else if (lower.includes('cervical burnout') || lower.includes('burnout') || lower.includes('false positive') || lower.includes('artifact')) {
         responseText = "Cervical burnout is a frequent optical phenomenon on panoramic and periapical radiographs. It occurs at the neck of the tooth (between the dense enamel crown and the alveolar bone crest) where less tissue absorbs X-rays, creating an artificial dark band that can mimic root caries. Clinical tactile examination with a periodontal probe easily distinguishes real caries from burnout.";
-      } else if (lower.includes('bitewing') || lower.includes('panoramic vs') || lower.includes('opg vs') || lower.includes('intraoral')) {
-        responseText = "Panoramic radiographs (OPGs) give an excellent broad overview of the entire maxilla and mandible, but suffer from 15–30% geometric distortion and lower resolution. Bitewing radiographs provide zero geometric magnification and superior resolution for detecting early interproximal enamel lesions between premolars and molars. They complement each other in comprehensive dental diagnosis.";
-      } else if (lower.includes('remineraliz') || lower.includes('fluoride') || lower.includes('heal') || lower.includes('arrest')) {
-        responseText = "Early enamel demineralization (Stage 1) can often undergo remineralization! Applying 5% sodium fluoride varnish, silver diamine fluoride (SDF), using prescribed 5000 ppm fluoride toothpaste, and reducing fermentable carbohydrate intake can restore calcium and phosphate ions to the enamel crystal lattice, preventing cavitation.";
-      } else if (lower.includes('accuracy') || lower.includes('dice') || lower.includes('precision') || lower.includes('recall') || lower.includes('iou') || lower.includes('metric')) {
-        responseText = "On canonical validation benchmarks (EXP-MLUA-003 E56 at τ=0.50), the system demonstrates a Validation Dice Similarity of 65.62%, IoU (Jaccard) of 49.85%, Precision of 69.01%, and Recall of 63.65% with a peak validation loss of 0.7639.";
-      } else if (lower.includes('doctor review') || lower.includes('verification') || lower.includes('sign-off') || lower.includes('how does the doctor')) {
-        responseText = "The Physician Review & Sign-Off workflow enables dentists to formally record their independent clinical judgment. The form allows selecting agreement levels ('Agree', 'Partially Agree', 'Disagree'), entering targeted clinical notes, and certifying findings. Saved reviews are permanently attached to the case archive.";
-      } else if (lower.includes('fdi') || lower.includes('tooth number') || lower.includes('tooth 46') || lower.includes('tooth 16')) {
-        responseText = "The system uses the universal FDI Two-Digit Dental Numbering System. The first digit represents the quadrant (1 = Upper-Right, 2 = Upper-Left, 3 = Lower-Left, 4 = Lower-Right) and the second digit represents the tooth from midline to molar (1 to 8). For example, Tooth 46 is the permanent lower-right first molar, and Tooth 16 is the upper-right first molar.";
-      } else if (lower.includes('radiation') || lower.includes('dose') || lower.includes('safe') || lower.includes('x-ray')) {
-        responseText = "A digital panoramic radiograph delivers approximately 9 to 24 microsieverts (μSv) of radiation—comparable to 1 to 3 days of natural background environmental radiation. Modern digital sensors follow the ALARA ('As Low As Reasonably Achievable') principle to maximize safety.";
-      } else if (lower.includes('pain') || lower.includes('symptom') || lower.includes('hurts') || lower.includes('sensitive')) {
-        responseText = "Tooth sensitivity to hot, cold, or sweet foods, or spontaneous pain, can indicate that demineralization has reached the innervated dentin or pulp chamber. If you or the patient are experiencing symptoms, schedule an immediate in-person dental consultation for vitality testing and definitive care.";
+      } else if (lower.includes('how does') || lower.includes('mlua') || lower.includes('model work') || lower.includes('architecture') || lower.includes('binary segmentation')) {
+        responseText = "The MLUA system performs pixel-level binary segmentation that identifies pixels belonging to suspected carious regions versus background. It employs a Teacher-Student dual architecture with a ResNet-34 Feature Pyramid Network (FPN) backbone, multi-scale feature aggregation (P2–P5), auxiliary deep supervision, Exponential Moving Average (EMA) teacher synchronization, and Monte Carlo uncertainty estimation. Inference is performed using overlapping 384×384 pixel patches to detect fine proximal and occlusal demineralization.";
+      } else if (lower.includes('limitation') || lower.includes('limitations')) {
+        responseText = "Key limitations include: (1) Possible false positives from cervical burnout or overlapping restorative materials, (2) Geometric magnification and distortion (15–30%) inherent to panoramic OPGs, (3) Difficulty detecting non-cavitated initial enamel demineralization without bitewing confirmation, and (4) Model outputs are decision-support aids, not clinical diagnoses.";
       } else if (emotion === 'scared' || emotion === 'worried') {
-        responseText = "I understand that seeing flagged regions on a dental radiograph can feel unsettling. Please rest assured that highlighted areas represent algorithmically detected radiolucency for clinical review, which can often be caused by normal tooth anatomy, cervical burnout, or existing fillings. A licensed dentist must conduct an in-person clinical exam and vitality test before determining if any cavity is actually present.";
-      } else if (emotion === 'confused') {
-        responseText = "Let's clarify what this finding means. The AI highlights areas of lower radiographic density as 'caries candidates' to assist the clinician. It does not mean you definitely have deep decay. Your dentist will examine the specific tooth surfaces (such as occlusal grooves or interproximal margins) to verify if treatment or simple remineralization is needed.";
-      } else if (emotion === 'frustrated') {
-        responseText = "I understand your frustration. Panoramic radiographs naturally have optical distortions, anatomical superimpositions, and edge artifacts that can trigger false-positive candidate markers. Clinicians use these markers only as a secondary check, and clinical judgment always takes precedence over the AI.";
+        responseText = "I understand that seeing flagged regions on a dental radiograph can feel concerning. Please rest assured that highlighted areas represent algorithmically detected radiolucency for clinical review, which can often be caused by normal tooth anatomy, cervical burnout, or existing restorations. A licensed dentist must conduct an in-person clinical exam and vitality test before determining if treatment is needed.";
       } else {
-        responseText = "The Dental Caries Clinical AI analyzes panoramic dental radiographs to assist clinicians in identifying and staging localized demineralization zones across four levels: Stage 0 (Healthy), Stage 1 (Initial), Stage 2 (Moderate), and Stage 3 (Extensive). All findings serve as clinical decision support for qualified dental practitioners.";
+        responseText = "The Dental Caries Clinical AI analyzes panoramic dental radiographs to assist clinicians in identifying and staging localized demineralization zones. All findings serve as clinical decision support for qualified dental practitioners.";
       }
 
       return {

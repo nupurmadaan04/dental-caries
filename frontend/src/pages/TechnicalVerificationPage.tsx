@@ -17,11 +17,42 @@ import { PRODUCT_INFO, MODEL_BENCHMARK_METRICS } from '../constants/clinicalMeta
 
 export const TechnicalVerificationPage: React.FC = () => {
   const validationMetrics = [
-    { name: 'Dice Similarity Coefficient', percent: '65.62%', raw: '0.6562', desc: 'Pixel-level spatial overlap on validation cohort (E56, τ=0.50)' },
-    { name: 'Intersection over Union (IoU)', percent: '49.85%', raw: '0.4985', desc: 'Jaccard similarity index across foreground caries regions' },
-    { name: 'Precision (PPV)', percent: '69.01%', raw: '0.6901', desc: 'Proportion of true positive caries pixels among all predicted positives' },
-    { name: 'Recall / Sensitivity', percent: '63.65%', raw: '0.6365', desc: 'True positive caries detection rate across ground-truth lesions' },
-    { name: 'Validation Loss', percent: '0.7639', raw: '0.7639', desc: 'Combined BCE + Dice Loss at peak validation performance' },
+    {
+      name: 'Dice Similarity Coefficient',
+      percent: MODEL_BENCHMARK_METRICS.validation.dicePercent,
+      raw: MODEL_BENCHMARK_METRICS.validation.dice.toFixed(5),
+      desc: `Pixel-level spatial overlap on validation cohort (Epoch ${MODEL_BENCHMARK_METRICS.selectedEpoch}, ${MODEL_BENCHMARK_METRICS.operatingThresholdStr})`
+    },
+    {
+      name: 'Intersection over Union (IoU)',
+      percent: MODEL_BENCHMARK_METRICS.validation.iouPercent,
+      raw: MODEL_BENCHMARK_METRICS.validation.iou.toFixed(5),
+      desc: 'Jaccard similarity index across foreground caries candidate regions'
+    },
+    {
+      name: 'Precision (PPV)',
+      percent: MODEL_BENCHMARK_METRICS.validation.precisionPercent,
+      raw: MODEL_BENCHMARK_METRICS.validation.precision.toFixed(5),
+      desc: 'Proportion of true positive caries pixels among all predicted positives'
+    },
+    {
+      name: 'Recall / Sensitivity',
+      percent: MODEL_BENCHMARK_METRICS.validation.recallPercent,
+      raw: MODEL_BENCHMARK_METRICS.validation.recall.toFixed(5),
+      desc: 'True positive caries detection rate across ground-truth lesions'
+    },
+    {
+      name: 'Specificity (TNR)',
+      percent: MODEL_BENCHMARK_METRICS.validation.specificityPercent,
+      raw: MODEL_BENCHMARK_METRICS.validation.specificity.toFixed(5),
+      desc: 'True negative detection rate on healthy background dental tissues'
+    },
+    {
+      name: 'Validation Loss',
+      percent: MODEL_BENCHMARK_METRICS.validation.loss.toString(),
+      raw: MODEL_BENCHMARK_METRICS.validation.loss.toString(),
+      desc: `Combined BCE + Dice Loss at peak validation performance (Epoch ${MODEL_BENCHMARK_METRICS.selectedEpoch})`
+    },
   ];
 
   return (
@@ -57,7 +88,7 @@ export const TechnicalVerificationPage: React.FC = () => {
         </div>
         <div className="flex items-center gap-2">
           <span className="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400 font-mono font-semibold text-[11px]">
-            Training Complete (60 Epochs)
+            Best Checkpoint: Epoch {MODEL_BENCHMARK_METRICS.selectedEpoch} ({MODEL_BENCHMARK_METRICS.totalTrainingEpochs} Epochs Run)
           </span>
           <span className="px-2.5 py-1 rounded-full bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-300 dark:border-cyan-500/30 text-cyan-700 dark:text-cyan-400 font-mono font-semibold text-[11px]">
             Research Frozen
@@ -72,10 +103,10 @@ export const TechnicalVerificationPage: React.FC = () => {
             Validation Dice
           </span>
           <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-3xl font-black text-cyan-600 dark:text-cyan-400 font-mono">65.62%</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">0.6562</span>
+            <span className="text-3xl font-black text-cyan-600 dark:text-cyan-400 font-mono">{MODEL_BENCHMARK_METRICS.validation.dicePercent}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{MODEL_BENCHMARK_METRICS.validation.dice}</span>
           </div>
-          <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Peak validation overlap (E56)</p>
+          <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Peak validation overlap (Epoch {MODEL_BENCHMARK_METRICS.selectedEpoch})</p>
         </div>
 
         <div className="p-5 rounded-2xl bg-white dark:bg-[#0c1424] border border-slate-200 dark:border-[#1b2b4d] shadow-sm">
@@ -83,8 +114,8 @@ export const TechnicalVerificationPage: React.FC = () => {
             IoU (Jaccard)
           </span>
           <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-3xl font-black text-cyan-600 dark:text-cyan-400 font-mono">49.85%</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">0.4985</span>
+            <span className="text-3xl font-black text-cyan-600 dark:text-cyan-400 font-mono">{MODEL_BENCHMARK_METRICS.validation.iouPercent}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{MODEL_BENCHMARK_METRICS.validation.iou}</span>
           </div>
           <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Foreground area overlap</p>
         </div>
@@ -94,8 +125,8 @@ export const TechnicalVerificationPage: React.FC = () => {
             Validation Precision
           </span>
           <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-3xl font-black text-emerald-600 dark:text-emerald-400 font-mono">69.01%</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">0.6901</span>
+            <span className="text-3xl font-black text-emerald-600 dark:text-emerald-400 font-mono">{MODEL_BENCHMARK_METRICS.validation.precisionPercent}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{MODEL_BENCHMARK_METRICS.validation.precision}</span>
           </div>
           <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">True positive pixel ratio</p>
         </div>
@@ -105,8 +136,8 @@ export const TechnicalVerificationPage: React.FC = () => {
             Validation Recall
           </span>
           <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-3xl font-black text-cyan-600 dark:text-cyan-400 font-mono">63.65%</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">0.6365</span>
+            <span className="text-3xl font-black text-cyan-600 dark:text-cyan-400 font-mono">{MODEL_BENCHMARK_METRICS.validation.recallPercent}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{MODEL_BENCHMARK_METRICS.validation.recall}</span>
           </div>
           <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Demineralization detection rate</p>
         </div>
@@ -118,14 +149,14 @@ export const TechnicalVerificationPage: React.FC = () => {
           <div>
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
               <Activity className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
-              <span>Model Validation Performance (EXP-MLUA-003, Epoch 56)</span>
+              <span>Model Validation Performance ({MODEL_BENCHMARK_METRICS.experimentId}, Epoch {MODEL_BENCHMARK_METRICS.selectedEpoch})</span>
             </h2>
             <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-              Evaluated on canonical validation dental radiograph cohort at threshold τ = 0.50
+              Evaluated on canonical validation dental radiograph cohort at threshold {MODEL_BENCHMARK_METRICS.operatingThresholdStr}
             </p>
           </div>
           <span className="text-[11px] font-mono px-3 py-1 rounded-full bg-cyan-50 dark:bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-500/20 font-semibold">
-            Selected Operating Point: τ = 0.50
+            Selected Operating Point: {MODEL_BENCHMARK_METRICS.operatingThresholdStr}
           </span>
         </div>
 

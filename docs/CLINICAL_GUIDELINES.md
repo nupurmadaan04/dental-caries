@@ -1,45 +1,75 @@
-# Clinical Staging & Diagnostic Guidelines
+# Clinical Safety Guidelines & Regulatory Disclosures
 
-## 1. 4-Tier Color-Coded Severity Staging Matrix
-
-To assist dental clinicians during radiographic review, detected candidate caries regions are categorized into 4 clinical severity stages based on lesion depth, pixel area count, and percentage demineralization:
-
-| Clinical Stage | Color Code | Status Indicator | Pixel Area Threshold | Lesion Extent & Pathological Classification |
-| :--- | :--- | :--- | :--- | :--- |
-| **Stage 0** | 🟢 **Green** (`emerald`) | **No Caries Detected** | $0\text{ px}$ ($0.00\%$) | Sound, intact enamel and dentin structures without identifiable radiolucency. |
-| **Stage 1** | 🟡 **Yellow** (`yellow`) | **Early Demineralization** | $20 - 250\text{ px}$ ($< 0.80\%$) | Enamel-limited micro-lesion ($E_1/E_2$). Non-cavitated incipient demineralization amenable to remineralization therapy. |
-| **Stage 2** | 🟠 **Orange** (`orange`) | **Moderate Caries** | $250 - 600\text{ px}$ ($0.80\% - 1.80\%$) | Middle dentin penetration ($D_1/D_2$). Structural breakdown requiring restorative intervention. |
-| **Stage 3** | 🔴 **Red** (`red`) | **Extensive Caries** | $> 600\text{ px}$ ($> 1.80\%$) | Deep dentin involvement approaching or penetrating dental pulp ($D_3$). Risk of pulpal necrosis; immediate restorative or endodontic therapy. |
+This document outlines the clinical governance standards, terminology definitions, intended use parameters, and radiologic limitations for the **MLUA Dental Caries Clinical AI** system.
 
 ---
 
-## 2. Radiographic Considerations in Panoramic Screening
+## 1. Intended Use & Regulatory Classification
 
-Panoramic radiography (OPG) compresses complex 3D curved anatomical dental arches into a single 2D plane. Clinicians must apply the following guidelines when evaluating AI overlays:
+> [!IMPORTANT]
+> **INVESTIGATIONAL & CLINICAL DECISION SUPPORT ONLY.**  
+> The MLUA Dental Caries Clinical AI is intended solely as an adjunctive decision-support aid for licensed dental practitioners and radiologic researchers. It is **NOT** an autonomous diagnostic medical device and must never be utilized as a sole basis for therapeutic or surgical dental intervention.
 
-### A. Interproximal Surfaces
-Subtle enamel demineralization on adjacent premolar and molar contact surfaces should always be cross-referenced with intraoral bitewing radiographs for definitive confirmation.
-
-### B. Cervical Burnout Differentiation
-The physiological anatomical narrowing of tooth crowns between the enamel cap and alveolar crest naturally creates areas of decreased radiopacity ("cervical burnout"). Clinicians should correlate radiolucencies in cervical zones with tactile probe examination.
-
-### C. Restorative Margins
-Composite resin restorations lacking heavy radiopaque fillers may appear radiolucent under automated segmentation. Cross-reference candidate clusters with patient dental treatment histories.
+### Primary Clinical Functions
+- **Radiolucency Localization:** Algorithmically flags candidate pixel zones exhibiting relative radiolucency on panoramic dental radiographs (OPGs).
+- **Candidate Region Segmentation:** Highlights spatial contours of suspected proximal and occlusal demineralization at operational threshold $\tau = 0.50$.
+- **Heuristic Categorization:** Categorizes detected lesions into application-defined severity tiers (Level 1, Level 2, Level 3) to guide clinical prioritization.
 
 ---
 
-## 3. Standardized 2-Page PDF Radiology Report Architecture
+## 2. Core Terminology & Distinction of Concepts
 
-The system compiles screening findings into an official 2-page Clinical Radiology Screening & Candidate Localization Report:
+To prevent clinical misinterpretation, the system strictly enforces the following conceptual distinctions:
 
-- **Page 1 (Screening Overview & Panoramic Visuals):**
-  - Clinical header with unique Case ID, modality, operating threshold ($\tau = 0.50$), and date.
-  - Panoramic radiograph viewport ($16:9$ natural aspect ratio) with high-contrast lesion overlays and $L_1, L_2, \dots$ badge markers.
-  - 4-Card Primary KPI Grid: Overall Case Assessment, Total Detected Sites, Total Demineralized Area, and Mean Detection Confidence.
-  - Candidate Region Localization Table detailing each lesion's site ID, coordinates, area in pixels, area percentage, and assigned clinical stage.
+### 1. Model Output vs. Clinical Diagnosis
+- **Model Output:** Mathematical binary pixel segmentation ($0 = \text{background/sound tissue}$, $1 = \text{suspected demineralization}$) indicating areas where neural network activation exceeds $\tau = 0.50$.
+- **Clinical Diagnosis:** Definitive diagnostic determination made exclusively by a licensed dental practitioner following comprehensive in-person visual-tactile examination, periodontal probing, pulp vitality assessment, and patient history review.
 
-- **Page 2 (Lesion Staging, Academic Verification & Clinician Sign-Off):**
-  - Visual Caries Staging & Pixel Area Reference Matrix (Stages 0–3).
-  - 3-Card Technical Performance KPI Grid: Validation Overlap ($65.62\%$), Jaccard IoU ($49.85\%$), and Specificity ($99.63\%$).
-  - Clinical Interpretation Guidelines (Interproximal, Cervical Burnout, Restorative Margins).
-  - Expanded Legal Disclaimer & Clinician Review & Sign-Off box for formal medical records archiving.
+### 2. Model-Predicted Probability vs. Clinical Confidence
+- **Model-Predicted Probability:** Continuous sigmoid activation value $\sigma(z) \in [0, 1]$ generated by the neural network's final layer across candidate pixel patches.
+- **Clinical Meaning:** Model-predicted probability represents the algorithmic pattern-matching score for radiographic radiolucency. **It does NOT represent the probability that a patient clinically has dental caries.**
+
+### 3. Application-Defined Heuristic Staging
+Staging tiers are heuristic rule-based categories derived from segmented pixel areas and radiographic depth indicators:
+- **Stage 0 (Normal / Low Risk):** No suspicious radiolucent candidate regions detected above threshold $\tau = 0.50$.
+- **Level 1 (Suspected Early Caries):** Demineralization confined to enamel or the superficial dentino-enamel junction. In non-cavitated lesions, remineralization therapy and fluoride varnish monitoring are typically evaluated.
+- **Level 2 (Moderate Caries):** Radiolucency extending past the enamel-dentin junction into middle/deep dentin. Restorative evaluation and cavity preparation are typically considered.
+- **Level 3 (Extensive Dentinal Caries):** Deep radiolucency in close proximity to the dental pulp. Immediate vitality testing and endodontic/restorative consultation are advised.
+
+---
+
+## 3. Known Radiologic & Algorithmic Limitations
+
+Panoramic dental radiography (OPG) possesses inherent physical and optical characteristics that impact algorithmic segmentation:
+
+### 1. Cervical Burnout Artifacts
+Cervical burnout is a frequent optical phenomenon occurring at the tooth neck (between the dense enamel crown and the alveolar bone crest). Less hard tissue absorbs X-rays at this anatomical constriction, producing an artificial radiolucent band. While the model is trained with uncertainty gating to minimize false alarms, clinical tactile examination is mandatory to distinguish cervical burnout from true root caries.
+
+### 2. Geometric Distortion & Magnification
+Panoramic radiographs exhibit non-uniform 15% to 30% geometric magnification and distortion across dental quadrants. Subtle initial enamel lesions (E1) without cavitation are difficult to resolve on panoramic OPGs; supplemental intraoral bitewing radiographs remain the reference standard for proximal caries verification.
+
+### 3. Anatomical Superimposition & Restorations
+- Superimposition of the cervical spine, ghost shadows from the contralateral mandible, or the hard palate can create radiolucent artifacts.
+- Radiolucent dental restorations (e.g. older composite resins, liners) can mimic active caries.
+- Radiopaque metallic restorations (amalgam, crowns) can create beam-hardening streaks.
+
+---
+
+## 4. Clinician Workflow Recommendations
+
+```
+1. Perform Standard Clinical Examination (Visual & Tactile)
+                      |
+                      v
+2. Review Full Panoramic Radiograph (OPG) Independently
+                      |
+                      v
+3. Inspect MLUA AI Overlay & Candidate Lesion Table
+   (Compare Model Highlights against Visual-Tactile Findings)
+                      |
+                      v
+4. Verify Ambiguous Regions with Bitewing Radiographs or Vitality Tests
+                      |
+                      v
+5. Establish Definitive Diagnosis & Clinical Treatment Plan
+```

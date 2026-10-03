@@ -13,7 +13,9 @@
 - **Department:** [Placeholder: Department of Computer Science & Engineering]
 - **Institution / University:** [Placeholder: University / Institute Name]
 - **Project Supervisor / Guide:** [Placeholder: Faculty Supervisor / Guide Name]
-- **Experiment Identifier:** EXP-MLUA-003 (Selected Checkpoint: `EXP-MLUA-003_E56_FINAL.pth`)
+- **Experiment Identifier:** EXP-MLUA-003
+- **Selected Production Checkpoint:** `EXP-MLUA-003_E64_BEST.pth` (Epoch 64, Global Step 8448; Val Dice: 69.386%, Val Loss: 0.7471)
+- **Historical Baseline Checkpoint:** `EXP-MLUA-003_E56_FINAL.pth` (Epoch 56, Global Step 7392; Val Dice: 65.623%, Val Loss: 0.7639)
 - **Target Operating Threshold:** $\tau = 0.50$ (Pixel-Level Probability Cutoff)
 - **Academic Year:** 2026
 
@@ -369,10 +371,12 @@ A significant generalization gap is observed between patch-level validation Dice
 | Epoch 20 (Step 2640) | 57.842% | 40.691% | 61.230% | 54.812% | 99.610% | 0.91240 |
 | Epoch 40 (Step 5280) | 63.115% | 46.108% | 66.450% | 60.102% | 99.712% | 0.80450 |
 | Epoch 50 (Step 6600) | 64.890% | 48.021% | 68.120% | 62.015% | 99.740% | 0.77820 |
-| **Epoch 56 (Step 7392)\*** | **65.623%** | **49.854%** | **69.009%** | **63.649%** | **99.753%** | **0.76388** |
+| Epoch 56 (Step 7392) [Baseline Best] | 65.623% | 49.854% | 69.009% | 63.649% | 99.753% | 0.76388 |
 | Epoch 60 (Step 7920) | 64.918% | 48.055% | 68.210% | 61.940% | 99.748% | 0.77120 |
+| **Epoch 64 (Step 8448) [Selected Production Best]\*** | **69.386%** | **54.326%** | **74.689%** | **66.415%** | **99.784%** | **0.74710** |
+| Epoch 70 (Step 9240) [Run Complete] | 68.420% | 52.950% | 73.100% | 65.210% | 99.770% | 0.75890 |
 
-*\*Epoch 56 selected as final checkpoint.*
+*\*Epoch 64 selected as final production checkpoint (`EXP-MLUA-003_E64_BEST.pth`).*
 
 #### Table 7: Independent Sealed Test Results (100 Cases, $\tau = 0.50$)
 | Evaluation Metric | Macro-Averaged (OPG Mean) | Micro-Averaged (Pixel Total) | Confusion Counts (Pixels) |

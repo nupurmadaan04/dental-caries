@@ -7,29 +7,48 @@ import {
   User, 
   ShieldAlert, 
   HeartHandshake, 
-  AlertCircle,
-  HelpCircle,
-  Stethoscope
+  RefreshCw,
+  SlidersHorizontal,
+  Info,
+  Layers,
+  HelpCircle
 } from 'lucide-react';
 import { apiService, detectEmotionalTone } from '../services/api';
-import { AssistantMessage } from '../types/api';
+import { AssistantMessage, AnalysisResult } from '../types/api';
+import { useAIChat, ExplanationMode } from '../context/AIChatContext';
 
 interface AIAssistantDrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
-  context?: any;
+  isOpen?: boolean;
+  onClose?: () => void;
+  context?: AnalysisResult | null;
 }
 
 export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
-  isOpen,
-  onClose,
-  context,
+  isOpen: propIsOpen,
+  onClose: propOnClose,
+  context: propContext,
 }) => {
+  const {
+    isDrawerOpen: ctxIsOpen,
+    closeAssistant: ctxClose,
+    activeAnalysis: ctxAnalysis,
+    explanationMode,
+    setExplanationMode,
+    sessionId,
+    resetSession,
+    pendingPrompt,
+    clearPendingPrompt,
+  } = useAIChat();
+
+  const isOpen = propIsOpen !== undefined ? propIsOpen : ctxIsOpen;
+  const onClose = propOnClose || ctxClose;
+  const currentCase = propContext !== undefined ? propContext : ctxAnalysis;
+
   const [messages, setMessages] = useState<AssistantMessage[]>([
     {
       id: 'welcome',
       sender: 'assistant',
-      text: 'Hello. I am your Dental AI Clinical Assistant. I can help explain radiographic findings, caries staging criteria, panoramic imaging considerations, and clinical verification workflows. How can I assist you today?',
+      text: 'Hello. I am your Gemini-powered Dental AI Assistant. I can explain radiographic findings, MLUA segmentation masks, validation metrics, and model limitations. How can I assist you today?',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -47,16 +66,37 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
     }
   }, [messages, isOpen]);
 
-  const handleSend = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!inputValue.trim() || isLoading) return;
+  // Handle pending prompt passed from other UI components
+  useEffect(() => {
+    if (pendingPrompt && isOpen) {
+      setInputValue(pendingPrompt);
+      clearPendingPrompt();
+    }
+  }, [pendingPrompt, isOpen, clearPendingPrompt]);
 
-    const userText = inputValue.trim();
-    const userEmotion = detectEmotionalTone(userText);
+  // Reset conversation when session changes (e.g., when a new case is selected)
+  useEffect(() => {
+    setMessages([
+      {
+        id: `welcome-${Date.now()}`,
+        sender: 'assistant',
+        text: currentCase?.findings && currentCase.findings.length > 0
+          ? `I am ready to explain the findings from the current analyzed case. The MLUA model identified ${currentCase.findings.length} suspected caries candidate(s). What would you like me to explain?`
+          : 'Hello. I am your Dental AI Assistant. You can ask me general questions about the MLUA model, validation metrics, or upload an X-ray to interpret specific findings.',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      },
+    ]);
+  }, [sessionId]);
+
+  const handleSend = async (textToSend?: string) => {
+    const text = (textToSend || inputValue).trim();
+    if (!text || isLoading) return;
+
+    const userEmotion = detectEmotionalTone(text);
     const userMsg: AssistantMessage = {
       id: `user-${Date.now()}`,
       sender: 'user',
-      text: userText,
+      text,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       detectedEmotion: userEmotion,
     };
@@ -66,7 +106,12 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
     setIsLoading(true);
 
     try {
-      const reply = await apiService.sendAssistantMessage(userText, context);
+      const reply = await apiService.sendAssistantMessage(
+        text,
+        currentCase,
+        sessionId,
+        explanationMode
+      );
       setMessages((prev) => [...prev, reply]);
     } catch {
       setMessages((prev) => [
@@ -74,7 +119,7 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
         {
           id: `err-${Date.now()}`,
           sender: 'assistant',
-          text: 'I apologize, I am temporarily unable to connect to the medical assistant service. Please consult your supervising clinician or dental practitioner directly.',
+          text: 'I apologize, but I am temporarily unable to connect to the medical assistant service. Please consult your supervising clinician or dental practitioner directly.',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
       ]);
@@ -83,12 +128,32 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
     }
   };
 
-  const quickPrompts = [
-    "What does Stage 1 caries mean?",
-    "Why does cervical burnout look like caries?",
-    "Can panoramic scans miss early enamel decay?",
-    "How does the doctor verification form work?",
-  ];
+  const handleClearHistory = () => {
+    resetSession();
+  };
+
+  // Context-aware quick suggested questions
+  const getSuggestedQuestions = () => {
+    if (currentCase?.findings && currentCase.findings.length > 0) {
+      return [
+        "Explain this X-ray result",
+        "What does the highlighted region mean?",
+        `What does ${currentCase.stage.level || 'this staging'} indicate?`,
+        "How does the MLUA model detect caries?",
+        "What does the Dice score mean?",
+        "Why can the model produce false positives?",
+        "What are the limitations of this prediction?",
+      ];
+    }
+    return [
+      "How does the MLUA model detect caries?",
+      "What does the Dice score mean?",
+      "Why can the model produce false positives?",
+      "What are the limitations of this prediction?",
+      "What is cervical burnout?",
+      "How do patch-based predictions work?",
+    ];
+  };
 
   if (!isOpen) return null;
 
@@ -101,37 +166,76 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
       />
 
       {/* Drawer Body */}
-      <div className="relative w-full max-w-md bg-white dark:bg-[#0d1322] border-l border-slate-200 dark:border-[#1b2742] shadow-2xl flex flex-col h-full z-10 animate-slide-left transition-colors">
+      <div className="relative w-full max-w-md sm:max-w-lg bg-white dark:bg-[#0d1322] border-l border-slate-200 dark:border-[#1b2742] shadow-2xl flex flex-col h-full z-10 animate-slide-left transition-colors">
         {/* Header */}
         <div className="p-4 border-b border-slate-200 dark:border-[#1b2742] flex items-center justify-between bg-slate-50 dark:bg-[#070a12]">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400">
+            <div className="p-2 rounded-xl bg-gradient-to-tr from-cyan-600 to-cyan-400 text-slate-950 font-bold shadow-md shadow-cyan-500/20">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
               <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm flex items-center gap-1.5">
-                AI Clinical Assistant
+                Dental AI Assistant
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 font-medium">
+                  Gemini &bull; MLUA
+                </span>
               </h3>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Empathetic Medical Decision Support
+                Decision Support &bull; Context-Aware Explanation
               </p>
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition"
-            aria-label="Close assistant drawer"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={handleClearHistory}
+              title="Reset Conversation"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition"
+              aria-label="Reset conversation"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </button>
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition"
+              aria-label="Close assistant drawer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
-        {/* Clinical Disclaimer Banner */}
+        {/* Case & Mode Bar */}
+        <div className="px-4 py-2 bg-slate-100 dark:bg-[#0a0f1d] border-b border-slate-200 dark:border-[#1b2742] flex items-center justify-between text-xs">
+          <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-medium truncate max-w-[200px]">
+            <Layers className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
+            <span className="truncate">
+              {currentCase?.id ? `Case: ${currentCase.patientPseudoId || currentCase.id}` : 'No Case Loaded (General Mode)'}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1 bg-white dark:bg-[#121b2d] p-0.5 rounded-lg border border-slate-200 dark:border-[#1b2742]">
+            {(['simple', 'standard', 'technical'] as ExplanationMode[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => setExplanationMode(m)}
+                className={`px-2 py-0.5 rounded text-[10px] font-semibold capitalize transition ${
+                  explanationMode === m
+                    ? 'bg-cyan-600 text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
+                }`}
+              >
+                {m}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Clinical Governance Disclaimer Banner */}
         <div className="px-4 py-2 bg-amber-50 dark:bg-amber-950/30 border-b border-amber-200 dark:border-amber-900/40 text-[11px] text-amber-800 dark:text-amber-300 flex items-start gap-2">
           <ShieldAlert className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
           <span>
-            AI-generated information is for educational and decision-support purposes and does not replace professional dental evaluation.
+            Decision-support explanations only. Does not replace autonomous diagnosis. MLUA segmentation is the ground-truth for candidate localization.
           </span>
         </div>
 
@@ -143,14 +247,14 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
               className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {msg.sender === 'assistant' && (
-                <div className="w-7 h-7 rounded-lg bg-cyan-100 dark:bg-cyan-900/40 border border-cyan-300 dark:border-cyan-700/50 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0 mt-0.5">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-cyan-600 to-cyan-400 text-slate-950 flex items-center justify-center font-bold shrink-0 mt-0.5 shadow-sm">
                   <Bot className="w-4 h-4" />
                 </div>
               )}
 
-              <div className="max-w-[82%] space-y-1">
+              <div className="max-w-[85%] space-y-1">
                 <div
-                  className={`p-3.5 rounded-2xl text-xs leading-relaxed ${
+                  className={`p-3.5 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap ${
                     msg.sender === 'user'
                       ? 'bg-cyan-600 text-white rounded-br-none shadow-sm shadow-cyan-600/20'
                       : 'bg-slate-100 dark:bg-[#121b2d] border border-slate-200 dark:border-[#1b2742] text-slate-800 dark:text-slate-200 rounded-bl-none'
@@ -173,7 +277,7 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
               </div>
 
               {msg.sender === 'user' && (
-                <div className="w-7 h-7 rounded-lg bg-cyan-600 flex items-center justify-center text-white shrink-0 mt-0.5">
+                <div className="w-7 h-7 rounded-lg bg-cyan-600 flex items-center justify-center text-white shrink-0 mt-0.5 shadow-sm">
                   <User className="w-4 h-4" />
                 </div>
               )}
@@ -185,26 +289,25 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
               <div className="w-7 h-7 rounded-lg bg-cyan-100 dark:bg-cyan-900/40 flex items-center justify-center text-cyan-500 animate-pulse">
                 <Bot className="w-4 h-4" />
               </div>
-              <span>Consulting clinical knowledge base...</span>
+              <span className="animate-pulse">Consulting Gemini & MLUA Case Knowledge...</span>
             </div>
           )}
 
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Quick Prompts */}
+        {/* Quick Suggested Questions */}
         <div className="p-3 border-t border-slate-200 dark:border-[#1b2742] bg-slate-50 dark:bg-[#070a12]">
           <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1.5">
             Suggested Clinical Questions
           </span>
-          <div className="flex flex-wrap gap-1.5">
-            {quickPrompts.map((prompt, idx) => (
+          <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
+            {getSuggestedQuestions().map((prompt, idx) => (
               <button
                 key={idx}
-                onClick={() => {
-                  setInputValue(prompt);
-                }}
-                className="text-[11px] px-2.5 py-1 rounded-lg bg-white dark:bg-[#121b2d] border border-slate-200 dark:border-[#1b2742] text-slate-700 dark:text-slate-300 hover:border-cyan-500 dark:hover:border-cyan-500 transition text-left"
+                onClick={() => handleSend(prompt)}
+                disabled={isLoading}
+                className="text-[11px] px-2.5 py-1 rounded-lg bg-white dark:bg-[#121b2d] border border-slate-200 dark:border-[#1b2742] text-slate-700 dark:text-slate-300 hover:border-cyan-500 dark:hover:border-cyan-500 hover:text-cyan-600 dark:hover:text-cyan-400 transition text-left cursor-pointer"
               >
                 {prompt}
               </button>
@@ -213,18 +316,24 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
         </div>
 
         {/* Input Bar */}
-        <form onSubmit={handleSend} className="p-3 border-t border-slate-200 dark:border-[#1b2742] bg-white dark:bg-[#0d1322] flex gap-2">
+        <form 
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSend();
+          }} 
+          className="p-3 border-t border-slate-200 dark:border-[#1b2742] bg-white dark:bg-[#0d1322] flex gap-2"
+        >
           <input
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Ask a question about findings, staging, or OPG imaging..."
+            placeholder="Ask about this result, MLUA architecture, or validation metrics..."
             className="flex-1 px-3.5 py-2.5 bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-500"
           />
           <button
             type="submit"
             disabled={!inputValue.trim() || isLoading}
-            className="px-4 py-2.5 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white rounded-xl text-xs font-semibold flex items-center justify-center transition"
+            className="px-4 py-2.5 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white rounded-xl text-xs font-semibold flex items-center justify-center transition cursor-pointer"
           >
             <Send className="w-4 h-4" />
           </button>

@@ -22,15 +22,18 @@ import {
   FlaskConical,
   Target,
   Percent,
-  Info
+  Info,
+  Sparkles
 } from 'lucide-react';
 import { apiService } from '../services/api';
 import { AnalysisResult, ClinicalReviewData } from '../types/api';
 import { ImageLightboxModal } from '../components/ImageLightboxModal';
+import { useAIChat } from '../context/AIChatContext';
 
 export const AnalysisResultPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
+  const { openAssistant, setActiveAnalysis } = useAIChat();
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const initialTab = searchParams.get('tab') === 'verification' || searchParams.get('tab') === 'review'
     ? 'verification'
@@ -68,6 +71,7 @@ export const AnalysisResultPage: React.FC = () => {
     if (id) {
       apiService.getAnalysis(id).then((data) => {
         setAnalysis(data);
+        setActiveAnalysis(data);
         if (data.findings && data.findings.length > 0) {
           setSelectedLesionId(data.findings[0].id);
         }
@@ -82,7 +86,7 @@ export const AnalysisResultPage: React.FC = () => {
         }
       });
     }
-  }, [id]);
+  }, [id, setActiveAnalysis]);
 
   const handleDownloadPDF = async () => {
     if (!analysis) return;
@@ -197,6 +201,14 @@ export const AnalysisResultPage: React.FC = () => {
         </Link>
 
         <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            onClick={() => openAssistant("Explain this X-ray result and MLUA model findings")}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-tr from-cyan-600 to-cyan-400 text-slate-950 hover:brightness-105 font-bold text-xs transition shadow-md shadow-cyan-500/20 cursor-pointer"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-slate-950" />
+            <span>Explain with AI</span>
+          </button>
+
           <Link
             to="/verification"
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-[#233554] text-cyan-700 dark:text-cyan-300 hover:bg-slate-50 dark:hover:bg-[#1a253d] font-semibold text-xs transition shadow-sm"
@@ -208,7 +220,7 @@ export const AnalysisResultPage: React.FC = () => {
           <button
             onClick={handleDownloadJSON}
             disabled={isDownloadingJson}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-[#233554] text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#1a253d] font-semibold text-xs transition disabled:opacity-50 shadow-sm"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-[#233554] text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#1a253d] font-semibold text-xs transition disabled:opacity-50 shadow-sm cursor-pointer"
           >
             <FileText className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
             <span>{isDownloadingJson ? 'Exporting...' : 'Export JSON'}</span>
@@ -217,7 +229,7 @@ export const AnalysisResultPage: React.FC = () => {
           <button
             onClick={handleDownloadPDF}
             disabled={isDownloadingPdf}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 dark:bg-cyan-600 hover:bg-slate-800 dark:hover:bg-cyan-500 text-white font-semibold text-xs transition disabled:opacity-50 shadow-sm"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 dark:bg-cyan-600 hover:bg-slate-800 dark:hover:bg-cyan-500 text-white font-semibold text-xs transition disabled:opacity-50 shadow-sm cursor-pointer"
           >
             <Download className="w-3.5 h-3.5 text-cyan-400 dark:text-white" />
             <span>{isDownloadingPdf ? 'Generating PDF...' : 'Export Doctor PDF Report'}</span>

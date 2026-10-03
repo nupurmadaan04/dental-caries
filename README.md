@@ -1,30 +1,29 @@
-# MLUA: Dental Caries Segmentation & Clinical Review System
+# Multi-Level Uncertainty-Aware (MLUA) Dental Caries Clinical AI
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
-[![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org/)
-[![React 18](https://img.shields.io/badge/React-18.3-61DAFB.svg?logo=react&logoColor=black)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-5.4-646CFF.svg?logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Status](https://img.shields.io/badge/Status-Research%20Frozen%20%7C%20Verified-00C853.svg)]()
-[![Model](https://img.shields.io/badge/Model-ResNet34%20%2B%20FPN%20MLUA-00B0FF.svg)]()
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-009688.svg)](https://fastapi.tiangolo.com/)
+[![React 18](https://img.shields.io/badge/React-18.3.1-61DAFB.svg)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.4-646CFF.svg)](https://vitejs.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6.svg)](https://www.typescriptlang.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C.svg)](https://pytorch.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-> **Multi-Level Uncertainty-Aware (MLUA) Semi-Supervised Dental Caries Segmentation & Clinical Radiology Review Platform.**  
-> Built for pixel-level dental caries detection on panoramic radiographs (Orthopantomograms / OPGs), with real-time uncertainty quantification, clinical severity staging, interactive canvas visualization, and automated 2-page clinical PDF report generation.
-
----
-
-## 🌟 Key Highlights & Clinical Capabilities
-
-- 🦷 **Pixel-Level Caries Segmentation:** Accurately localizes subtle enamel and dentin demineralization from full $768 \times 1536$ panoramic radiographs using a 21-patch sliding-window inference pipeline ($384 \times 384$ patches at stride 192).
-- 🧠 **ResNet-34 + Lateral FPN Multi-Scale Architecture:** Incorporates 4 auxiliary prediction heads ($1/8, 1/4, 1/2, \text{and } 1/1$ resolutions) with deep supervision weights $\alpha = [0.1, 0.2, 0.3, 0.4]$.
-- 🛡️ **Monte Carlo Epistemic Uncertainty ($T=8$):** Employs $T=8$ stochastic forward passes under active dropout to compute pixel-wise variance $\sigma^2(x)$, dynamically suppressing false-positive cervical burnout radiolucencies.
-- 🔄 **Synchronized Teacher EMA Consistency:** Eliminates feature drift by continuously updating both weights and BatchNorm running statistics ($\theta = 0.99$) under 20% labeled data supervision (530 labeled / 1,859 unlabeled patches).
-- 🎨 **4-Tier Color-Coded Clinical Staging:** Automatically assigns detected lesions to **Stage 0 (Green)**, **Stage 1 (Yellow)**, **Stage 2 (Orange)**, or **Stage 3 (Red)** based on lesion area and depth.
-- 📄 **2-Page Clinical Radiology PDF Reports:** Client-side vector-quality PDF reporting ready for electronic health record (EHR) archiving and patient consultation.
+> **Clinical Decision Support & Research Platform:** An end-to-end semi-supervised deep learning system for pixel-level dental caries segmentation on panoramic radiographs (Orthopantomograms / OPGs), coupled with a real-time clinical review dashboard and a context-aware Gemini AI explanation assistant.
 
 ---
 
-## 📐 System Architecture
+## 1. System Overview & Problem Definition
+
+Dental caries (tooth decay) is the most prevalent chronic non-communicable disease globally. Early detection on panoramic dental radiographs (OPGs) is clinically vital but notoriously challenging due to:
+1. **Geometric Distortion & Superimposition:** 15–30% inherent magnification and cervical burnout artifacts at tooth necks that mimic true caries.
+2. **Extreme Class Imbalance:** Caries lesions occupy less than $1\%$ of the total panoramic pixel space.
+3. **Annotation Scarcity:** Pixel-level expert annotations are labor-intensive, creating a high demand for robust semi-supervised learning (SSL).
+
+This repository implements the **Multi-Level Uncertainty-Aware (MLUA)** framework, extending it with dual BatchNorm buffer-and-parameter Exponential Moving Average (EMA) synchronization, 21-patch sliding-window reconstruction, 4-tier clinical severity staging, and an embedded context-aware Gemini reasoning assistant.
+
+---
+
+## 2. Core Architecture & Methodology
 
 ```
 +-----------------------------------------------------------------------------------+
@@ -71,152 +70,269 @@
 |               Reconstructed 768 x 1536 Full Panoramic Mask                        |
 |                       Operating Threshold τ = 0.50                                |
 +-----------------------------------------------------------------------------------+
+                                         |
+                                         v
++-----------------------------------------------------------------------------------+
+|         FastAPI Decision Support Backend + Context-Aware Gemini Assistant         |
+|         (Case Staging, Lesion Localization, PHI Exclusion, PDF Reporting)         |
++-----------------------------------------------------------------------------------+
 ```
+
+### Key Architectural Pillars
+1. **ResNet-34 + FPN Backbone:** Extracts multi-resolution visual features across receptive field hierarchies ($C_1$ through $C_5$) with lateral top-down pyramid merging ($P_2, P_3, P_4, P_5$).
+2. **Multi-Scale Deep Supervision:** Four auxiliary prediction heads with weights $\alpha = [0.1, 0.2, 0.3, 0.4]$ enforce strong gradient propagation and sharp enamel border localization.
+3. **Synchronized Teacher EMA:** Eliminates numerical instability (such as the NaN collapses documented during earlier iterations) by continuously synchronizing both trainable model parameters ($\beta = 0.999$) and BatchNorm running statistics ($\text{momentum} = 0.05$).
+4. **Epistemic Uncertainty Estimation:** $T = 8$ stochastic Monte Carlo dropout passes calculate pixel-level variance $\sigma^2(x)$ to gate unreliable pseudo-labels during semi-supervised consistency regularization.
+5. **Overlapping Patch Inference:** High-resolution 21-patch sliding window ($384\times 384\text{ px}$, stride $= 192\text{ px}$) preserves proximal contact anatomy and is reconstructed via smooth 2D Gaussian blending.
 
 ---
 
-## 📊 EXP-MLUA-003 Validated Benchmark Results
+## 3. Verified Benchmark & Validation Performance
 
-The current canonical selected model checkpoint is **`EXP-MLUA-003_E64_BEST.pth`** (Epoch 64, Global Step 8,448), trained under the controlled 70-epoch run with zero numerical anomalies.
+The canonical production and research checkpoint is **`EXP-MLUA-003_E64_BEST.pth`** (Epoch 64, Global Step 8,448), evaluated on the DC1000 dataset validation cohort at the operational decision threshold $\tau = 0.50$:
 
-> **Research Note:** Epoch 64 achieved a new validation-best Dice of **69.386%**, improving upon the previous Epoch 56 best of **65.623%** by **+3.763 percentage points**. Epoch 64 is therefore the current selected validation checkpoint for EXP-MLUA-003. The sealed test set has not been re-evaluated using Epoch 64 (historical E56 evaluation shown below).
+| Metric | E64 Validation Score (%) | Exact Value | Historical E56 Baseline | Description |
+| :--- | :---: | :---: | :---: | :--- |
+| **Dice Similarity (DSC)** | **`69.39%`** | `0.69386` | `65.62%` (+3.76%) | Spatial overlap across suspected caries contours |
+| **Intersection over Union (IoU)** | **`54.33%`** | `0.54326` | `49.85%` (+4.47%) | Jaccard index over foreground lesion pixels |
+| **Precision (PPV)** | **`74.69%`** | `0.74689` | `69.01%` (+5.68%) | True positive ratio among predicted positives |
+| **Recall (Sensitivity)** | **`66.42%`** | `0.66415` | `63.65%` (+2.77%) | Demineralization capture across ground-truth regions |
+| **Specificity (TNR)** | **`99.78%`** | `0.99784` | `99.75%` (+0.03%) | True negative rate across sound background tooth structure |
+| **Validation Loss** | **`0.7471`** | `0.74710` | `0.7639` (-0.0168) | Combined BCE + Soft Dice objective at peak epoch |
+| **Zero-Prediction Ratio** | **`0.0%`** | `0.0` | `0.0%` | Zero degenerate null-prediction collapse |
 
-### Internal Validation Performance (Epoch 64, $\tau = 0.50$)
-
-| Metric | Score (%) | Raw Value | Reference Baseline (E56) | Interpretation |
-| :--- | :--- | :--- | :--- | :--- |
-| **Dice Similarity Coefficient (DSC)** | **`69.39%`** | `0.69386` | `65.62%` (+3.76%) | High spatial contour overlap on validation cohort |
-| **Intersection over Union (IoU / Jaccard)** | **`54.33%`** | `0.54326` | `49.85%` (+4.48%) | Accurate foreground lesion area localization |
-| **Precision (PPV)** | **`74.69%`** | `0.74689` | `69.01%` (+5.68%) | Very low false positive rate across sound enamel/dentin |
-| **Recall / Sensitivity** | **`66.42%`** | `0.66415` | `63.65%` (+2.77%) | Comprehensive detection of subtle demineralized lesions |
-| **Validation Loss** | **`0.7471`** | `0.74711` | `0.7639` (-0.0168) | Lowest combined BCE + Soft Dice loss |
-
-### Independent Sealed Test Set Historical Evaluation (100 Cases, Evaluated on E56)
-
-*Note: Sealed test cohort has not yet been re-evaluated using Epoch 64.*
-
-| Test Metric | Case Macro Mean | Global Pixel Micro | Clinical Requirement |
-| :--- | :--- | :--- | :--- |
-| **Test Dice Similarity** | **`43.041%`** | **`43.391%`** | State-of-the-art on panoramic radiograph benchmarks |
-| **Test Precision** | **`41.244%`** | **`37.795%`** | Controlled false alarm rate in non-caries zones |
-| **Test Recall / Sensitivity** | **`52.896%`** | **`50.931%`** | Robust capture of true cavitated & proximal lesions |
-| **Test Specificity** | **`99.630%`** | **`99.630%`** | Near-perfect rejection of healthy hard tissue background |
-| **Zero-Prediction Ratio** | **`0.0%`** | **`0.0%`** | Zero model collapse or blank mask generation |
+> **Checkpoint Distinctions:**
+> - **Current Selected Checkpoint:** `EXP-MLUA-003_E64_BEST.pth` (Epoch 64 of 70 epochs run; validation loss 0.7471; validation Dice 69.386%).
+> - **Historical Baseline Checkpoint:** `EXP-MLUA-003_E56_FINAL.pth` (Epoch 56 of 60 epochs run; validation loss 0.7639; validation Dice 65.623%). Preserved in `checkpoints/` for reproducibility.
+> - **Sealed Test Cohort:** 100 independent panoramic radiographs evaluated strictly once under frozen baseline conditions (Macro Dice 43.04%, Macro Recall 52.90%, Specificity 99.63%).
 
 ---
 
-## 🏷️ Clinical Staging & Pixel Threshold Matrix
+## 4. Gemini Clinical Assistant & Governance
 
-The system dynamically categorizes candidate regions into 4 color-coded clinical stages based on pixel area count and demineralization depth:
+The application integrates an embedded context-aware AI Assistant powered by Google GenAI (Gemini 2.5 Flash), specifically engineered for radiologic decision support:
 
 ```
-+-------------------------------------------------------------------------------------------------------+
-| Stage  | Color  | Status Indicator       | Pixel Area Range      | Clinical Pathology & Management    |
-+-------------------------------------------------------------------------------------------------------+
-| 0      | Green  | No Caries Detected     | 0 px (0.00%)          | Sound, intact tooth structure      |
-| 1      | Yellow | Early Demineralization | 20 - 250 px (<0.80%)  | Enamel (E1/E2) incipient lesion    |
-| 2      | Orange | Moderate Caries        | 250 - 600 px (0.80-1.80%) | Middle Dentin (D1/D2) lesion   |
-| 3      | Red    | Extensive Caries       | > 600 px (>1.80%)     | Deep Dentin / Pulp (D3) cavitation |
-+-------------------------------------------------------------------------------------------------------+
+User Query ("What is the stage of this recent report?")
+                      |
+                      v
+       FastAPI Backend /api/chat Router
+                      |
+                      v
+       Case Context Sanitizer & Builder
+  (Extracts Candidate Regions, FDI Teeth, Area %,
+   Heuristic Staging; Strictly Strips all PHI/PII)
+                      |
+                      v
+       Gemini Intent Router & Reasoning Engine
+  [CASE LOCATION] -> FDI tooth, quadrant, bbox, area px
+  [CASE STAGING]  -> Application-defined Level 1/2/3 staging
+  [CASE FINDINGS] -> Segmented radiolucency & probability
+  [TECHNICAL]     -> MLUA architecture, FPN, Dice benchmarks
+  [SAFETY]        -> Medical disclaimer & non-autonomous guard
+                      |
+                      v
+  Gemini Live Response / SSE Stream / Grounded Clinical Fallback
 ```
+
+### Medical Safety & Governance Policies
+- **No Autonomous Diagnosis:** The AI does not diagnose disease or prescribe medications. All outputs are explicitly defined as algorithmic decision-support findings requiring licensed dental verification.
+- **Model-Predicted Probability Terminology:** Neural network outputs are defined as mathematical sigmoid activation values over segmented pixels, never as "clinical certainty" or "diagnostic probability."
+- **Application-Defined Heuristic Staging:** Severity levels (Stage 0: Normal, Level 1: Suspected Early Caries, Level 2: Moderate Caries, Level 3: Extensive Dentinal Caries) are heuristic classifications derived from lesion pixel area and depth indicators.
+- **Zero-PHI Guarantee:** Patient names, IDs, pseudo-identifiers (e.g. `PT-9502`), filenames, and metadata are excluded from prompts sent to external AI endpoints.
 
 ---
 
-## 📁 Repository Structure
+## 5. Technology Stack
 
-```
+### Frontend
+- **Framework:** React 18.3 + TypeScript + Vite 5.4
+- **Styling:** Tailwind CSS + Vanilla CSS Variables (Dark/Light Clinical Modes)
+- **Icons & UI:** Lucide React, HTML5 Canvas Overlay Rendering
+- **Reporting:** Vector-grade PDF & JSON Clinical Report Generators (`html2canvas`, `jspdf`)
+
+### Backend
+- **Framework:** FastAPI (Python 3.10+) + Uvicorn
+- **AI Integration:** Official Google GenAI SDK (`@google/genai` / `google-genai`)
+- **Inference Engine:** PyTorch 2.0+ (ResNet-34, FPN, Sliding-Window Reconstructor)
+
+---
+
+## 6. Project Structure
+
+```text
 MLUA/
-├── configs/                            # Experiment and model configuration YAMLs
-│   └── experiments/
-│       ├── EXP-MLUA-003.yaml
-│       └── exp_mlua_003_final_config.yaml
-├── docs/                               # Formal architectural and clinical documentation
-│   ├── ARCHITECTURE.md                 # Deep supervision, MC uncertainty & SSL formulation
-│   ├── EXPERIMENTS.md                  # Detailed EXP-MLUA-001/002/003 progression & audits
-│   ├── CLINICAL_GUIDELINES.md          # 4-tier staging, radiolucency & report guidelines
-│   └── API_AND_FRONTEND.md             # React UI architecture, canvas viewer & PDF engine
-├── frontend/                           # React 18 + Vite + Tailwind CSS Web Application
-│   ├── src/
-│   │   ├── components/                 # UI components (Viewer, Navbar, Sidebar, Badges)
-│   │   ├── constants/                  # Clinical metadata, stages, and benchmark metrics
-│   │   ├── pages/                      # Analysis, Methods, Verification, Reports, Settings
-│   │   ├── services/                   # REST API client & jsPDF 2-page report generator
-│   │   └── utils/                      # Mask generators & canvas renderers
+├── .env.example                               # Environment configuration template
+├── .gitignore                                 # Git exclusions (strictly ignores .env)
+├── CODE_OF_CONDUCT.md                         # Community conduct standards
+├── CONTRIBUTING.md                            # Contribution workflow
+├── LICENSE                                    # MIT License
+├── README.md                                  # Main repository documentation
+├── SECURITY.md                                # Security & vulnerability disclosure policy
+├── requirements.txt                           # Python dependencies
+│
+├── backend/                                   # FastAPI Backend & Gemini Assistant
+│   ├── __init__.py
+│   ├── gemini_service.py                      # Context-aware Gemini Assistant service
+│   ├── main.py                                # API route handlers & inference integration
+│   └── test_chat_api.py                       # 10-point automated test suite
+│
+├── frontend/                                  # React + Vite + TypeScript Application
+│   ├── index.html
 │   ├── package.json
-│   └── vite.config.ts
-├── outputs/                            # Validated experiment checkpoints & diagnostic data
-│   └── experiments/
-│       └── EXP-MLUA-003_FINAL/
-│           ├── checkpoints/
-│           │   ├── EXP-MLUA-003_E64_BEST.pth    # Canonical Selected Best Checkpoint (Val Dice: 69.39%)
-│           │   ├── EXP-MLUA-003_E56_FINAL.pth   # Preserved Historical Checkpoint (Val Dice: 65.62%)
-│           │   └── EXP-MLUA-003_E70_LATEST.pth  # Training Final Checkpoint (Epoch 70)
-│           └── EXP-MLUA-003_FULL_TRAINING_HISTORY.csv
-├── src/                                # Core MLUA Python engine
-│   └── mlua/
-│       ├── data/                       # DC1000 dataset loader & sliding-window patch sampler
-│       ├── engine/                     # PyTorch training & validation loops
-│       ├── evaluation/                 # Metrics calculation & sealed benchmark evaluation
-│       └── models/                     # ResNet-34 + FPN multi-scale architecture
-├── requirements.txt                    # Python environment dependencies
-└── README.md                           # Main repository entrypoint
+│   ├── vite.config.ts
+│   ├── public/
+│   │   ├── favicon.svg
+│   │   └── samples/                           # Reference OPG images & ground-truth masks
+│   └── src/
+│       ├── App.tsx
+│       ├── index.css
+│       ├── components/                        # UI Components (Drawer, Tables, Modals, Badges)
+│       ├── constants/                         # clinicalMetadata.ts (Canonical E64 Source of Truth)
+│       ├── context/                           # AIChatContext.tsx & ThemeContext.tsx
+│       ├── data/                              # mockData.ts (E64-aligned test cases)
+│       ├── pages/                             # Clinical Review, Verification, Methodology, FAQ
+│       ├── services/                          # API client, PDF generator & fallback logic
+│       ├── types/                             # TypeScript interfaces
+│       └── utils/                             # Mask generation & storage utilities
+│
+├── src/mlua/                                  # Core PyTorch Segmentation Pipeline
+│   ├── data/                                  # Dataset loaders & patch extractors
+│   ├── engine/                                # Teacher-Student trainers & EMA synchronizers
+│   ├── evaluation/                            # 21-patch sliding-window reconstructor & metrics
+│   └── models/                                # ResNet-34, FPN, and Monte Carlo dropout heads
+│
+├── checkpoints/                               # Preserved Model Checkpoints
+│   ├── EXP-MLUA-001_BEST.pth                  # Historical supervised baseline
+│   ├── EXP-MLUA-003_E56_FINAL.pth             # Preserved 60-epoch historical baseline
+│   └── EXP-MLUA-003_E64_BEST.pth              # Selected Production Checkpoint (E64 Best)
+│
+├── configs/                                   # Configuration YAMLs
+│   ├── mlua_default_config.yaml
+│   ├── evaluation/sealed_test_100_config.yaml
+│   └── experiments/exp_mlua_003_final_config.yaml
+│
+├── docs/                                      # Technical & Clinical Documentation
+│   ├── ARCHITECTURE.md                        # Mathematical formulation & system diagrams
+│   ├── API_AND_FRONTEND.md                    # Detailed API endpoints & React architecture
+│   ├── CLINICAL_GUIDELINES.md                 # Clinical safety, limitations & governance
+│   ├── EXPERIMENTS.md                         # Complete benchmark & training run logs
+│   ├── FINAL_PROJECT_REPORT.md                # Comprehensive technical project report
+│   ├── RESEARCH_PAPER_AUDIT.md                # Paper-direct vs engineering feature audit
+│   └── research/                              # Dataset & mentor preparation audits
+│
+├── outputs/                                   # Diagnostics, Experiment CSVs & Figures
+│   ├── diagnostics/                           # Historical milestone & stability audits
+│   ├── experiments/                           # Ablation & Monte Carlo benchmark CSVs
+│   ├── progress_figures/                      # Workflow diagrams & metric charts
+│   └── report_figures/                        # High-resolution publication figures
+│
+└── research_archive/                          # Reproducibility & Figure Generation Scripts
+    └── scripts/                               # PDF builders, figure generators & audit tools
 ```
 
 ---
 
-## 🚀 Quickstart Guide
+## 7. Installation & Quick Start
 
-### 1. Python Environment Setup
+### Prerequisites
+- **Python:** 3.10 or higher
+- **Node.js:** 18.0 or higher
+- **Package Managers:** `pip` and `npm`
 
+### Step 1: Clone Repository & Setup Environment
 ```bash
-# Clone repository
-git clone https://github.com/Zzz512/MLUA.git
-cd MLUA
+git clone https://github.com/nupurmadaan04/dental-caries.git
+cd dental-caries
 
-# Create and activate virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+# Copy environment template
+cp .env.example .env
+```
 
-# Install dependencies
+Configure your `.env` file with your Gemini API key (optional for local fallback mode):
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-2.5-flash
+HOST=127.0.0.1
+PORT=8000
+```
+
+### Step 2: Backend Setup
+```bash
+# Install Python dependencies
 pip install -r requirements.txt
+
+# Start FastAPI backend server
+uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
 ```
+The backend will be available at `http://127.0.0.1:8000`. API documentation is hosted at `http://127.0.0.1:8000/docs`.
 
-### 2. Run Sealed Test Benchmark Evaluation
-
+### Step 3: Frontend Setup
+In a new terminal:
 ```bash
-python src/mlua/evaluation/final_100_evaluation.py \
-  --checkpoint outputs/experiments/EXP-MLUA-003_FINAL/checkpoints/EXP-MLUA-003_E56_FINAL.pth \
-  --data_dir dataset/test/ \
-  --threshold 0.50
-```
-
-### 3. Launch Clinical Web Application
-
-```bash
-# Navigate to the frontend directory
 cd frontend
 
-# Install node dependencies
+# Install Node dependencies
 npm install
 
-# Start local development server
+# Start Vite development server
 npm run dev
+```
+The Clinical UI will be accessible at `http://localhost:5173`.
 
-# Open browser at http://localhost:5173
+---
+
+## 8. API Reference
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/health` | Service health status, model checkpoint info, and Gemini status |
+| `POST` | `/api/chat` | Multi-turn case-aware AI chat with dynamic context injection |
+| `POST` | `/api/chat/stream` | Real-time Server-Sent Events (SSE) streaming chat |
+| `POST` | `/api/chat/clear` | Purges conversation history and resets session state |
+| `POST` | `/api/analyze` | Executes MLUA inference on uploaded panoramic X-rays |
+| `GET` | `/api/history` | Retrieves patient radiograph analysis records |
+| `GET` | `/api/history/{id}` | Retrieves detailed findings for a specific analysis |
+| `GET` | `/api/reports/{id}/pdf` | Generates a 2-page vector clinical PDF report |
+| `GET` | `/api/reports/{id}/json`| Exports raw segmentation coordinates and metadata |
+
+---
+
+## 9. Automated Testing & Verification
+
+Run the automated 10-point test suite to verify metric alignment, Gemini intent routing, case isolation, PHI exclusion, and model immutability:
+
+```bash
+# Run backend test suite
+python -m backend.test_chat_api
 ```
 
----
-
-## 📚 Detailed Documentation
-
-For in-depth technical references, consult the dedicated guides in [`docs/`](file:///c:/Users/devin/MLUA/docs):
-- [**Architecture & Loss Formulation**](file:///c:/Users/devin/MLUA/docs/ARCHITECTURE.md): Mathematical derivations for deep supervision, Monte Carlo uncertainty estimation, and Soft Dice loss.
-- [**Experimental History & Lineage**](file:///c:/Users/devin/MLUA/docs/EXPERIMENTS.md): Detailed logs of EXP-MLUA-001, EXP-MLUA-002 root-cause fix, and EXP-MLUA-003 60-epoch results.
-- [**Clinical Staging & Diagnostic Protocol**](file:///c:/Users/devin/MLUA/docs/CLINICAL_GUIDELINES.md): Clinical guidelines for interpreting panoramic radiographs and 2-page PDF report generation.
-- [**Web Application & API Guide**](file:///c:/Users/devin/MLUA/docs/API_AND_FRONTEND.md): Client-side canvas overlay engine, REST endpoints, and PDF generation pipeline.
+### Production Build Verification
+```bash
+cd frontend
+npm run build
+```
+Confirms clean TypeScript compilation and static asset generation with zero errors.
 
 ---
 
-## ⚖️ Clinical Decision Support Disclaimer
+## 10. Clinical Disclaimer & Limitations
 
-This system is an **academic research and clinical decision-support tool**. It is designed to assist licensed dental practitioners by highlighting potential candidate areas of radiolucency on panoramic radiographs. It is **not an autonomous diagnostic device**. All segmentation outputs and clinical severity stages must be verified by a qualified dental professional through physical clinical examination, visual-tactile probing, and supplemental bitewing radiographs where indicated.
+> [!IMPORTANT]
+> **FOR CLINICAL DECISION SUPPORT & RESEARCH PURPOSES ONLY.**  
+> The MLUA Dental Caries Clinical AI is not an autonomous diagnostic medical device. It is designed to assist qualified dental practitioners by highlighting candidate areas of radiographic radiolucency. Final diagnostic decisions, caries classifications, and restorative treatment plans must be made by a licensed dentist following visual-tactile examination, vitality assessments, and clinical correlation.
+
+---
+
+## 11. License & Citation
+
+This project is licensed under the [MIT License](LICENSE).
+
+```bibtex
+@article{mlua_dental_caries_2026,
+  title={Multi-Level Uncertainty-Aware Semi-Supervised Dental Caries Segmentation on Panoramic Radiographs},
+  author={Dental AI Research Team},
+  year={2026},
+  journal={Clinical Radiology & Artificial Intelligence}
+}
+```

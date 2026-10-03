@@ -408,13 +408,13 @@ export function generateSyntheticRadiographAnalysis(item: any): AnalysisResult {
     },
     findings,
     evaluationMetrics: {
-      diceScore: 0.6562,
-      iou: 0.4985,
-      precision: 0.6901,
-      recall: 0.6365,
-      f1Score: 0.6562,
-      accuracy: 0.9975,
-      benchmarkReference: 'EXP-MLUA-003 E56 Canonical Validation (τ=0.50)',
+      diceScore: 0.69386,
+      iou: 0.54326,
+      precision: 0.74689,
+      recall: 0.66415,
+      f1Score: 0.69386,
+      accuracy: 0.99784,
+      benchmarkReference: 'EXP-MLUA-003 E64 Canonical Validation (τ=0.50)',
     },
     clinicalRecommendation: isNoCaries 
       ? 'No suspicious caries lesions detected. Routine preventive dental care and periodic follow-up recommended.'
