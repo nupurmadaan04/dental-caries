@@ -1,0 +1,7 @@
+MC Samples,Dice,Sensitivity,Precision,IoU,F1,Specificity,Accuracy,Foreground Prevalence,Mean Uncertainty,Mean Entropy,Confidence Coverage,Training Time,Inference Time,Status
+T=5,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,NOT_RUN
+T=10,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,NOT_RUN
+T=20,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,NOT_RUN
+T=40,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,NOT_RUN
+T=80,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,NOT_RUN
+T=160,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,NOT_RUN

@@ -1,0 +1,3 @@
+evaluation_scope,checkpoint,aggregation_type,dice,iou,precision,recall,specificity,f1,zero_pred_case_ratio,total_cases,threshold,total_tp,total_fp,total_fn,total_tn
+EXP-MLUA-003 Final Candidate E75 Sealed Test Set (100 Cases),EXP-MLUA-003_E75_BEST.pth,MACRO (Case Mean),0.50147,0.36607,0.59889,0.48077,0.99872,0.50147,0.0,100,0.5,240579,150350,277638,117296233
+EXP-MLUA-003 Final Candidate E75 Sealed Test Set (100 Cases),EXP-MLUA-003_E75_BEST.pth,MICRO (Global Pixel Sum),0.52924,0.35984,0.6154,0.46424,0.99872,0.52924,0.0,100,0.5,240579,150350,277638,117296233

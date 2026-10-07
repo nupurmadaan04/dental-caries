@@ -32,6 +32,16 @@
   "emotion_accuracy": 0.364,
   "multi_turn_topic_preservation_accuracy": 100.0,
   "per_category_accuracy": {
+    "case_specific": {
+      "total": 345,
+      "correct": 334,
+      "accuracy": 0.9681
+    },
+    "medical_safety": {
+      "total": 35,
+      "correct": 33,
+      "accuracy": 0.9429
+    },
     "general_conversation": {
       "total": 70,
       "correct": 69,
@@ -42,20 +52,10 @@
       "correct": 35,
       "accuracy": 1.0
     },
-    "medical_safety": {
-      "total": 35,
-      "correct": 33,
-      "accuracy": 0.9429
-    },
     "system": {
       "total": 15,
       "correct": 15,
       "accuracy": 1.0
-    },
-    "case_specific": {
-      "total": 345,
-      "correct": 334,
-      "accuracy": 0.9681
     }
   },
   "per_intent_metrics": {

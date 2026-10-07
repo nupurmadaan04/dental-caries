@@ -1,0 +1,118 @@
+========================================================================================
+EXP-MLUA-003 & EXP-MLUA-002 CANONICAL TRAINING LOG EVIDENCE
+========================================================================================
+Source Files:
+1. outputs/experiments/EXP-MLUA-003_FINAL/EXP-MLUA-003_FULL_TRAINING_HISTORY.csv
+2. outputs/diagnostics/EXP-MLUA-002_E10_FORENSIC/batch68_deep_dive_log.txt
+3. outputs/diagnostics/EXP-MLUA-002_E10_ACTIVATION_FORENSIC/activation_forensic_log.txt
+4. outputs/diagnostics/EXP-MLUA-003_E71_E75_EXTENSION_REPORT.md
+5. outputs/diagnostics/EXP-MLUA-003_E75_SEALED_TEST_EVALUATION_REPORT.md
+
+========================================================================================
+SECTION 1: EXPERIMENT START & INITIAL EPOCHS (EXP-MLUA-003)
+========================================================================================
+[EXP-MLUA-003 STARTUP] Initializing Model: ResNet-34 + FPN MLUA Dual Network
+Dataset: DC1000 (2,389 Patches: 530 Labeled [20%], 1,859 Unlabeled [80%])
+Input Resolution: 384x384 | Stride: 192 | Random Seed: 42 | Precision: Pure FP32
+EMA Decay: theta = 0.99 (Vectorized Parameters + BatchNorm Running Buffers)
+Optimizer: AdamW (lr=0.001, weight_decay=0.01) | Scheduler: PolyLR (power=0.9, max=200)
+
+[EPOCH 01/80] Step 132/10560 | Time: 2505.5s
+  Train Loss: 0.66310 | Supervised Loss: 0.66310 | Consistency Loss: 0.00023
+  Val Loss: 1.05111   | Val Dice: 0.0000% | Val IoU: 0.0000% | Specificity: 100.00%
+  Learning Rate: 9.955e-04 | Status: FINITE (Zero NaNs)
+
+[EPOCH 05/80] Step 660/10560 | Time: 2141.8s
+  Train Loss: 0.65376 | Supervised Loss: 0.65376 | Consistency Loss: 0.00008
+  Val Loss: 1.04326   | Val Dice: 0.0000% | Val IoU: 0.0000% | Specificity: 100.00%
+  Learning Rate: 9.775e-04 | Status: FINITE (Zero NaNs)
+
+[EPOCH 10/80] Step 1320/10560 | Time: 2303.7s
+  Train Loss: 0.64954 | Supervised Loss: 0.64954 | Consistency Loss: 0.00020
+  Val Loss: 1.04358   | Val Dice: 1.0340% | Val IoU: 0.5340% | Specificity: 99.923%
+  CRITICAL REGION (Step 1257 / Batch 68): PASSED 100% FINITE (Zero Activation Explosions)
+
+========================================================================================
+SECTION 2: EXP-MLUA-002 CATASTROPHIC FAILURE LOG (STEP 1257 / BATCH 68)
+========================================================================================
+[BATCH 68 DEEP DIVE] Global Step = 1257
+imgs: shape=[8, 1, 384, 384], min=0.0000, max=0.9725, is_finite=True
+gts: shape=[8, 1, 384, 384], min=0.0000, max=1.0000, is_finite=True
+Teacher all parameters finite before forward: True
+Teacher all buffers finite: True
+
+[Testing Individual Unlabeled Images Through Teacher Model]
+  Unlabeled image 0 (9 perts) -> fused output NaNs=0, Infs=0, min=-3.3421, max=-2.2138
+  Unlabeled image 1 (9 perts) -> fused output NaNs=0, Infs=0, min=-3.3421, max=-2.2138
+  Unlabeled image 2 (9 perts) -> fused output NaNs=0, Infs=0, min=-3.3421, max=-2.2138
+  Unlabeled image 3 (9 perts) -> fused output NaNs=1327104, Infs=0, min=NaN, max=NaN
+
+[Tracing Layer-by-Layer Activations of model_tea with Hooks]
+  00_Input:                       abs_max = 1.0038e+00 | FINITE
+  01_encoder.conv1:               abs_max = 2.1136e+00 | FINITE
+  05_encoder.layer1 (c2):         abs_max = 3.4572e+02 | FINITE
+  06_encoder.layer2 (c3):         abs_max = 1.1084e+07 | FINITE
+  07_encoder.layer3 (c4):         abs_max = 1.8997e+15 | FINITE
+  08_encoder.layer4 (c5):         abs_max = 9.4190e+18 | FINITE
+  09_decoder.p5:                  abs_max = 1.4907e+19 | FINITE
+  >>> FIRST NON-FINITE MODULE: decoder.seg_blocks.0.block.0.block.1 [GroupNorm]
+      Shape=[36, 128, 12, 12] | NaNs=15552 | Infs=0
+  DEEP DIVE CONCLUSION: Stale Teacher BatchNorm running buffers caused exponential
+  activation scaling (>10^18), resulting in GroupNorm variance arithmetic overflow (>3.4e+38).
+
+========================================================================================
+SECTION 3: PEAK VALIDATION CONVERGENCE & E75 CHECKPOINT (EXP-MLUA-003)
+========================================================================================
+[EPOCH 71/80] Step 9372/10560 | Train Loss: 0.50206 | Val Loss: 0.74660 | Val Dice: 67.758%
+[EPOCH 72/80] Step 9504/10560 | Train Loss: 0.49274 | Val Loss: 0.73303 | Val Dice: 70.602%
+[EPOCH 73/80] Step 9636/10560 | Train Loss: 0.49223 | Val Loss: 0.73439 | Val Dice: 69.877%
+[EPOCH 74/80] Step 9768/10560 | Train Loss: 0.49377 | Val Loss: 0.74839 | Val Dice: 69.180%
+
+========================================================================================
+[EPOCH 75/80] *** CANONICAL VALIDATION PEAK CHECKPOINT ***
+========================================================================================
+Global Step: 9900 / 10560 | Epoch Time: 2008.0s | Cumulative Runtime: 166,888.95s (~46.36 hrs)
+Train Loss:          0.49505
+Supervised Loss:     0.49504
+Consistency Loss:    0.00073
+Validation Loss:     0.72540  (Global Minimum)
+Validation Dice:     71.867%  (0.71867) [Exceeds literature 71.12% by +0.747 pp]
+Validation IoU:      57.349%  (0.57349)
+Validation Precision:78.132%  (0.78132)
+Validation Recall:   67.343%  (0.67343)
+Validation Specificity: 99.824% (0.99824)
+Zero-Prediction Ratio:  2.0%
+Checkpoint Saved: outputs/experiments/EXP-MLUA-003_FINAL/checkpoints/EXP-MLUA-003_E75_BEST.pth
+SHA-256 Hash:     cb52ed6ec6911fab7f0081588fb63a6f0bad0e37b61c37f0ba9bd293a6bcedfb
+
+[EPOCH 80/80] Step 10560/10560 | Training Concluded (179,231s / 49.79 hrs)
+Train Loss: 0.46863 | Val Loss: 0.72508 | Val Dice: 71.343% | Final Status: CONVERGED
+
+========================================================================================
+SECTION 4: FINAL SEALED TEST EVALUATION LOG (100 CASES, FULL PANORAMIC OPGs)
+========================================================================================
+Executing Final Sealed-Test Benchmark Evaluation...
+Model Checkpoint: EXP-MLUA-003_E75_BEST.pth (Epoch 75, Step 9900)
+Input Directory:  dataset/test/images/ (100 Panoramic Radiographs, 768x1536)
+Ground Truth:     dataset/test/labels/ (100 Binary Segmentation Masks)
+Sliding Window:   384x384 Patches | Stride: 192 (21 Patches per Image)
+Reconstruction:   2D Gaussian Spatial Probability Blending
+Operating Cutoff: tau = 0.50 (Predetermined, Zero Test Tuning)
+
+Test Set Evaluation Summary (100 Independent Full-Mouth Cases):
+----------------------------------------------------------------------------------------
+- Total Evaluated Pixels:   117,964,800
+- True Positives (TP):      240,579     (0.2039%)
+- False Positives (FP):     150,350     (0.1275%)
+- False Negatives (FN):     277,638     (0.2354%)
+- True Negatives (TN):      117,296,233 (99.4332%)
+----------------------------------------------------------------------------------------
+- Macro Dice (Case Mean):   50.147%
+- Micro Dice (Pixel Sum):   52.924%
+- Macro IoU:                36.607%
+- Macro Precision:          59.889%
+- Macro Recall:             48.077%
+- Macro Specificity:        99.872%
+- Zero-Prediction Ratio:    0.0% (100 / 100 cases produced valid segmented contours)
+----------------------------------------------------------------------------------------
+Evaluation Finished: 100% Byte-Identical Checkpoint Verified. No Leakage.
