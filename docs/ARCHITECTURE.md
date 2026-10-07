@@ -130,9 +130,58 @@ END CURRENT ANALYZED CASE
 | **CASE LOCATION** | *"Where is the lesion?", "Which tooth is affected?", "What does L1 mean?"* | Uses active candidate region ID, FDI tooth, quadrant, and pixel coordinates. |
 | **CASE STAGING** | *"What is the stage of this report?", "What does Level 2 indicate?"* | Returns application-defined heuristic stage and depth description with clinical disclaimer. |
 | **CASE FINDINGS** | *"What did the model find?", "Explain this X-ray result"* | Summarizes candidate regions, total area %, and model predicted probability. |
-| **TECHNICAL** | *"How does MLUA work?", "What is Dice score?"* | References ResNet-34 + FPN architecture and E64 validation benchmarks. |
+| **TECHNICAL** | *"How does MLUA work?", "What is Dice score?"* | References ResNet-34 + FPN architecture and E75 validation benchmarks (with preserved historical E64 baseline). |
 | **SAFETY** | *"Do I definitely have caries?", "Should I take medicine?"* | Enforces non-autonomous disclaimer and directs patient to in-person clinical exam. |
 
 ### Privacy & PHI Hardening
 - Zero patient names, medical record numbers, pseudo-identifiers, phone numbers, or file paths are ever transmitted in API payloads.
 - Local session history is purged automatically upon switching cases to guarantee strict inter-case isolation.
+
+---
+
+## 8. Natural Language Understanding & Conversational Intelligence
+
+The assistant incorporates a dedicated three-layer Natural Language Understanding (NLU) system designed for clinical decision-support mediation:
+
+```mermaid
+flowchart TD
+    User["User Message\n(Informal, Hinglish, Emotional)"] --> NLU["NLP Understanding Layer\n(Local CPU < 10ms)"]
+    NLU --> Emotion["Layer 1: Sentiment / Emotion Analysis\n'How does the user's message feel?'"]
+    NLU --> Intent["Layer 2: Intent Classification\n'What does the user mean or want?'"]
+    Emotion --> Router["Urgency, Tone & Safety Router"]
+    Intent --> Router
+    Router --> Context["Structured NLU Metadata &\nActive Case Context (Zero PHI)"]
+    Context --> Gemini["Layer 3: Gemini Reasoning & Safety Governance\n'How should the assistant respond?'"]
+    Gemini --> Reply["Safe, Empathetic, Human-Friendly Reply"]
+
+    subgraph Local NLP Layer [Deterministic Local CPU Engine]
+        NLU
+        Emotion
+        Intent
+        Router
+    end
+
+    subgraph LLM & Clinical Boundary [Cloud GenAI & Decision Support]
+        Context
+        Gemini
+        Reply
+    end
+```
+
+### System Component Breakdown
+1. **Local NLP (`backend/nlp/`):**
+   - **`emotion_analyzer.py`:** Evaluates 11 affective states (`neutral`, `positive`, `confused`, `anxious`, `worried`, `fearful`, `frustrated`, `sad`, `curious`, `relieved`, `urgent/concerned`) and maps them to high-level sentiment and conversational tone.
+   - **`intent_classifier.py`:** Classifies 29 distinct semantic intents spanning Case-Specific, Model/Technical, General Conversation, and Medical Safety categories.
+   - **`nlu_router.py`:** Synthesizes urgency (`low`, `normal`, `high`, `critical`) and formats the `CURRENT USER LANGUAGE ANALYSIS` block.
+2. **Deterministic Application Logic (`backend/gemini_service.py`):**
+   - Hard-stops definitive diagnostic assertions, medication prescribing, and self-treatment claims.
+   - Formats sanitized active case findings and guarantees zero PHI leakage.
+   - Provides deterministic offline clinical fallback when external API quotas are exhausted.
+3. **Gemini LLM Reasoning (`gemini-2.5-flash`):**
+   - Mediates between user emotional state and factual radiographic findings.
+   - Employs empathetic acknowledgment for anxious/worried users without offering false clinical reassurance.
+   - Contextualizes algorithmic findings into human-friendly explanations.
+4. **MLUA Segmentation Pipeline (`EXP-MLUA-003_E75_BEST.pth`):**
+   - Pure deep-learning model isolated from the NLU text processing layer (canonical active checkpoint, preserving E64 as historical baseline).
+   - Sole source of truth for pixel coordinates, bounding boxes, depth indications, and model-predicted probabilities.
+

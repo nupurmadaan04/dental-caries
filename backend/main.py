@@ -59,7 +59,9 @@ async def health_check():
         "status": "ONLINE",
         "service": "Dental Caries Clinical AI Service",
         "version": "2.4.0",
-        "model_checkpoint": "EXP-MLUA-003_E64_BEST.pth",
+        "model_checkpoint": "EXP-MLUA-003_E75_BEST.pth",
+        "selected_epoch": 75,
+        "completed_training_epochs": 78,
         "production_threshold": 0.50,
         "gemini_assistant": {
             "configured": has_api_key,
@@ -112,9 +114,9 @@ async def chat_stream_endpoint(request: ChatRequest):
             words = full_text.split(" ")
             for i, word in enumerate(words):
                 chunk = word + (" " if i < len(words) - 1 else "")
-                yield f"data: {json.dumps({'chunk': chunk, 'done': False})}\n\n"
+                yield f"data: {json.dumps({'chunk': chunk, 'done': False}, ensure_ascii=False)}\n\n"
                 await asyncio.sleep(0.015)
-            yield f"data: {json.dumps({'done': True, 'full_text': full_text})}\n\n"
+            yield f"data: {json.dumps({'done': True, 'full_text': full_text}, ensure_ascii=False)}\n\n"
         except Exception as e:
             logger.error("Stream error: %s", e)
             yield f"data: {json.dumps({'error': 'Streaming interrupted', 'done': True})}\n\n"

@@ -16,6 +16,7 @@ import {
 import { apiService, detectEmotionalTone } from '../services/api';
 import { AssistantMessage, AnalysisResult } from '../types/api';
 import { useAIChat, ExplanationMode } from '../context/AIChatContext';
+import { MarkdownRenderer } from './MarkdownRenderer';
 
 interface AIAssistantDrawerProps {
   isOpen?: boolean;
@@ -254,13 +255,17 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({
 
               <div className="max-w-[85%] space-y-1">
                 <div
-                  className={`p-3.5 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap ${
+                  className={`p-3.5 rounded-2xl text-xs leading-relaxed ${
                     msg.sender === 'user'
-                      ? 'bg-cyan-600 text-white rounded-br-none shadow-sm shadow-cyan-600/20'
+                      ? 'bg-cyan-600 text-white rounded-br-none shadow-sm shadow-cyan-600/20 whitespace-pre-wrap'
                       : 'bg-slate-100 dark:bg-[#121b2d] border border-slate-200 dark:border-[#1b2742] text-slate-800 dark:text-slate-200 rounded-bl-none'
                   }`}
                 >
-                  {msg.text}
+                  {msg.sender === 'user' ? (
+                    msg.text
+                  ) : (
+                    <MarkdownRenderer content={msg.text} />
+                  )}
                 </div>
 
                 {/* Emotional Feedback Badge */}

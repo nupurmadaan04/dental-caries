@@ -73,3 +73,27 @@ Panoramic radiographs exhibit non-uniform 15% to 30% geometric magnification and
                       v
 5. Establish Definitive Diagnosis & Clinical Treatment Plan
 ```
+
+---
+
+## 5. Natural Language Understanding & Conversational Intelligence
+
+The embedded AI Assistant incorporates a three-layer Natural Language Understanding system to ensure safe, empathetic communication with clinicians and patients:
+
+```mermaid
+flowchart TD
+    User["User Query (Informal, Hinglish, Emotional)"] --> NLU["NLU Layer (Local CPU < 10ms)"]
+    NLU --> Emotion["Layer 1: Sentiment / Emotion Analysis\n'How does the text feel?'"]
+    NLU --> Intent["Layer 2: Intent Classification\n'What does the user mean or want?'"]
+    Emotion --> Router["Urgency, Tone & Safety Router"]
+    Intent --> Router
+    Router --> Context["Structured NLU Metadata + Active Case Context (Zero PHI)"]
+    Context --> Gemini["Layer 3: Gemini 2.5 Flash Reasoning\n'How should the assistant respond?'"]
+    Gemini --> Reply["Safe, Empathetic, Medically Bounded Reply"]
+```
+
+### Safety Principles for Conversational AI
+1. **Emotion vs. Clinical State:** An emotional state such as `anxious` or `fearful` must NEVER be interpreted as an indicator of disease severity. Emotion confidence represents language-model classification confidence, NOT diagnostic probability.
+2. **Empathetic Demarcation:** When a user expresses fear or anxiety (*"I'm really scared after seeing this report"*), the assistant acknowledges their concern calmly without dismissing it, but strictly refrains from false reassurance (e.g. never asserting *"Don't worry, you are fine"*).
+3. **Safety Guard Precedence:** When intents request diagnosis, medication, or invasive treatment, the system immediately applies safety guardrails and advises consulting a qualified dental professional.
+

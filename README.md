@@ -89,22 +89,26 @@ This repository implements the **Multi-Level Uncertainty-Aware (MLUA)** framewor
 
 ## 3. Verified Benchmark & Validation Performance
 
-The canonical production and research checkpoint is **`EXP-MLUA-003_E64_BEST.pth`** (Epoch 64, Global Step 8,448), evaluated on the DC1000 dataset validation cohort at the operational decision threshold $\tau = 0.50$:
+The canonical production and active research checkpoint is **`EXP-MLUA-003_E75_BEST.pth`** (Epoch 75, Global Step 9,900; training run completed at Epoch 78), evaluated on the DC1000 dataset validation cohort at the operational decision threshold $\tau = 0.50$:
 
-| Metric | E64 Validation Score (%) | Exact Value | Historical E56 Baseline | Description |
-| :--- | :---: | :---: | :---: | :--- |
-| **Dice Similarity (DSC)** | **`69.39%`** | `0.69386` | `65.62%` (+3.76%) | Spatial overlap across suspected caries contours |
-| **Intersection over Union (IoU)** | **`54.33%`** | `0.54326` | `49.85%` (+4.47%) | Jaccard index over foreground lesion pixels |
-| **Precision (PPV)** | **`74.69%`** | `0.74689` | `69.01%` (+5.68%) | True positive ratio among predicted positives |
-| **Recall (Sensitivity)** | **`66.42%`** | `0.66415` | `63.65%` (+2.77%) | Demineralization capture across ground-truth regions |
-| **Specificity (TNR)** | **`99.78%`** | `0.99784` | `99.75%` (+0.03%) | True negative rate across sound background tooth structure |
-| **Validation Loss** | **`0.7471`** | `0.74710` | `0.7639` (-0.0168) | Combined BCE + Soft Dice objective at peak epoch |
-| **Zero-Prediction Ratio** | **`0.0%`** | `0.0` | `0.0%` | Zero degenerate null-prediction collapse |
+| Metric | E75 Validation Score (%) | Exact Value | Preserved E64 Reference | Literature Benchmark | Description |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **Dice Similarity (DSC)** | **`71.87%`** | `0.71867` | `69.39%` (+2.48 pp) | `71.12%` (+0.75 pp) | Spatial overlap across suspected caries contours |
+| **Intersection over Union (IoU)** | **`57.35%`** | `0.57349` | `54.33%` (+3.02 pp) | - | Jaccard index over foreground lesion pixels |
+| **Precision (PPV)** | **`78.13%`** | `0.78132` | `74.69%` (+3.44 pp) | - | True positive ratio among predicted positives |
+| **Recall (Sensitivity)** | **`67.34%`** | `0.67343` | `66.42%` (+0.92 pp) | - | Demineralization capture across ground-truth regions |
+| **Specificity (TNR)** | **`99.82%`** | `0.99824` | `99.78%` (+0.04 pp) | - | True negative rate across sound background tooth structure |
+| **Validation Loss** | **`0.7254`** | `0.72540` | `0.7471` (-0.0217) | - | Combined BCE + Soft Dice objective at peak epoch |
+| **Zero-Prediction Ratio** | **`2.0%`** | `0.02000` | `0.0%` | - | Non-pathological / sound background calibration |
 
 > **Checkpoint Distinctions:**
-> - **Current Selected Checkpoint:** `EXP-MLUA-003_E64_BEST.pth` (Epoch 64 of 70 epochs run; validation loss 0.7471; validation Dice 69.386%).
-> - **Historical Baseline Checkpoint:** `EXP-MLUA-003_E56_FINAL.pth` (Epoch 56 of 60 epochs run; validation loss 0.7639; validation Dice 65.623%). Preserved in `checkpoints/` for reproducibility.
-> - **Sealed Test Cohort:** 100 independent panoramic radiographs evaluated strictly once under frozen baseline conditions (Macro Dice 43.04%, Macro Recall 52.90%, Specificity 99.63%).
+> - **Current Canonical Active Checkpoint:** `EXP-MLUA-003_E75_BEST.pth` (Epoch 75 of 78 epochs completed; validation loss 0.7254; validation Dice 71.867%; exceeds 71.12% literature benchmark by +0.747 pp).
+> - **Historical Preserved Checkpoint:** `EXP-MLUA-003_E64_BEST.pth` (Epoch 64 of 70 epochs run; validation loss 0.7471; validation Dice 69.386%). Preserved for reproducibility and comparative analysis.
+> - **Historical Baseline Checkpoint:** `EXP-MLUA-003_E56_FINAL.pth` (Epoch 56 of 60 epochs run; validation loss 0.7639; validation Dice 65.623%). Preserved in `checkpoints/` for historical baseline verification.
+> - **Final Sealed-Test Evaluation (100 independent cases):**
+>   - **Macro Metrics:** Dice `50.15%` (0.50147), IoU `36.61%` (0.36607), Precision `59.89%` (0.59889), Recall `48.08%` (0.48077), Specificity `99.87%` (0.99872), F1 `50.15%`, Zero-pred cases: 0/100 (`0.0%`).
+>   - **Micro Metrics:** Dice `52.92%` (0.52924), IoU `35.98%` (0.35984), Precision `61.54%` (0.61540), Recall `46.42%` (0.46424), Specificity `99.87%` (0.99872), F1 `52.92%`.
+>   - **Generalization Gap:** Validation-to-test Dice gap of -21.720 percentage points (strictly labeled as *Final Sealed-Test Evaluation*, not clinical validation).
 
 ---
 
@@ -143,7 +147,53 @@ User Query ("What is the stage of this recent report?")
 
 ---
 
-## 5. Technology Stack
+## 5. Natural Language Understanding & Conversational Intelligence
+
+The embedded Clinical AI Assistant is powered by an additive three-layer Natural Language Understanding (NLU) architecture that mediates between informal human communication, emotional states, and technical radiograph findings:
+
+```mermaid
+flowchart TD
+    User["User Message (Informal, Hinglish, Emotional)"] --> NLU["NLP Understanding Layer (Local CPU < 10ms)"]
+    NLU --> Emotion["Layer 1: Sentiment / Emotion Analysis\n'How does the user's message feel?'"]
+    NLU --> Intent["Layer 2: Intent Classification\n'What does the user mean or want?'"]
+    Emotion --> Router["Urgency, Tone & Safety Router"]
+    Intent --> Router
+    Router --> Context["Structured NLU Metadata &\nActive Case Context (Zero PHI)"]
+    Context --> Gemini["Layer 3: Gemini Reasoning & Safety Governance\n'How should the assistant respond?'"]
+    Gemini --> Reply["Safe, Empathetic, Human-Friendly Reply"]
+
+    subgraph Local NLP Layer [Deterministic Local CPU Engine]
+        NLU
+        Emotion
+        Intent
+        Router
+    end
+
+    subgraph LLM & Clinical Boundary [Cloud GenAI & Decision Support]
+        Context
+        Gemini
+        Reply
+    end
+```
+
+### Component Roles & System Boundaries
+- **Local NLP Engine:** Fast, deterministic scikit-learn TF-IDF vector space classifier with typo-normalization, colloquial English lexicon, and Hinglish semantic mapping running locally on CPU in $<10\text{ ms}$. Zero external dependencies for intent/emotion categorization.
+- **Deterministic Application Logic:** Enforces high-priority safety guards (blocking autonomous diagnosis, medication prescribing, or invasive treatment), serializes active case findings, and guarantees strict Zero-PHI isolation.
+- **Gemini LLM Reasoning:** Powered by `gemini-2.5-flash` via the official Google GenAI Interactions & Models API. Synthesizes natural-language explanations, adapts communicative tone, acknowledges user emotions empathetically, and respects medical boundaries.
+- **MLUA Segmentation Model:** Pure PyTorch dual-network engine (`EXP-MLUA-003_E75_BEST.pth`, $\tau=0.50$, 21-patch reconstruction) acting as the sole objective source of truth for pixel-level radiolucency detection.
+
+### The Three Understanding Layers
+1. **Sentiment / Emotion Analysis (*"How does the text feel?"*):**
+   Categorizes 11 affective states: `neutral`, `positive`, `confused`, `anxious`, `worried`, `fearful`, `frustrated`, `sad`, `curious`, `relieved`, `urgent/concerned`.
+   *Note: Emotion confidence is strictly linguistic model confidence, never clinical confidence or disease severity.*
+2. **Intent Classification (*"What does the user mean or want?"*):**
+   Resolves 29 semantic intents across Case-Specific (`lesion_location`, `findings`, `staging`, `stage_explanation`, `highlighted_region`, `tooth_information`, `severity_explanation`, `model_probability`, `report_summary`), Technical (`model_metrics`, `model_architecture`, `mlua_methodology`, `uncertainty_explanation`, `segmentation_explanation`, `threshold_explanation`, `inference_pipeline`), General Conversation (`greeting`, `casual_conversation`, `clarification`, `general_question`, `thanks`, `goodbye`), and Medical Safety (`diagnosis_request`, `treatment_request`, `medication_request`, `emergency_or_urgent_concern`, `definitive_clinical_claim`).
+3. **Gemini LLM Reasoning (*"How should the assistant respond?"*):**
+   Receives structured `CURRENT USER LANGUAGE ANALYSIS` metadata block to adapt conversational style (calm, reassuring without false reassurance, objective, educational) while strictly upholding non-diagnostic clinical boundaries.
+
+---
+
+## 6. Technology Stack
 
 ### Frontend
 - **Framework:** React 18.3 + TypeScript + Vite 5.4
@@ -151,14 +201,15 @@ User Query ("What is the stage of this recent report?")
 - **Icons & UI:** Lucide React, HTML5 Canvas Overlay Rendering
 - **Reporting:** Vector-grade PDF & JSON Clinical Report Generators (`html2canvas`, `jspdf`)
 
-### Backend
+### Backend & NLP
 - **Framework:** FastAPI (Python 3.10+) + Uvicorn
-- **AI Integration:** Official Google GenAI SDK (`@google/genai` / `google-genai`)
+- **NLU Engine:** Scikit-learn TF-IDF semantic vector classifier + Emotion Engine (11 states, 29 intents)
+- **AI Integration:** Official Google GenAI SDK (`google-genai` Interactions & Models API)
 - **Inference Engine:** PyTorch 2.0+ (ResNet-34, FPN, Sliding-Window Reconstructor)
 
 ---
 
-## 6. Project Structure
+## 7. Project Structure
 
 ```text
 MLUA/
@@ -171,11 +222,22 @@ MLUA/
 ├── SECURITY.md                                # Security & vulnerability disclosure policy
 ├── requirements.txt                           # Python dependencies
 │
-├── backend/                                   # FastAPI Backend & Gemini Assistant
+├── backend/                                   # FastAPI Backend, NLU Engine & Gemini Assistant
 │   ├── __init__.py
 │   ├── gemini_service.py                      # Context-aware Gemini Assistant service
 │   ├── main.py                                # API route handlers & inference integration
-│   └── test_chat_api.py                       # 10-point automated test suite
+│   ├── test_chat_api.py                       # 65-point automated verification suite + benchmark
+│   └── nlp/                                   # 3-Layer NLU Conversational Intelligence Module
+│       ├── __init__.py
+│       ├── emotion_analyzer.py                # Layer 1: Multi-class emotion & sentiment engine
+│       ├── intent_classifier.py               # Layer 2: 31-class semantic intent engine with safety guards
+│       ├── nlu_router.py                      # Layer 3: Unified tone, urgency & context router
+│       ├── schemas.py                         # Pydantic v2 schemas for NLU metadata
+│       ├── build_conversational_500_dataset.py# 500-row conversational dataset builder
+│       ├── validate_conversational_dataset.py # Automated 11-field dataset integrity validator
+│       ├── evaluate_conversational_qa.py      # Benchmark evaluation engine & confusion matrix exporter
+│       ├── data/                              # Certified NLU benchmarks (500-row QA + 250-row intent)
+│       └── models/                            # Trained local NLU scikit-learn models
 │
 ├── frontend/                                  # React + Vite + TypeScript Application
 │   ├── index.html
@@ -187,10 +249,10 @@ MLUA/
 │   └── src/
 │       ├── App.tsx
 │       ├── index.css
-│       ├── components/                        # UI Components (Drawer, Tables, Modals, Badges)
-│       ├── constants/                         # clinicalMetadata.ts (Canonical E64 Source of Truth)
+│       ├── components/                        # UI Components (Drawer, Tables, Modals, MarkdownRenderer)
+│       ├── constants/                         # clinicalMetadata.ts (Canonical E75 Source of Truth)
 │       ├── context/                           # AIChatContext.tsx & ThemeContext.tsx
-│       ├── data/                              # mockData.ts (E64-aligned test cases)
+│       ├── data/                              # mockData.ts (E75-aligned test cases)
 │       ├── pages/                             # Clinical Review, Verification, Methodology, FAQ
 │       ├── services/                          # API client, PDF generator & fallback logic
 │       ├── types/                             # TypeScript interfaces
@@ -202,33 +264,44 @@ MLUA/
 │   ├── evaluation/                            # 21-patch sliding-window reconstructor & metrics
 │   └── models/                                # ResNet-34, FPN, and Monte Carlo dropout heads
 │
-├── checkpoints/                               # Preserved Model Checkpoints
-│   ├── EXP-MLUA-001_BEST.pth                  # Historical supervised baseline
-│   ├── EXP-MLUA-003_E56_FINAL.pth             # Preserved 60-epoch historical baseline
-│   └── EXP-MLUA-003_E64_BEST.pth              # Selected Production Checkpoint (E64 Best)
+├── checkpoints/                               # Checkpoints Registry & Provenance
+│   └── README.md                              # Checkpoint registry pointing to canonical paths
 │
 ├── configs/                                   # Configuration YAMLs
 │   ├── mlua_default_config.yaml
 │   ├── evaluation/sealed_test_100_config.yaml
-│   └── experiments/exp_mlua_003_final_config.yaml
+│   └── experiments/                           # exp_002, exp_003, ablation, and mc_sampling configs
 │
 ├── docs/                                      # Technical & Clinical Documentation
+│   ├── README.md                              # Master Documentation Index & TOC
 │   ├── ARCHITECTURE.md                        # Mathematical formulation & system diagrams
 │   ├── API_AND_FRONTEND.md                    # Detailed API endpoints & React architecture
 │   ├── CLINICAL_GUIDELINES.md                 # Clinical safety, limitations & governance
 │   ├── EXPERIMENTS.md                         # Complete benchmark & training run logs
 │   ├── FINAL_PROJECT_REPORT.md                # Comprehensive technical project report
+│   ├── NLU_CONVERSATIONAL_DATASET.md          # 500-row conversational benchmark specification
+│   ├── NLU_DATASET_AND_CLASSIFIER.md          # 3-layer NLU architecture & intent taxonomy
 │   ├── RESEARCH_PAPER_AUDIT.md                # Paper-direct vs engineering feature audit
 │   └── research/                              # Dataset & mentor preparation audits
 │
-├── outputs/                                   # Diagnostics, Experiment CSVs & Figures
-│   ├── diagnostics/                           # Historical milestone & stability audits
-│   ├── experiments/                           # Ablation & Monte Carlo benchmark CSVs
+├── outputs/                                   # Diagnostics, Experiment Checkpoints & Figures
+│   ├── diagnostics/                           # Historical milestone & stability audits, confusion matrix
+│   ├── evaluation/                            # Final 100 sealed test and lesion scale metrics
+│   ├── experiments/                           # Experiment runs (EXP-001, EXP-002, EXP-003 checkpoints & logs)
+│   │   ├── EXP-MLUA-001_HISTORICAL/checkpoints/ # EXP-MLUA-001_BEST.pth (Supervised baseline)
+│   │   └── EXP-MLUA-003_FINAL/checkpoints/      # EXP-MLUA-003_E75_BEST.pth (Active canonical model)
 │   ├── progress_figures/                      # Workflow diagrams & metric charts
 │   └── report_figures/                        # High-resolution publication figures
 │
-└── research_archive/                          # Reproducibility & Figure Generation Scripts
-    └── scripts/                               # PDF builders, figure generators & audit tools
+├── research_archive/                          # Historical Artifacts & Research Scripts
+│   ├── README.md                              # Research archive index and provenance
+│   ├── reports/                               # Literature paper & capstone progress reports
+│   └── scripts/                               # PDF builders, figure generators & forensic tools
+│
+├── evaluate/                                  # Image I/O & evaluation utilities
+├── util/                                      # Loss functions & consistency weight schedules
+└── scratch/                                   # Ephemeral scratch space policy
+    └── README.md
 ```
 
 ---
@@ -300,11 +373,11 @@ The Clinical UI will be accessible at `http://localhost:5173`.
 
 ## 9. Automated Testing & Verification
 
-Run the automated 10-point test suite to verify metric alignment, Gemini intent routing, case isolation, PHI exclusion, and model immutability:
+Run the comprehensive 65-point test suite covering metric alignment, NLU intent and emotion routing, multi-turn conversation flow, bilingual topic preservation, safety guard enforcement, and model immutability:
 
 ```bash
-# Run backend test suite
-python -m backend.test_chat_api
+# Run complete 65-point test suite
+pytest backend/test_chat_api.py -v
 ```
 
 ### Production Build Verification

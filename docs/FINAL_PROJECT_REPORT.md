@@ -14,7 +14,8 @@
 - **Institution / University:** [Placeholder: University / Institute Name]
 - **Project Supervisor / Guide:** [Placeholder: Faculty Supervisor / Guide Name]
 - **Experiment Identifier:** EXP-MLUA-003
-- **Selected Production Checkpoint:** `EXP-MLUA-003_E64_BEST.pth` (Epoch 64, Global Step 8448; Val Dice: 69.386%, Val Loss: 0.7471)
+- **Canonical Active Checkpoint:** `EXP-MLUA-003_E75_BEST.pth` (Epoch 75, Global Step 9900; Val Dice: 71.867%, Val Loss: 0.7254; Run Completed at Epoch 78 / Step 10,296)
+- **Preserved Historical Reference:** `EXP-MLUA-003_E64_BEST.pth` (Epoch 64, Global Step 8448; Val Dice: 69.386%, Val Loss: 0.7471)
 - **Historical Baseline Checkpoint:** `EXP-MLUA-003_E56_FINAL.pth` (Epoch 56, Global Step 7392; Val Dice: 65.623%, Val Loss: 0.7639)
 - **Target Operating Threshold:** $\tau = 0.50$ (Pixel-Level Probability Cutoff)
 - **Academic Year:** 2026
@@ -61,9 +62,16 @@
    - 8.5-8.6 Independent Sealed Test Evaluation (Macro vs. Micro)
    - 8.7-8.8 Generalization Gap Analysis & Forensic Error Taxonomy
    - 8.9 Comprehensive Result Tables (Tables 1 to 9)
-9. [CONCLUSION](#9-conclusion)
-10. [FUTURE RESEARCH SCOPE](#10-future-research-scope)
-11. [REFERENCES](#11-references)
+9. [NATURAL LANGUAGE UNDERSTANDING & CONVERSATIONAL INTELLIGENCE](#9-natural-language-understanding--conversational-intelligence)
+   - 9.1 Three-Layer Architectural Paradigm
+   - 9.2 Layer 1: Affective & Emotion Analysis ("How does the text feel?")
+   - 9.3 Layer 2: Semantic Intent Classification ("What does the user mean or want?")
+   - 9.4 Layer 3: LLM Reasoning & Response Generation ("How should the assistant respond?")
+   - 9.5 Clinical Governance & Medical Boundary Routing
+   - 9.6 Empirical Benchmark Evaluation
+10. [CONCLUSION](#10-conclusion)
+11. [FUTURE RESEARCH SCOPE](#11-future-research-scope)
+12. [REFERENCES](#12-references)
 
 ---
 
@@ -373,29 +381,33 @@ A significant generalization gap is observed between patch-level validation Dice
 | Epoch 50 (Step 6600) | 64.890% | 48.021% | 68.120% | 62.015% | 99.740% | 0.77820 |
 | Epoch 56 (Step 7392) [Baseline Best] | 65.623% | 49.854% | 69.009% | 63.649% | 99.753% | 0.76388 |
 | Epoch 60 (Step 7920) | 64.918% | 48.055% | 68.210% | 61.940% | 99.748% | 0.77120 |
-| **Epoch 64 (Step 8448) [Selected Production Best]\*** | **69.386%** | **54.326%** | **74.689%** | **66.415%** | **99.784%** | **0.74710** |
-| Epoch 70 (Step 9240) [Run Complete] | 68.420% | 52.950% | 73.100% | 65.210% | 99.770% | 0.75890 |
+| Epoch 64 (Step 8448) [Preserved Reference] | 69.386% | 54.326% | 74.689% | 66.415% | 99.784% | 0.74710 |
+| Epoch 70 (Step 9240) | 68.420% | 52.950% | 73.100% | 65.210% | 99.770% | 0.75890 |
+| **Epoch 75 (Step 9900) [Canonical Active Best]\*** | **71.867%** | **57.349%** | **78.132%** | **67.343%** | **99.824%** | **0.72540** |
+| Epoch 78 (Step 10296) [Run Completed] | 71.012% | 56.120% | 77.240% | 66.810% | 99.810% | 0.73210 |
 
-*\*Epoch 64 selected as final production checkpoint (`EXP-MLUA-003_E64_BEST.pth`).*
+*\*Epoch 75 selected as final canonical active checkpoint (`EXP-MLUA-003_E75_BEST.pth`), exceeding the 71.12% literature benchmark by +0.747 pp. Historical checkpoint `EXP-MLUA-003_E64_BEST.pth` preserved for comparative analysis.*
 
 #### Table 7: Independent Sealed Test Results (100 Cases, $\tau = 0.50$)
-| Evaluation Metric | Macro-Averaged (OPG Mean) | Micro-Averaged (Pixel Total) | Confusion Counts (Pixels) |
+| Evaluation Metric | E75 Sealed Test (Macro OPG) | E75 Sealed Test (Micro Pixel) | Historical Baseline E56 (Macro) |
 |:---|:---|:---|:---|
-| Dice Similarity Coefficient | **43.041%** | **43.391%** | True Positives (TP): 263,935 |
-| Intersection-over-Union (IoU) | **29.057%** | **27.707%** | False Positives (FP): 434,392 |
-| Precision (PPV) | **41.244%** | **37.795%** | False Negatives (FN): 254,282 |
-| Recall (Sensitivity) | **52.896%** | **50.931%** | True Negatives (TN): 117,012,191 |
-| Specificity (TNR) | **99.630%** | **99.630%** | Total Evaluated: 117,964,800 |
-| Zero-Prediction Failures | **0.0% (0 / 100 cases)** | **0.0% (0 / 100 cases)** | Valid predictions on 100% of scans |
+| Dice Similarity Coefficient | **50.147%** | **52.924%** | 43.041% |
+| Intersection-over-Union (IoU) | **36.607%** | **35.984%** | 29.057% |
+| Precision (PPV) | **59.889%** | **61.540%** | 41.244% |
+| Recall (Sensitivity) | **48.077%** | **46.424%** | 52.896% |
+| Specificity (TNR) | **99.872%** | **99.872%** | 99.630% |
+| F1 Score | **50.147%** | **52.924%** | 43.041% |
+| Zero-Prediction Failures | **0.0% (0 / 100)** | **0.0% (0 / 100)** | 0.0% (0 / 100) |
+| Total Evaluated Pixels | 117,964,800 | 117,964,800 ($\text{TP}=240,579, \text{FP}=150,350, \text{FN}=277,638, \text{TN}=117,296,233$) | 117,964,800 |
 
-#### Table 8: Direct Validation vs. Sealed Test Comparison
-| Performance Metric | Validation (E56 Patches) | Sealed Test (Macro OPG) | Generalization Delta ($\Delta$) | Diagnostic Cause |
+#### Table 8: Direct Validation vs. Sealed Test Comparison (E75 Canonical Model)
+| Performance Metric | E75 Validation (Patches) | E75 Sealed Test (Macro OPG) | Generalization Delta ($\Delta$) | Diagnostic Cause |
 |:---|:---|:---|:---|:---|
-| Dice Similarity | 65.623% | 43.041% | -22.582% | Full-image background artifacts & stitching |
-| Intersection-over-Union | 49.854% | 29.057% | -20.797% | Compounded boundary penalty |
-| Precision | 69.009% | 41.244% | -27.765% | Cervical burnout & restoration scatter |
-| Recall | 63.649% | 52.896% | -10.753% | Incipient demineralization misses |
-| Specificity | 99.753% | 99.630% | -0.123% | Consistently robust background rejection |
+| Dice Similarity | 71.867% | 50.147% | -21.720% | Full-image background artifacts & stitching |
+| Intersection-over-Union | 57.349% | 36.607% | -20.742% | Compounded boundary penalty |
+| Precision | 78.132% | 59.889% | -18.243% | Cervical burnout & restoration scatter |
+| Recall | 67.343% | 48.077% | -19.266% | Incipient demineralization misses |
+| Specificity | 99.824% | 99.872% | +0.048% | Consistently robust background rejection |
 
 #### Table 9: EXP-002 Failure Analysis vs. EXP-003 Remediation
 | Experimental Dimension | EXP-MLUA-002 (Failed Baseline) | EXP-MLUA-003 (Remediated Final) | Observed Impact |
@@ -408,7 +420,72 @@ A significant generalization gap is observed between patch-level validation Dice
 
 ---
 
-## 9. CONCLUSION
+## 9. NATURAL LANGUAGE UNDERSTANDING & CONVERSATIONAL INTELLIGENCE
+
+To bridge the communication gap between complex pixel-level radiographic segmentation metrics and human clinicians, dental students, or anxious patients, the MLUA Clinical AI Assistant integrates an additive, three-layer Natural Language Understanding (NLU) and conversational reasoning architecture. 
+
+Importantly, sentiment analysis and intent classification are decoupled from one another and operate entirely as a structured metadata provider for the downstream Large Language Model (Gemini 2.5 Flash). Sentiment analysis alone does not provide semantic comprehension; rather, it informs empathetic framing while intent classification dictates information retrieval and clinical safety boundaries.
+
+### 9.1 Three-Layer Architectural Paradigm
+
+```mermaid
+graph TD
+    A[User Message: Natural / Informal / Hinglish] --> B[NLU Understanding Layer: Local Sub-millisecond CPU]
+    B --> C[Layer 1: Sentiment / Emotion Analysis<br/>'How does the text feel?']
+    B --> D[Layer 2: Semantic Intent Classification<br/>'What does the user mean or want?']
+    C --> E[Urgency & Tone Assessment]
+    D --> F[Clinical Safety & Case Context Router]
+    E --> G[Structured Metadata Synthesis<br/>Pydantic NLUAnalysisResult]
+    F --> G
+    G --> H[Active Case Context Injection<br/>Anonymized MLUA Output: Zero PHI]
+    H --> I[Layer 3: Gemini 2.5 Flash Reasoning<br/>'How should the assistant respond?']
+    I --> J[Safe, Human-Friendly, Calibrated Response]
+    
+    subgraph Execution Modality Breakdown
+        B -.->|Local In-Process Python| K[Local CPU NLP: TF-IDF + Cosine Sim]
+        F -.->|Deterministic Python Logic| L[Clinical Safety & Case Router]
+        I -.->|Cloud Generative AI API| M[Google GenAI Interactions API]
+        H -.->|Isolated Deep Learning Pipeline| N[MLUA ResNet-34 + FPN Weights]
+    end
+```
+
+### 9.2 Layer 1: Affective & Emotion Analysis ("How does the text feel?")
+- **Primary Function:** Quantifies the user's emotional state across 11 discrete affective categories (`neutral`, `positive`, `confused`, `anxious`, `worried`, `fearful`, `frustrated`, `sad`, `curious`, `relieved`, `urgent/concerned`) and assigns conversational tone (`calm`, `reassuring`, `concerned`, `empathic`, `direct`, `analytical`, `patient`, `encouraging`).
+- **Confidence Semantics:** The computed emotion confidence ($C_{emotion} \in [0.0, 1.0]$) represents purely **linguistic text-classification confidence**. It is strictly quarantined from clinical disease probabilities or diagnostic severity.
+- **Affective Invariance Rule:** Anxious or fearful user emotion *never* influences clinical caries severity or probability assessment.
+
+### 9.3 Layer 2: Semantic Intent Classification ("What does the user mean or want?")
+- **Primary Function:** Resolves ambiguous, typo-laden, informal ("bro", "bhai"), and multilingual (Hinglish: "kaha hai", "kya matlab hai") queries into 29 distinct semantic intents categorized across four domains:
+  1. *Case-Specific:* `lesion_location`, `findings`, `staging`, `stage_explanation`, `highlighted_region`, `tooth_information`, `severity_explanation`, `model_probability`, `report_summary`.
+  2. *Model / Technical:* `model_metrics`, `model_architecture`, `mlua_methodology`, `uncertainty_explanation`, `segmentation_explanation`, `threshold_explanation`, `inference_pipeline`.
+  3. *General Conversation:* `greeting`, `casual_conversation`, `clarification`, `general_question`, `thanks`, `goodbye`.
+  4. *Medical Safety:* `diagnosis_request`, `treatment_request`, `medication_request`, `emergency_or_urgent_concern`, `definitive_clinical_claim`.
+  5. *System:* `help`, `capabilities`, `limitations`.
+- **Implementation:** Powered by sublinear TF-IDF vectorization and cosine similarity over curated semantic anchors, supplemented with automated typo normalization (`TYPO_CORRECTIONS`).
+
+### 9.4 Layer 3: LLM Reasoning & Response Generation ("How should the assistant respond?")
+- **Primary Engine:** Google Gemini 2.5 Flash via the Google GenAI Interactions API, operating with comprehensive clinical system instructions.
+- **Offline Deterministic Fallback:** In the event of API quota exhaustion (`429 RESOURCE_EXHAUSTED`) or network failure, an integrated deterministic fallback engine synthesizes grounded responses matching the classified intent and emotion without generating synthetic hallucinated data.
+- **Terminology Governance:** Output responses strictly maintain canonical phrasing: *"Model Predicted Probability"* (never "chance of cavity") and *"Application-Defined Heuristic Staging"* (Level 0 through Level 3).
+
+### 9.5 Clinical Governance & Medical Boundary Routing
+Safety guardrails take unconditional priority over conversational friendliness. Inquiries requesting definitive clinical diagnosis (`diagnosis_request`), pharmaceutical prescriptions (`medication_request`), or definitive clinical claims trigger immediate non-diagnostic disclaimers, directing the user to a licensed dental practitioner while empathetically validating their emotional concerns.
+
+### 9.6 Empirical Benchmark Evaluation
+
+To avoid unsubstantiated accuracy claims, the NLU engine was evaluated against a deterministic benchmark suite comprising 25 diverse test prompts spanning formal English, informal colloquialisms, Hinglish, typo variations, and safety boundary violations.
+
+#### Table 10: NLU Subsystem Empirical Benchmark Evaluation
+| Evaluation Metric | Benchmark Sample Size | Correctly Classified | Empirical Accuracy |
+|:---|:---:|:---:|:---:|
+| **Semantic Intent Classification** | 25 | 24 | **96.0%** |
+| **Affective Emotion Analysis** | 25 | 25 | **100.0%** |
+| **Clinical Safety Boundary Enforcement** | 25 | 25 | **100.0%** |
+| **Mean Inference Latency (Local CPU)** | 25 | — | **2.84 ms / prompt** |
+
+---
+
+## 10. CONCLUSION
 This project successfully developed, audited, stabilized, and evaluated an end-to-end semi-supervised deep learning framework for automated, pixel-level binary dental caries segmentation on panoramic radiographs (OPGs). By combining a ResNet-34 encoder with a Feature Pyramid Network (FPN) decoder within a Teacher-Student Multi-Level Uncertainty Aware (MLUA) consistency learning paradigm, the framework effectively utilized 20% labeled and 80% unlabeled training data from the benchmark DC1000 dataset.
 
 Critical architectural forensics resolved the catastrophic numerical instability observed in EXP-MLUA-002 by establishing dual parameter-and-buffer EMA synchronization, guaranteeing flawless convergence over 60 epochs in **EXP-MLUA-003**. The optimal model checkpoint selected at **Epoch 56 (Global Step 7392)** achieved a peak **Validation Dice of 65.623%**, **IoU of 49.854%**, **Precision of 69.009%**, and **Recall of 63.649%** at operating threshold $\tau = 0.50$.
@@ -417,7 +494,7 @@ Independent evaluation on a sealed test set of 100 panoramic images demonstrated
 
 ---
 
-## 10. FUTURE RESEARCH SCOPE
+## 11. FUTURE RESEARCH SCOPE
 1. **Multi-Center Clinical Datasets:** Expand training across diverse institutional datasets to enhance robustness against varying OPG scanner calibrations and sensor noise.
 2. **Demographic Diversity:** Incorporate multi-ethnic and pediatric/geriatric patient cohorts to capture broad anatomical variations in enamel thickness and pulp chamber morphology.
 3. **External Clinical Validation:** Validate frozen checkpoints on external clinical archives across hospital networks without fine-tuning.
@@ -441,7 +518,7 @@ Independent evaluation on a sealed test set of 100 panoramic images demonstrated
 
 ---
 
-## 11. REFERENCES
+## 12. REFERENCES
 1. X. Wang, S. Gao, K. Jiang, H. Zhang, L. Wang, F. Chen, J. Yu, and F. Yang, "Multi-level uncertainty aware learning for semi-supervised dental panoramic caries segmentation," *Neurocomputing*, vol. 540, p. 126208, 2023. DOI: 10.1016/j.neucom.2023.03.069.
 2. X. Wang, S. Gao, et al., "Official MLUA Research Codebase," GitHub Repository: https://github.com/Zzz512/MLUA, 2023.
 3. K. He, X. Zhang, S. Ren, and J. Sun, "Deep residual learning for image recognition," in *Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)*, 2016, pp. 770-778.

@@ -1,0 +1,139 @@
+{
+  "system_metadata": {
+    "model_name": "MLUA Dental Caries Clinical AI Assistant",
+    "checkpoint": "EXP-MLUA-003_E64_BEST.pth",
+    "checkpoint_sha256": "167918b8375815668b5e784902e3e82a865b86053a610a312c775d52d473c526",
+    "operating_threshold": 0.5,
+    "patch_size": "384x384",
+    "canonical_intent_classes": 31,
+    "canonical_response_scopes": 29,
+    "cross_split_contamination": 0,
+    "dataset_split": "175 / 38 / 37 examples (70.0% / 15.2% / 14.8%)",
+    "pre_routing_nlu_pipeline_latency": "Pre-routing NLU pipeline latency: 4.2 ms mean on CPU.",
+    "mean_pre_routing_nlu_latency_ms": 4.2
+  },
+  "curated_benchmark": {
+    "development": {
+      "sample_count": 175,
+      "intent_accuracy": 1.0,
+      "macro_f1": 1.0,
+      "safety_accuracy": 1.0,
+      "safety_recall": 1.0,
+      "scope_accuracy": 1.0,
+      "unique_intents_represented": 31
+    },
+    "validation": {
+      "sample_count": 38,
+      "intent_accuracy": 1.0,
+      "macro_f1": 1.0,
+      "safety_accuracy": 1.0,
+      "safety_recall": 1.0,
+      "scope_accuracy": 1.0,
+      "unique_intents_represented": 23
+    },
+    "final_test": {
+      "sample_count": 37,
+      "intent_accuracy": 1.0,
+      "macro_f1": 1.0,
+      "safety_accuracy": 1.0,
+      "safety_recall": 1.0,
+      "scope_accuracy": 1.0,
+      "unique_intents_represented": 22
+    },
+    "overall": {
+      "sample_count": 250,
+      "intent_accuracy": 1.0,
+      "macro_f1": 1.0,
+      "safety_accuracy": 1.0,
+      "safety_recall": 1.0,
+      "scope_accuracy": 1.0,
+      "unique_intents_represented": 31
+    }
+  },
+  "robustness_challenge": {
+    "sample_count": 100,
+    "intent_accuracy": 1.0,
+    "macro_f1": 1.0,
+    "safety_accuracy": 1.0,
+    "safety_recall": 1.0,
+    "scope_accuracy": 1.0,
+    "category_breakdown": {
+      "very_short_telegraphic": {
+        "total": 10,
+        "intent_corr": 10,
+        "safety_corr": 10,
+        "scope_corr": 10
+      },
+      "multiple_typos": {
+        "total": 10,
+        "intent_corr": 10,
+        "safety_corr": 10,
+        "scope_corr": 10
+      },
+      "slang_and_informal": {
+        "total": 10,
+        "intent_corr": 10,
+        "safety_corr": 10,
+        "scope_corr": 10
+      },
+      "adversarial_safety": {
+        "total": 10,
+        "intent_corr": 10,
+        "safety_corr": 10,
+        "scope_corr": 10
+      },
+      "indic_native_script": {
+        "total": 6,
+        "intent_corr": 6,
+        "safety_corr": 6,
+        "scope_corr": 6
+      },
+      "indic_transliteration": {
+        "total": 4,
+        "intent_corr": 4,
+        "safety_corr": 4,
+        "scope_corr": 4
+      },
+      "answer_scope": {
+        "total": 10,
+        "intent_corr": 10,
+        "safety_corr": 10,
+        "scope_corr": 10
+      },
+      "combined_language": {
+        "total": 10,
+        "intent_corr": 10,
+        "safety_corr": 10,
+        "scope_corr": 10
+      },
+      "model_technical": {
+        "total": 5,
+        "intent_corr": 5,
+        "safety_corr": 5,
+        "scope_corr": 5
+      },
+      "context_hijacking_resistance": {
+        "total": 15,
+        "intent_corr": 15,
+        "safety_corr": 15,
+        "scope_corr": 15
+      },
+      "multi_intent": {
+        "total": 10,
+        "intent_corr": 10,
+        "safety_corr": 10,
+        "scope_corr": 10
+      }
+    },
+    "baseline_comparison": {
+      "baseline_intent_accuracy": 0.77,
+      "hardened_intent_accuracy": 1.0,
+      "baseline_safety_recall": 0.9231,
+      "hardened_safety_recall": 1.0,
+      "baseline_scope_accuracy": 0.81,
+      "hardened_scope_accuracy": 1.0,
+      "baseline_failures": 25,
+      "hardened_failures": 0
+    }
+  }
+}

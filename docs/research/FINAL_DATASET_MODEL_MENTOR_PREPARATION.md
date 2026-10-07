@@ -1,15 +1,16 @@
 # Final Dataset & Model Factor Validation, Technical Audit & Mentor Defense Preparation
 
 **Project:** Dental Panoramic Radiograph Caries Segmentation Platform  
-**Target Selected Checkpoint:** `EXP-MLUA-003_E64_BEST.pth` (Epoch 64, Global Step 8448; Validation Dice: **69.386%**)  
+**Canonical Active Checkpoint:** `EXP-MLUA-003_E75_BEST.pth` (Epoch 75, Global Step 9900; Validation Dice: **71.867%**)  
+**Preserved Historical Reference:** `EXP-MLUA-003_E64_BEST.pth` (Epoch 64, Global Step 8448; Validation Dice: **69.386%**)  
 **Preserved Historical Baseline:** `EXP-MLUA-003_E56_FINAL.pth` (Epoch 56, Global Step 7392; Validation Dice: 65.623%)  
-**Latest Training Checkpoint:** `EXP-MLUA-003_E70_LATEST.pth` (Epoch 70, Global Step 9240)  
+**Latest Training Checkpoint:** `EXP-MLUA-003_E78_LATEST.pth` (Epoch 78, Global Step 10,296)  
 **Architecture:** ResNet-34 + Lateral Feature Pyramid Network (FPN) with Multi-Level Uncertainty-Aware (MLUA) Learning  
 **Operating Decision Threshold:** $\tau = 0.50$  
-**Evaluation Scope:** Internal Validation (Epoch 64 Peak) & Historical Independent Sealed 100-Case Test Benchmark (`dataset/test/`, evaluated on E56; sealed test has not been re-evaluated on E64)  
+**Evaluation Scope:** Internal Validation (Epoch 75 Peak: 71.867% vs literature 71.12%), Preserved Historical E64 Validation (69.386%), and Final Sealed-Test Evaluation on 100 cases (Macro Dice: 50.147%, Micro Dice: 52.924%)  
 **Evidence Standard:** Strict empirical provenance across project source code, training logs, diagnostic CSVs, and the base research paper (*Neurocomputing 2023*).
 
-> **Model Selection Note:** Epoch 64 achieved a new validation-best Dice of **69.386%**, improving upon the previous Epoch 56 best of **65.623%** by **+3.763 percentage points**. Epoch 64 is therefore the current selected validation checkpoint for EXP-MLUA-003. The sealed test set has not been re-evaluated using Epoch 64.
+> **Model Selection Note:** Epoch 75 achieved the canonical validation-best Dice of **71.867%** (Val IoU: 57.349%, Val Precision: 78.132%, Val Recall: 67.343%), outperforming the 71.12% published literature benchmark by **+0.747 percentage points** and the preserved Epoch 64 checkpoint by **+2.481 percentage points**. Total training run concluded at Epoch 78. Historical checkpoints (E64, E56) remain strictly preserved.
 
 ---
 

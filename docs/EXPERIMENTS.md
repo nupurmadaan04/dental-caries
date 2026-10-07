@@ -8,28 +8,32 @@ This document chronicles the complete experimental trajectory of the MLUA dental
 
 | Experiment ID | Epochs | Supervision | Key Architectural Feature | Primary Outcome & Validation Metrics | Checkpoint Path | Status |
 | :--- | :---: | :---: | :--- | :--- | :--- | :--- |
-| **`EXP-MLUA-001`** | 60 | 20% Labeled | Supervised baseline (ResNet-34 + FPN) | Val Dice: 54.21%, Val Loss: 0.8920. Baseline without semi-supervised consistency. | `checkpoints/EXP-MLUA-001_BEST.pth` | Historical Baseline |
+| **`EXP-MLUA-001`** | 60 | 20% Labeled | Supervised baseline (ResNet-34 + FPN) | Val Dice: 54.21%, Val Loss: 0.8920. Baseline without semi-supervised consistency. | `outputs/experiments/EXP-MLUA-001_HISTORICAL/checkpoints/EXP-MLUA-001_BEST.pth` | Historical Baseline |
 | **`EXP-MLUA-002`** | 10 | 20% Labeled | Semi-supervised MLUA (Parameter-only EMA) | **Numerical Collapse (NaN Loss at Epoch 10).** Forensic analysis revealed missing BatchNorm buffer synchronization. | N/A (Failed Run) | Historical Audit |
-| **`EXP-MLUA-003 (60 Ep)`** | 60 | 20% Labeled | Remediated Dual Parameter + BN Buffer Sync | Flawless convergence over 7,920 steps. **E56 Peak Checkpoint: Val Dice 65.623%, Val Loss 0.7639.** | `checkpoints/EXP-MLUA-003_E56_FINAL.pth` | Preserved Historical Baseline |
-| **`EXP-MLUA-003 (70 Ep)`** | 70 | 20% Labeled | Extended Training Run with Dual Buffer Sync | **New Peak Validation Checkpoint: Epoch 64. Val Dice 69.386%, Val Loss 0.7471.** | `checkpoints/EXP-MLUA-003_E64_BEST.pth` | **Current Selected Production Checkpoint** |
+| **`EXP-MLUA-003 (60 Ep)`** | 60 | 20% Labeled | Remediated Dual Parameter + BN Buffer Sync | Flawless convergence over 7,920 steps. **E56 Peak Checkpoint: Val Dice 65.623%, Val Loss 0.7639.** | `outputs/experiments/EXP-MLUA-003_FINAL/checkpoints/EXP-MLUA-003_E56_FINAL.pth` | Preserved Historical Baseline |
+| **`EXP-MLUA-003 (70 Ep)`** | 70 | 20% Labeled | Extended Training Run with Dual Buffer Sync | **Historical Peak Checkpoint: Epoch 64. Val Dice 69.386%, Val Loss 0.7471.** | `outputs/experiments/EXP-MLUA-003_FINAL/checkpoints/EXP-MLUA-003_E64_BEST.pth` | Preserved Historical Reference |
+| **`EXP-MLUA-003 (78 Ep)`** | 78 | 20% Labeled | Final Controlled Micro-Extension with Dual BN Buffer Sync | **New Canonical Peak Validation Checkpoint: Epoch 75. Val Dice 71.867%, Val Loss 0.7254.** Exceeds 71.12% literature benchmark (+0.747 pp). Total run completed at Epoch 78 (10,296 steps). | `outputs/experiments/EXP-MLUA-003_FINAL/checkpoints/EXP-MLUA-003_E75_BEST.pth` | **Current Canonical Active Checkpoint** |
 
 ---
 
-## 2. Current Selected Checkpoint: `EXP-MLUA-003_E64_BEST.pth`
+## 2. Current Canonical Active Checkpoint: `EXP-MLUA-003_E75_BEST.pth`
 
 Evaluated on the canonical DC1000 validation set across 598 patches at operating threshold $\tau = 0.50$:
 
 ```
 ========================================================================================
-EXP-MLUA-003 (Epoch 64, Global Step 8,448) Canonical Validation Performance
+EXP-MLUA-003 (Epoch 75, Global Step 9,900) Canonical Validation Performance
 ========================================================================================
-- Validation Dice Similarity (DSC):  69.386%  (0.69386)  [+3.763 pp over E56]
-- Intersection over Union (IoU):     54.326%  (0.54326)  [+4.472 pp over E56]
-- Validation Precision (PPV):        74.689%  (0.74689)  [+5.680 pp over E56]
-- Validation Recall (Sensitivity):   66.415%  (0.66415)  [+2.766 pp over E56]
-- Specificity (TNR):                 99.784%  (0.99784)  [+0.031 pp over E56]
-- Peak Validation Loss:              0.74710             [-0.0168 vs E56]
-- Zero-Prediction Ratio:             0.0%
+- Validation Dice Similarity (DSC):  71.867%  (0.71867)  [+2.481 pp over E64, +0.747 pp vs literature 71.12%]
+- Intersection over Union (IoU):     57.349%  (0.57349)  [+3.023 pp over E64]
+- Validation Precision (PPV):        78.132%  (0.78132)  [+3.443 pp over E64]
+- Validation Recall (Sensitivity):   67.343%  (0.67343)  [+0.928 pp over E64]
+- Specificity (TNR):                 99.824%  (0.99824)  [+0.040 pp over E64]
+- Peak Validation Loss:              0.72540             [-0.0217 vs E64 0.74710]
+- Zero-Prediction Ratio:             2.0%
+========================================================================================
+Preserved Historical Reference Checkpoint: EXP-MLUA-003_E64_BEST.pth (Epoch 64, Step 8,448)
+- Val Dice: 69.386%, Val IoU: 54.326%, Val Precision: 74.689%, Val Recall: 66.415%, TNR: 99.784%
 ========================================================================================
 ```
 
@@ -83,11 +87,25 @@ To determine the optimal decision threshold, a 19-point sweep was conducted on t
 
 ## 5. Independent Sealed Test Set Evaluation
 
-Following threshold freezing at $\tau = 0.50$, the model was evaluated on a strictly sealed test set of 100 independent panoramic radiographs:
-- **Macro Dice:** 43.041%
-- **Macro Recall (Sensitivity):** 52.896%
-- **Macro Specificity:** 99.630%
-- **Micro Dice:** 43.391%
-- **Evaluated Pixels:** 117,964,800 total test pixels ($\text{TP} = 263,935, \text{FP} = 434,392, \text{FN} = 254,282, \text{TN} = 117,012,191$).
+Following threshold freezing at $\tau = 0.50$, the canonical active checkpoint `EXP-MLUA-003_E75_BEST.pth` was evaluated on the strictly sealed test set of 100 independent panoramic radiographs:
+
+### Final Sealed-Test Evaluation (`EXP-MLUA-003_E75_BEST.pth`)
+- **Macro Dice:** 50.147% (`50.15%`)
+- **Macro IoU:** 36.607% (`36.61%`)
+- **Macro Precision:** 59.889% (`59.89%`)
+- **Macro Recall (Sensitivity):** 48.077% (`48.08%`)
+- **Macro Specificity:** 99.872% (`99.87%`)
+- **Macro F1 Score:** 50.147% (`50.15%`)
+- **Zero-Prediction Cases:** 0 / 100 (`0.0%`)
+- **Micro Dice:** 52.924% (`52.92%`)
+- **Micro IoU:** 35.984% (`35.98%`)
+- **Micro Precision:** 61.540% (`61.54%`)
+- **Micro Recall:** 46.424% (`46.42%`)
+- **Global Confusion Matrix:** 117,964,800 evaluated test pixels ($\text{TP} = 240,579; \text{FP} = 150,350; \text{FN} = 277,638; \text{TN} = 117,296,233$).
+- **Generalization Gap:** Validation-to-test Dice gap of -21.720 percentage points (strictly designated as *Final Sealed-Test Evaluation*, not clinical validation).
+
+### Historical Baseline Sealed Test Reference (Evaluated on E56)
+- **Macro Dice:** 43.041% | **Macro Recall:** 52.896% | **Macro Specificity:** 99.630% | **Micro Dice:** 43.391%
+- **Evaluated Pixels:** $\text{TP} = 263,935, \text{FP} = 434,392, \text{FN} = 254,282, \text{TN} = 117,012,191$.
 
 The validation-to-test generalization gap illustrates the real-world clinical challenge of panoramic radiograph variance, cervical burnout, and fine proximal lesion boundaries.

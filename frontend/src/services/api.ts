@@ -179,13 +179,13 @@ export const apiService = {
         },
         findings: generated.findings,
         evaluationMetrics: {
-          diceScore: 0.69386,
-          iou: 0.54326,
-          precision: 0.74689,
-          recall: 0.66415,
-          f1Score: 0.69386,
-          accuracy: 0.99784,
-          benchmarkReference: "ResNet-34 + FPN MLUA (EXP-MLUA-003 E64, τ=0.50)",
+          diceScore: 0.71867,
+          iou: 0.57349,
+          precision: 0.78132,
+          recall: 0.67343,
+          f1Score: 0.71867,
+          accuracy: 0.99824,
+          benchmarkReference: "ResNet-34 + FPN MLUA (EXP-MLUA-003 E75, τ=0.50)",
         },
         clinicalRecommendation: !hasLesions 
           ? "No suspicious caries lesions detected. Routine preventive dental care and periodic follow-up recommended."
@@ -392,16 +392,20 @@ export const apiService = {
     if (!analysis) {
       return {
         model: {
-          name: "MLUA",
-          checkpoint: "EXP-MLUA-003_E64_BEST.pth",
+          name: "ResNet-34 + FPN MLUA",
+          experiment: "EXP-MLUA-003",
+          checkpoint: "EXP-MLUA-003_E75_BEST.pth",
+          selectedEpoch: 75,
+          totalTrainingEpochs: 78,
           task: "binary pixel-level caries segmentation",
           threshold: 0.50,
           validation_metrics: {
-            dice: 69.386,
-            iou: 54.326,
-            precision: 74.689,
-            recall: 66.415,
-            loss: 0.7471
+            dice: 71.867,
+            iou: 57.349,
+            precision: 78.132,
+            recall: 67.343,
+            specificity: 99.824,
+            loss: 0.7254
           }
         },
         case: {
@@ -412,16 +416,20 @@ export const apiService = {
 
     return {
       model: {
-        name: "MLUA",
-        checkpoint: "EXP-MLUA-003_E64_BEST.pth",
+        name: "ResNet-34 + FPN MLUA",
+        experiment: "EXP-MLUA-003",
+        checkpoint: "EXP-MLUA-003_E75_BEST.pth",
+        selectedEpoch: 75,
+        totalTrainingEpochs: 78,
         task: "binary pixel-level caries segmentation",
         threshold: 0.50,
         validation_metrics: {
-          dice: 69.386,
-          iou: 54.326,
-          precision: 74.689,
-          recall: 66.415,
-          loss: 0.7471
+          dice: 71.867,
+          iou: 57.349,
+          precision: 78.132,
+          recall: 67.343,
+          specificity: 99.824,
+          loss: 0.7254
         }
       },
       case: {
@@ -511,12 +519,22 @@ export const apiService = {
         const titlePart = title ? ` (${title})` : '';
         const descPart = desc ? ` Description: ${desc}.` : '';
 
-        if (lower.includes('what does level 1') || lower.includes('explain level 1') || lower.includes('what does stage 1')) {
-          responseText = `In this application, Level 1 represents 'Suspected Early Caries', indicating localized demineralization confined to enamel or the outer dentino-enamel junction. The current active case is staged as ${lvl}${titlePart}. This is a rule-based decision-support classification from segmentation findings, not a definitive clinical diagnosis. A dentist should correlate the finding with the radiograph and clinical examination.`;
-        } else if (lower.includes('what does level 2') || lower.includes('explain level 2') || lower.includes('what does stage 2')) {
-          responseText = `In this application, Level 2 represents 'Moderate Caries', indicating radiographic radiolucency extending deeper across the enamel-dentin junction into middle/deep dentin. The current active case is staged as ${lvl}${titlePart}. This is an algorithmic decision-support classification to assist dental review, not a definitive clinical diagnosis. A dentist should correlate the finding with the radiograph and clinical examination.`;
-        } else if (lower.includes('what does level 3') || lower.includes('explain level 3') || lower.includes('what does stage 3')) {
-          responseText = `In this application, Level 3 represents 'Extensive / Deep Caries', indicating deep radiolucency extending into inner dentin approaching or involving the dental pulp. The current active case is staged as ${lvl}${titlePart}. This is a decision-support classification, not a definitive clinical diagnosis. Prompt in-person clinical and vitality examination is advised.`;
+        const asksCurrentReport = lower.includes('my report') || lower.includes('this report') || lower.includes('my case') || lower.includes('this case') || lower.includes('does my') || lower.includes('my x-ray');
+        const caseStageNote = asksCurrentReport ? ` The current active case is staged as ${lvl}${titlePart}.` : '';
+
+        if (lower.includes('why level') || lower.includes('why is it level') || lower.includes('why is mine level') || lower.includes('how did you decide') || lower.includes('what made it level') || lower.includes('why is my case level') || lower.includes('bhai level 3 kyu') || lower.includes('kyu diya') || lower.includes('kaise decide') || lower.includes('why not level 2') || lower.includes('which lesion caused')) {
+          const drivingF = findings.find((f: any) => String(f.stage || '').includes('3')) || findings[0] || {};
+          const drivingId = drivingF.lesionNumber || drivingF.id || 'L1';
+          const drivingTooth = drivingF.toothNumberFDI || 36;
+          const drivingStage = drivingF.stage || 'Stage 3';
+          const drivingDepth = drivingF.cariesDepthIndicator || drivingF.depth || 'Deep Dentin / Pulp Border (D3)';
+          responseText = `The application assigned **Level 3** based on the **highest candidate stage heuristic rule**. Among the detected candidate findings, region **${drivingId}** on **Tooth ${drivingTooth}** exhibits **${drivingStage}** involvement (${drivingDepth}). Because the case-level staging heuristic assigns the maximum severity across all detected candidate lesions, candidate ${drivingId} drives the overall report classification to **Level 3**. Please note this is an algorithmic heuristic classification to assist clinical review, not a definitive clinical diagnosis.`;
+        } else if (lower.includes('what does level 1') || lower.includes('explain level 1') || lower.includes('what does stage 1') || lower.includes('level 1 kya')) {
+          responseText = `In this application, Level 1 represents 'Suspected Early Caries', indicating localized demineralization confined to enamel or the outer dentino-enamel junction.${caseStageNote} This is an application-defined rule-based decision-support classification from segmentation findings, not a definitive clinical diagnosis. A dentist should correlate the finding with the radiograph and clinical examination.`;
+        } else if (lower.includes('what does level 2') || lower.includes('explain level 2') || lower.includes('what does stage 2') || lower.includes('level 2 kya')) {
+          responseText = `In this application, Level 2 represents 'Moderate Caries', indicating radiographic radiolucency extending deeper across the enamel-dentin junction into middle/deep dentin.${caseStageNote} This is an application-defined algorithmic decision-support classification to assist dental review, not a definitive clinical diagnosis. A dentist should correlate the finding with the radiograph and clinical examination.`;
+        } else if (lower.includes('what does level 3') || lower.includes('explain level 3') || lower.includes('what does stage 3') || lower.includes('level 3 kya') || lower.includes('what is level 3')) {
+          responseText = `In this application, Level 3 represents 'Extensive / Deep Caries', indicating deep radiolucency extending into inner dentin approaching or involving the dental pulp.${caseStageNote} This is an application-defined decision-support classification, not a definitive clinical diagnosis. Prompt in-person clinical and vitality examination is advised.`;
         } else if (findings.length > 0) {
           responseText = `The current report assigns this candidate region an application-defined ${lvl} heuristic stage${titlePart}.${descPart} This staging is generated from the application's segmentation findings and associated lesion indicators. It is a decision-support classification, not a definitive clinical diagnosis. A dentist should correlate the finding with the radiograph and clinical examination.`;
         } else {
@@ -561,7 +579,7 @@ export const apiService = {
           responseText = "The MLUA model did not detect any caries candidate regions exceeding the decision threshold (τ = 0.50) on this radiograph. All tooth structures appear radiographically within normal density limits.";
         }
       } else if (lower.includes('accuracy') || lower.includes('dice') || lower.includes('precision') || lower.includes('recall') || lower.includes('iou') || lower.includes('metric')) {
-        responseText = "On canonical validation benchmarks (EXP-MLUA-003 E64 BEST at τ = 0.50), the system demonstrates a Validation Dice Similarity of 69.39%, IoU (Jaccard) of 54.33%, Precision of 74.69%, Recall of 66.42%, and Validation Loss of 0.7471. Please note that these are dataset validation metrics and do not represent a guarantee of accuracy for any individual patient's radiograph.";
+        responseText = "On canonical validation benchmarks (EXP-MLUA-003 E75 BEST at τ = 0.50), the system demonstrates a Validation Dice Similarity of 71.87%, IoU (Jaccard) of 57.35%, Precision of 78.13%, Recall of 67.34%, Specificity of 99.82%, and Validation Loss of 0.7254. Please note that these are dataset validation metrics and do not represent a guarantee of accuracy for any individual patient's radiograph.";
       } else if (lower.includes('cervical burnout') || lower.includes('burnout') || lower.includes('false positive') || lower.includes('artifact')) {
         responseText = "Cervical burnout is a frequent optical phenomenon on panoramic and periapical radiographs. It occurs at the neck of the tooth (between the dense enamel crown and the alveolar bone crest) where less tissue absorbs X-rays, creating an artificial dark band that can mimic root caries. Clinical tactile examination with a periodontal probe easily distinguishes real caries from burnout.";
       } else if (lower.includes('how does') || lower.includes('mlua') || lower.includes('model work') || lower.includes('architecture') || lower.includes('binary segmentation')) {

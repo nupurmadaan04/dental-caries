@@ -23,12 +23,14 @@ import {
   Target,
   Percent,
   Info,
-  Sparkles
+  Sparkles,
+  Cpu
 } from 'lucide-react';
 import { apiService } from '../services/api';
 import { AnalysisResult, ClinicalReviewData } from '../types/api';
 import { ImageLightboxModal } from '../components/ImageLightboxModal';
 import { useAIChat } from '../context/AIChatContext';
+import { MODEL_BENCHMARK_METRICS } from '../constants/clinicalMetadata';
 
 export const AnalysisResultPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -351,13 +353,22 @@ export const AnalysisResultPage: React.FC = () => {
       </div>
 
       {/* Decision Support Callout */}
-      <div className="p-4 rounded-2xl bg-cyan-50/70 dark:bg-[#09152b] border border-cyan-200/80 dark:border-[#1b3461] text-xs text-slate-700 dark:text-slate-300 flex items-start gap-3">
-        <Info className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0 mt-0.5" />
-        <div>
-          <span className="font-bold text-cyan-800 dark:text-cyan-300">Clinical Radiology Decision Support: </span>
-          <span>
-            Highlighted candidate regions indicate areas of detected radiolucency. All algorithmic visual findings must be corroborated with visual-tactile examination, tooth vitality tests, and clinical bitewing radiographs.
-          </span>
+      <div className="p-4 rounded-2xl bg-cyan-50/70 dark:bg-[#09152b] border border-cyan-200/80 dark:border-[#1b3461] text-xs text-slate-700 dark:text-slate-300 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+        <div className="flex items-start gap-3">
+          <Info className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0 mt-0.5" />
+          <div>
+            <span className="font-bold text-cyan-800 dark:text-cyan-300">Clinical Radiology Decision Support: </span>
+            <span>
+              Highlighted candidate regions indicate areas of detected radiolucency. All algorithmic visual findings must be corroborated with visual-tactile examination, tooth vitality tests, and clinical bitewing radiographs.
+            </span>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 font-mono text-[11px] bg-white/80 dark:bg-[#080d1a]/80 px-3 py-1.5 rounded-xl border border-cyan-200 dark:border-cyan-500/30 shrink-0">
+          <Cpu className="w-3.5 h-3.5 text-cyan-500" />
+          <span className="text-slate-500 dark:text-slate-400">Model:</span>
+          <span className="font-semibold text-slate-800 dark:text-slate-200">{MODEL_BENCHMARK_METRICS.checkpoint}</span>
+          <span className="text-slate-400">&bull;</span>
+          <span className="text-cyan-600 dark:text-cyan-400 font-semibold">{MODEL_BENCHMARK_METRICS.operatingThresholdStr}</span>
         </div>
       </div>
 

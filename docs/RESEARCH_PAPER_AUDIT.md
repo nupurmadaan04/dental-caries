@@ -92,6 +92,7 @@ def update_teacher_ema(student_model, teacher_model, alpha=0.999):
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **`EXP-MLUA-001 (Supervised)`** | 7,920 | 54.21% | 37.18% | 58.40% | 50.60% | 99.50% | 0.8920 |
 | **`EXP-MLUA-003 (Epoch 56)`** | 7,392 | 65.623% | 49.854% | 69.009% | 63.649% | 99.753% | 0.76388 |
-| **`EXP-MLUA-003 (Epoch 64)*`** | **8,448** | **69.386%** | **54.326%** | **74.689%** | **66.415%** | **99.784%** | **0.74710** |
+| **`EXP-MLUA-003 (Epoch 64)`** | 8,448 | 69.386% | 54.326% | 74.689% | 66.415% | 99.784% | 0.74710 |
+| **`EXP-MLUA-003 (Epoch 75)*`** | **9,900** | **71.867%** | **57.349%** | **78.132%** | **67.343%** | **99.824%** | **0.72540** |
 
-*\*Selected Production Checkpoint: `EXP-MLUA-003_E64_BEST.pth`.*
+*\*Canonical Active Checkpoint: `EXP-MLUA-003_E75_BEST.pth` (exceeds published literature benchmark of 71.12% by +0.747 pp). Total training run completed at Epoch 78 (10,296 steps). Historical checkpoint `EXP-MLUA-003_E64_BEST.pth` preserved as comparative baseline.*

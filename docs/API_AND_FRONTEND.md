@@ -15,7 +15,7 @@ The application uses client-side routing with comprehensive dark/light clinical 
 | `/analysis/:id` | `AnalysisResultPage.tsx` | High-resolution canvas viewer, segmentation overlay opacity slider, FDI lesion table, and AI Assistant integration. |
 | `/history` | `HistoryPage.tsx` | Longitudinal patient analysis history with search, filtering, and status badges. |
 | `/reports` | `ReportsPage.tsx` | Clinical PDF and JSON report generation, export, and preview interface. |
-| `/verification`| `TechnicalVerificationPage.tsx` | Canonical E64 benchmark validation metrics, threshold parameters, and research disclosures. |
+| `/verification`| `TechnicalVerificationPage.tsx` | Canonical E75 benchmark validation metrics, threshold parameters, research disclosures, and preserved historical E64 comparison. |
 | `/methodology` | `MLUAMethodologyPage.tsx` | Detailed technical documentation of Teacher-Student FPN, EMA synchronization, and uncertainty gating. |
 | `/limitations` | `LimitationsPage.tsx` | Disclosures regarding cervical burnout, magnification distortion, and decision-support boundaries. |
 | `/faq` | `FAQPage.tsx` | Clinician and patient FAQs explaining terminology, Dice scores, and workflow best practices. |
@@ -55,7 +55,9 @@ Returns service availability, active checkpoint metadata, and Gemini connection 
   {
     "status": "ONLINE",
     "version": "2.4.0",
-    "model_checkpoint": "EXP-MLUA-003_E64_BEST.pth",
+    "model_checkpoint": "EXP-MLUA-003_E75_BEST.pth",
+    "selected_epoch": 75,
+    "completed_training_epochs": 78,
     "operating_threshold": 0.50,
     "gemini_assistant": {
       "configured": true,
@@ -79,7 +81,7 @@ Executes multi-turn clinical chat with dynamic case context injection.
     "case_context": {
       "model": {
         "name": "MLUA",
-        "checkpoint": "EXP-MLUA-003_E64_BEST.pth",
+        "checkpoint": "EXP-MLUA-003_E75_BEST.pth",
         "threshold": 0.50
       },
       "case": {
@@ -148,3 +150,33 @@ Exports machine-readable JSON containing raw lesion pixel coordinates and metada
 1. **Client-Side Sanitization:** The frontend `buildCaseContext()` utility strips all patient identifiers, names, phone numbers, and filenames before constructing API payloads.
 2. **Deterministic Case Signatures:** The backend computes a deterministic fingerprint of findings. If a user switches cases in the same browser session, the server automatically flushes previous conversational memory to prevent cross-case context leakage.
 3. **Grounded Offline Fallback:** If the Gemini API key is unset or external endpoints encounter rate limits (429), both backend and frontend fall back to grounded, deterministic rule-based responses matching the active case's actual findings.
+
+---
+
+## 5. Natural Language Understanding & Conversational Intelligence
+
+The backend implements an additive three-layer NLU system:
+
+```mermaid
+flowchart TD
+    User["User Query (Informal, Hinglish, Emotional)"] --> NLU["NLU Router (Local CPU < 10ms)"]
+    NLU --> Emotion["Layer 1: Emotion Analyzer\n11 Affective States & Sentiment Polarity"]
+    NLU --> Intent["Layer 2: Intent Classifier\n29 Semantic Intents with Precedence Safety Guards"]
+    Emotion --> Router["Tone, Urgency & Safety Formatter"]
+    Intent --> Router
+    Router --> Context["Structured NLU Block + Active Case Context (Zero PHI)"]
+    Context --> Gemini["Layer 3: Gemini 2.5 Flash Reasoning"]
+    Gemini --> Reply["Empathetic, Grounded Clinical Response"]
+```
+
+### Three-Layer Structure
+1. **Layer 1: Sentiment / Emotion Analysis (*"How does the user's message feel?"*):**
+   - Classifies message into 11 fine-grained emotions: `neutral`, `positive`, `confused`, `anxious`, `worried`, `fearful`, `frustrated`, `sad`, `curious`, `relieved`, `urgent/concerned`.
+   - Distinguishes linguistic confidence from clinical confidence (labeled strictly as *"emotion classification confidence"*).
+2. **Layer 2: Intent Classification (*"What does the user mean or want?"*):**
+   - Classifies user objective across 29 intents in four main categories: Case-Specific, Model/Technical, General Conversation, and Medical Safety.
+   - Enforces high-priority safety guards for definitive diagnosis, medication, treatment, and emergency queries.
+3. **Layer 3: LLM Reasoning (*"How should the assistant respond?"*):**
+   - Injects the `CURRENT USER LANGUAGE ANALYSIS` block into Gemini system instruction.
+   - Adapts tone (calm, reassuring, objective, educational) to user emotions without offering false clinical reassurance or crossing non-diagnostic medical boundaries.
+

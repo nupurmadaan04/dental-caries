@@ -30,4 +30,6 @@ env/
 .idea/
 .DS_Store
 TRAINING_STATUS.md
-
+.pytest_cache/
+*.log
+scratch/*.py
