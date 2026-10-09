@@ -335,6 +335,9 @@ PORT=8000
 # Install Python dependencies
 pip install -r requirements.txt
 
+# Run preflight verification (validates checkpoint presence, SHA-256 integrity, NLU models)
+python verify_environment.py
+
 # Start FastAPI backend server
 uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
 ```

@@ -14,6 +14,7 @@ frontend/.vite/
 # Large binary checkpoints & data archives
 *.zip
 *.pth
+!checkpoints/EXP-MLUA-003_E75_BEST.pth
 *.tar.gz
 data/raw/
 dataset/
