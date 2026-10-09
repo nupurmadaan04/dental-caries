@@ -17,3 +17,7 @@ fastapi>=0.100.0
 uvicorn>=0.22.0
 python-dotenv>=1.0.0
 google-genai>=2.0.0
+
+# Testing & Verification
+pytest>=7.4.0
+httpx>=0.24.0

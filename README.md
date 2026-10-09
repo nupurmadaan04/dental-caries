@@ -315,8 +315,15 @@ MLUA/
 
 ### Step 1: Clone Repository & Setup Environment
 ```bash
+# Make sure Git LFS is installed (required for model weights)
+git lfs install
+
+# Clone repository
 git clone https://github.com/nupurmadaan04/dental-caries.git
 cd dental-caries
+
+# If already cloned without Git LFS, pull weights now:
+git lfs pull
 
 # Copy environment template
 cp .env.example .env

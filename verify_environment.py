@@ -96,7 +96,7 @@ def check_env_configuration() -> bool:
 
 def check_packages() -> bool:
     print("\n[4/4] Checking Core Python Dependencies...")
-    required = ["torch", "fastapi", "uvicorn", "sklearn", "pydantic", "dotenv"]
+    required = ["torch", "fastapi", "uvicorn", "sklearn", "pydantic", "dotenv", "pytest", "httpx"]
     missing = []
     for pkg in required:
         try:
